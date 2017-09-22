@@ -1,0 +1,103 @@
+<div>
+    <el-button id="btnAddBook" type="primary" icon="plus" @click="openAdd"></el-button>
+
+    <el-table id="tblBooks"
+        :data="books"
+        :default-sort = "{prop: 'name', order: 'descending'}"
+        highlight-current-row
+        @current-change="onRowSelected"
+        height="400">
+        <el-table-column
+           type="selection">
+        </el-table-column>
+        <el-table-column
+            prop="name"
+            label="Title">
+        </el-table-column>
+        <el-table-column
+            prop="type"
+            label="Type">
+        </el-table-column>
+        <el-table-column
+            prop="authors"
+            label="Author">
+        </el-table-column>
+        <el-table-column
+            prop="genres"
+            label="Genre">
+        </el-table-column>
+        <el-table-column
+            prop="series"
+            label="Series">
+        </el-table-column>
+        <el-table-column
+            prop="owners"
+            label="Owner">
+        </el-table-column>
+        <el-table-column
+            prop="read"
+            label="Read">
+        </el-table-column>  
+    </el-table>
+    
+    <el-dialog title="Shipping address" :visible.sync="formOpen">
+        <el-form :model="editing">
+            <el-form-item label="Title">
+                <el-input v-model="editing.name" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="Type">
+                <el-select
+                    allow-create
+                    filterable
+                    v-model="editing.type"
+                    placeholder="Please select a type">
+                    <el-option v-for="type in types" :label="type" :value="type"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="Authors">
+                <el-select
+                    allow-create
+                    filterable
+                    multiple
+                    v-model="editing.authors"
+                    placeholder="Please select a author">
+                    <el-option v-for="author in authors" :label="author" :value="author"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="Genres">
+                <el-select
+                    allow-create
+                    filterable
+                    multiple
+                    v-model="editing.genres"
+                    placeholder="Please select a genre">
+                    <el-option v-for="genre in genres" :label="genre" :value="genre"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="Owners">
+                <el-select
+                    allow-create
+                    filterable
+                    multiple
+                    v-model="editing.owners"
+                    placeholder="Please select a person">
+                    <el-option v-for="person in people" :label="person" :value="person"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="Read">
+                <el-select
+                    allow-create
+                    filterable
+                    multiple
+                    v-model="editing.read"
+                    placeholder="Please select a person">
+                    <el-option v-for="person in people" :label="person" :value="person"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="save">Confirm</el-button>
+            <el-button @click="formOpen = false">Cancel</el-button>
+        </span>
+    </el-dialog>
+</div>
