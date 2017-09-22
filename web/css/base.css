@@ -159,3 +159,5 @@ th.th-checkbox { width:30px; }
 
 #tblBooks table { width:100%; }
 #btnAddBook { margin:10px 0px; }
+#frmBook .name { width: 200px; }
+#frmBook .series-number { width: 50px; }

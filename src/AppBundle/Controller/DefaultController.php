@@ -37,6 +37,7 @@ class DefaultController extends Controller
             if (isset($item->type) && !in_array($item->type, $types)) {
                 $types[] = $item->type;
             }
+            sort($types);
             
             if (isset($item->series) && is_array($item->series)) {
                 foreach ($item->series as $value) {
@@ -44,6 +45,8 @@ class DefaultController extends Controller
                         $series[] = $value->name;
                     }
                 }
+                
+                sort($series);
             }
             
             $books[] = array(
@@ -81,11 +84,11 @@ class DefaultController extends Controller
                 $book = array(
                     'name' => $item->name,
                     'type' => isset($item->type)?$item->type:null,
-                    'authors' => isset($item->type)?implode(", ", $item->authors):null,
-                    'genres' => isset($item->type)?implode(", ", $item->genres):null,
-                    'owners' => isset($item->type)?implode(", ", $item->owners):null,
-                    'read' => isset($item->type)?implode(", ", $item->read):null,
-                    'series' => isset($item->type)?json_encode($item->series):null
+                    'authors' => isset($item->authors)?$item->authors:array(),
+                    'genres' => isset($item->genres)?$item->genres:array(),
+                    'owners' => isset($item->owners)?$item->owners:array(),
+                    'read' => isset($item->read)?$item->read:array(),
+                    'series' => isset($item->series)?$item->series:array()
                 );
             }
         }
@@ -101,6 +104,8 @@ class DefaultController extends Controller
                     $items[] = $value;
                 }
             }
+            
+            sort($items);
         }
     }
 }

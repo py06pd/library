@@ -13,17 +13,30 @@ module.exports = {
             types: [],
             books: [],
             editing: {},
-            emptyBook: {},
+            emptyBook: {
+                name: '',
+                type: '',
+                genres: [],
+                authors: [],
+                owners: [],
+                read: [],
+                series: [],
+            },
             formOpen: false,
+            newSeries: { name: '', number: '' },
             index: -1,
+            loading2: false,
         };
     },
     created: function () {
         this.loadBooks();
     },
     methods: {
+
         loadBooks: function() {
+            this.loading2 = true;
             this.post('getData', {}).then(function(response) {
+                this.loading2 = false;
                 this.books = response.body.data;
                 this.authors = response.body.authors;
                 this.genres = response.body.genres;
@@ -50,7 +63,9 @@ module.exports = {
         },
         
         onRowSelected: function(val) {
+            this.loading2 = true;
             this.post('getItem', { name: val.name }).then(function(response) {
+                this.loading2 = false;
                 this.editing = JSON.parse(JSON.stringify(response.body.data));
                 this.formOpen = true;
             });

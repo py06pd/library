@@ -1,9 +1,4 @@
 module.exports = {
-    data: function () {
-        return {
-            show: false,
-        };
-    },
     methods: {
         // convert object to url encoded string
         objectToUrlParams: function(data) {
@@ -50,13 +45,11 @@ module.exports = {
         },
         // post with loading indicator
         load: function(target, params, text) {
-            this.show = false;
             this.clearNotifications();
             this.showStatus(text);
             var promise = this.post(target, params);
             promise.then(function(response) {
                 if (typeof(response.body.status) !== 'undefined') {
-                    this.show = true;
                     this.clearStatus();
                 }
             });
@@ -81,10 +74,6 @@ module.exports = {
                 if (typeof(response.body.status) === 'undefined') {
                     // if no status in response then session may have expired - reload page to trigger redirect to login page
                     window.location.href = 'login';
-                }
-                
-                if (typeof(response.body.actions) !== 'undefined') {
-                    this.authorised = response.body.actions;
                 }
             }, function(response) {
                 if (response.status === 403) {

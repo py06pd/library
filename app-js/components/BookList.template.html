@@ -2,8 +2,10 @@
     <el-button id="btnAddBook" type="primary" icon="plus" @click="openAdd"></el-button>
 
     <el-table id="tblBooks"
+        v-loading="loading2"
+        element-loading-text="Loading..."
         :data="books"
-        :default-sort = "{prop: 'name', order: 'descending'}"
+        :default-sort = "{prop: 'name', order: 'ascending'}"
         highlight-current-row
         @current-change="onRowSelected"
         height="400">
@@ -40,10 +42,10 @@
         </el-table-column>  
     </el-table>
     
-    <el-dialog title="Shipping address" :visible.sync="formOpen">
+    <el-dialog id="frmBook" title="Edit Book" :visible.sync="formOpen">
         <el-form :model="editing">
             <el-form-item label="Title">
-                <el-input v-model="editing.name" auto-complete="off"></el-input>
+                <el-input class="name" v-model="editing.name"></el-input>
             </el-form-item>
             <el-form-item label="Type">
                 <el-select
@@ -73,6 +75,28 @@
                     placeholder="Please select a genre">
                     <el-option v-for="genre in genres" :label="genre" :value="genre"></el-option>
                 </el-select>
+            </el-form-item>
+            <el-form-item label="Series">
+                <template v-for="current in editing.series">
+                    <el-select
+                        allow-create
+                        clearable
+                        filterable
+                        v-model="current.name"
+                        placeholder="Please select a series">
+                        <el-option v-for="serie in series" :label="serie" :value="serie"></el-option>
+                    </el-select>
+                    <el-input v-model="current.number"></el-input>
+                </template>
+                <el-select
+                    allow-create
+                    clearable
+                    filterable
+                    v-model="newSeries.name"
+                    placeholder="Please select a series">
+                    <el-option v-for="serie in series" :label="serie" :value="serie"></el-option>
+                </el-select>
+                <el-input class="series-number" v-model="newSeries.number"></el-input>
             </el-form-item>
             <el-form-item label="Owners">
                 <el-select
