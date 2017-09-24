@@ -1,4 +1,11 @@
+import { Loading } from 'element-ui';
+
 module.exports = {
+    data: function () {
+        return {
+            loading: null,
+        };
+    },
     methods: {
         // convert object to url encoded string
         objectToUrlParams: function(data) {
@@ -27,7 +34,7 @@ module.exports = {
         },
         // clear loading overlay
         clearStatus: function() {
-            document.getElementById('loading_overlay').style.display = 'none';
+            this.loading.close();
         },
         // post with deleting indicator
         delete: function(target, params) {
@@ -88,7 +95,6 @@ module.exports = {
         // post with saving indicator
         save: function(target, params) {
             var promise = this.load(target, params, 'Saving...');
-            
             promise.then(function(response) {
                 if (response.body.status === 'OK') {
                     this.showSucessMessage('Update successful');
@@ -114,8 +120,7 @@ module.exports = {
                 loadingText = text;
             }
             
-            document.getElementById('loading_text').innerText = loadingText;
-            document.getElementById('loading_overlay').style.display = 'block';
+            this.loading = Loading.service({ fullscreen: true, text: loadingText });
         },
         // show update successful message for action (eg. save/ delete) success
         showSucessMessage: function(text) {

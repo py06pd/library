@@ -8,19 +8,19 @@ import router from './router';
 
 import BookList from './components/BookList';
 
-import Navigator from './plugins/Navigator';
-
 import {
     Button,
     Dialog,
     Form,
     FormItem,
     Input,
+    MessageBox,
     Notification,
     Option,
     Select,
     Table,
     TableColumn,
+    Tag,
 } from 'element-ui';
 import 'element-ui/lib/theme-default/index.css';
 import lang from 'element-ui/lib/locale/lang/en';
@@ -40,12 +40,13 @@ Vue.use(Input);
 Vue.use(Option);
 Vue.use(Select);
 Vue.use(Table);
-Vue.use(TableColumn);/*
+Vue.use(TableColumn);
+Vue.use(Tag);/*
 Vue.use(DatePicker);
 Vue.use(Progress);*/
-Vue.prototype.$notify = Notification;/*
+Vue.prototype.$notify = Notification;
 Vue.prototype.$alert = MessageBox.alert;
-Vue.prototype.$confirm = MessageBox.confirm;*/
+//Vue.prototype.$confirm = MessageBox.confirm;
 
 // Set the Element UI locale
 locale.use(lang);

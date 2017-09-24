@@ -54,110 +54,16 @@ p { margin: 0px; padding: 0px; margin-top: 10px; }
 
 img { border: 0; vertical-align: middle; }
 
-/*********************************************************
-	          Common Interface Components
-*********************************************************/
-.cic-overlay-invisible-permanent,
-.cic-overlay-invisible,
-.cic-overlay-permanent,
-.cic-overlay  { position: fixed; height: 100%; width:100%; top: 0; bottom: 0; left: 0; right: 0; z-index: 1000; }
-.cic-overlay-permanent,
-.cic-overlay  { background: #000; filter:alpha(opacity=20); opacity: 0.2; }
-
 .MenuContent { width:180px; overflow-y:auto; display:inline-block; border: 1px solid #cccccc; display:none; }
 .PageContent { display:inline-block; vertical-align:top; margin-left:10px; }
 
-#header { z-index: 999; clear: both; text-align: center; }
-#status_panel { position: fixed; z-index: 2000; top: 0px; width: 80px; left: 50%; margin-left: -40px; height: 20px; font-weight: bold; background: #222D3F; opacity: 0.7; filter:alpha(opacity=70); padding: 5px; border-radius: 0 0 4px 4px; -moz-border-radius: 0 0 4px 4px; -webkit-radius: 0 0 4px 4px; display: none; }
-#status_panel_inner { height: 20px; background: transparent url('../images/ajax-loader.gif') no-repeat left center; padding-left: 20px; color: #fff; }
 .has-menu .MenuContent { display:block; }
 
-/* cic module */
-.cic-module, .cic-popup { box-shadow:0 0 5px #888; background-color:#efefef; }
-.cic-cloud-overlay {
-    position: fixed;
-    height: 100%;
-    width:100%;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    background: transparent url('../images/cloud.gif') no-repeat center center;
-}
-#loading_text { position: absolute; top: 50%; left: 0; right: 0; text-align: center; margin-top: 20px; }
-
-/* cic table, header and footer */
-.cic-table { width: 100%; border-collapse: separate; border-spacing: 0px; }
-.cic-table td { word-wrap: break-word;}
-.cic-table td, .cic-table th, .cic-footer {  border-top: 1px solid #FFFFFF; border-bottom: 1px solid #CCCCCC; }
-.cic-table th {text-align: left;}
-.cic-table tbody tr {  background-color:#EEEEEE; height:30px; }
-.cic-table tbody tr:hover { background-color:#fbf3eb; cursor:pointer; }
-.cic-table tbody td {font-size:9pt; padding-left: 15px;}
-.cic-table td, .cic-table th { padding: 3px 16px; }
-.cic-table thead { background-color: #EEEEEE; }
-.cic-table-title { margin-left:0px; position:relative; top:0px; left: 0px; font: bold 14px Verdana; }
-.cic-table .checkbox { padding-top: 0px; }
-.cic-header .cic-button, .cic-footer .cic-button { float:left; text-align:center; margin-left:5px; margin-top: 16px; }
-.cic-header { padding:10px; z-index:2; text-align:left; border-top:1px solid #fff; border-bottom:1px solid #ccc; background-color: #DFE6EA ;background-image:linear-gradient(to bottom,#DFE6EA,#CCD7DD); color:#3981ac; text-shadow: 1px 1px rgba(255,255,255,0.5);}
-.cic-header-edit { background: url(../images/ghx-icon-sprite.png) no-repeat 0px -394px; width:24px; height:24px; float:right; cursor:pointer;  }
-.cic-footer { height:54px; padding-left:13px; padding-right:13px; z-index:2; text-align:left; background-color: #ebebeb; background-image:linear-gradient(to bottom,#ebebeb,#cfd1cf);}
-.cic-footer .cic-button { margin-top: 11px; }
-/* table pagination */
-.cic-footer .next, .cic-footer .previous {
-    border: 1px solid #ccc;
-    box-shadow: 1px 1px 2px rgba(0,0,0,0.3),0 1px 0 rgba(255,255,255,0.5) inset;
-    cursor: pointer;
-    width: 30px;
-    height: 22px;
-    margin-top:16px;
-    background: transparent url('../images/controls/paging.png') no-repeat 0 0;
-    display:inline-block;
-    vertical-align:top;
-}
-.cic-footer .next { background-position: -30px 0; margin-right: 10px; }
-.cic-footer .next.disabled { background-position: -90px 0; }
-.cic-footer .previous.disabled { background-position: -60px 0; }
-.cic-footer .pageText { display:inline-block; vertical-align:top; margin-top:18px; }
-#pageposition { margin-top: 8px; padding:2px 2px 0px 2px; display:inline-block; }
-#pageposition .cic-textbox { width:50px; }
-#pageposition .el-input { width:50px; }
-
-.cic-search-results-table { width:800px; }
-.filter-control { padding: 3px 16px; }
-.filter-control .filter-field { width: 215px; }
-.filter-control .filter-operator { width: 180px; }
-.filter-control .filter-value { width: 215px; }
-
-/* Pop-up dialog */
-.cic-popup { position: fixed; width: 800px; top: 0px; left: 50%; margin-left: -400px; z-index: 1010; max-height: 800px; background-color:#efefef; }
-.cic-popup .widget-content { padding: 10px 10px 4px; }
-.cic-popup h1 { color: #666; font-size: 1.4em; margin: 0 0 10px 0; }
-.cic-popup h2 { color: #666; font-size: 1.3em; margin: 0 0 10px 0; }
-td.td-label { padding-top:8px; font-weight:bold; }
-td.td-label-first { font-weight:bold; }
-th.th-checkbox { width:30px; }
-#frmConfigDetails input,
-#frmConfigDetails textarea { width: 296px; }
-#frmConfigDetails .cic-textbox { margin: 5px 0px; }
-
-/* TODO: Create custom theme for Element UI widgets and remove these rules */
-.el-form-item {
-    margin-bottom: 10px !important;
-}
-.el-progress { margin-top: 20px; }
-
-.loading {
-	background: #efefef url('../images/cloud.gif') no-repeat center center;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-}
+.el-form-item { margin-bottom: 10px !important; }
 
 #tblBooks table { width:100%; }
-#btnAddBook { margin:10px 0px; }
-#frmBook .name { width: 200px; }
+#controls { margin:10px 0px; }
+#frmBook .name { width: 217px; }
 #frmBook .series-number { width: 50px; }
+#frmBook .el-form-item__label { width: 70px; text-align: left; }
+#frmBook .el-form-item__content { margin-left: 70px; }

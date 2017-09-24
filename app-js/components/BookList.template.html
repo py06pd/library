@@ -1,14 +1,45 @@
 <div>
-    <el-button id="btnAddBook" type="primary" icon="plus" @click="openAdd"></el-button>
+    <div id="controls">
+        <el-button type="primary" icon="plus" @click="openAdd">Add Entry</el-button>
+        <el-button type="primary" icon="plus" @click="addFilter">Add Filter</el-button>
 
+        <el-select
+            v-model="filter.field"
+            placeholder="Please select a field"
+            @change="filterFieldChange">
+            <el-option v-for="field in fields" :label="field" :value="field"></el-option>
+        </el-select>
+
+        <el-select
+            v-model="filter.operator"
+            placeholder="Please select a operator">
+            <el-option v-for="operator in operators" :label="operator" :value="operator"></el-option>
+        </el-select>
+
+        <el-select
+            v-model="filter.value"
+            filterable
+            placeholder="Please select a value">
+            <el-option v-for="value in values" :label="value" :value="value"></el-option>
+        </el-select>
+    </div>
+    <div style="margin-bottom:10px">
+        <el-tag
+            v-for="(filter, filterIndex) in filters"
+            :closable="true"
+            type="primary"
+            :close-transition="false"
+            @close="removeFilter(filterIndex)">
+            {{ filter.field }} {{ filter.operator }} '{{ filter.value }}'
+        </el-tag>
+    </div>
+    
     <el-table id="tblBooks"
-        v-loading="loading2"
-        element-loading-text="Loading..."
         :data="books"
         :default-sort = "{prop: 'name', order: 'ascending'}"
         highlight-current-row
-        @current-change="onRowSelected"
-        height="400">
+        @cell-click="onRowSelected"
+        height="600">
         <el-table-column
            type="selection">
         </el-table-column>
@@ -77,26 +108,30 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="Series">
-                <template v-for="current in editing.series">
-                    <el-select
-                        allow-create
-                        clearable
-                        filterable
-                        v-model="current.name"
-                        placeholder="Please select a series">
-                        <el-option v-for="serie in series" :label="serie" :value="serie"></el-option>
-                    </el-select>
-                    <el-input v-model="current.number"></el-input>
-                </template>
-                <el-select
-                    allow-create
-                    clearable
-                    filterable
-                    v-model="newSeries.name"
-                    placeholder="Please select a series">
-                    <el-option v-for="serie in series" :label="serie" :value="serie"></el-option>
-                </el-select>
-                <el-input class="series-number" v-model="newSeries.number"></el-input>
+                <ul id="selSeries">                  
+                    <li v-for="current in editing.series">
+                        <el-select
+                            allow-create
+                            clearable
+                            filterable
+                            v-model="current.name"
+                            placeholder="Please select a series">
+                            <el-option v-for="serie in series" :label="serie" :value="serie"></el-option>
+                        </el-select>
+                        <el-input class="series-number" v-model="current.number"></el-input>
+                    </li>
+                    <li>
+                        <el-select
+                            allow-create
+                            clearable
+                            filterable
+                            v-model="newSeries.name"
+                            placeholder="Please select a series">
+                            <el-option v-for="serie in series" :label="serie" :value="serie"></el-option>
+                        </el-select>
+                        <el-input class="series-number" v-model="newSeries.number"></el-input>
+                    </li>
+                </ul>
             </el-form-item>
             <el-form-item label="Owners">
                 <el-select
@@ -120,7 +155,7 @@
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="save">Confirm</el-button>
+            <el-button type="primary" @click="saveItem">Confirm</el-button>
             <el-button @click="formOpen = false">Cancel</el-button>
         </span>
     </el-dialog>
