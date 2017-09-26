@@ -15,14 +15,13 @@ module.exports = {
             editing: {},
             formOpen: false,
             newSeries: { name: '', number: '' },
-            index: -1,
-            originalName: '',
             // filters
             fields: ['author', 'genre', 'owner', 'read', 'series', 'type'],
             operators: ['equals', 'does not equal'],
             values: [],
             filter: { field: '', operator: '', value: '' },
             filters: [],
+            selected: [],
         };
     },
     created: function () {
@@ -50,6 +49,12 @@ module.exports = {
                 });
                 this.loadBooks();
             }
+        },
+        
+        deleteItems: function() {
+            this.save('deleteItems', { ids: this.selected }).then(function() {
+                this.loadBooks();
+            });
         },
 
         filterFieldChange: function(val) {
@@ -86,9 +91,16 @@ module.exports = {
             });
         },
         
+        onRowSelected: function(val) {
+            this.selected = [];
+            for (var i in val) {
+                this.selected.push(val[i].id);
+            }
+        },
+        
         openAdd: function() {
-            this.index = -1;
             this.editing = JSON.parse(JSON.stringify({
+                id: -1,
                 name: '',
                 type: '',
                 genres: [],
@@ -97,8 +109,14 @@ module.exports = {
                 read: [],
                 series: [],
             }));
-            this.originalName = '';
             this.formOpen = true;
+        },
+        
+        openEdit: function(id) {
+            this.load('getItem', { id: id }).then(function(response) {
+                this.editing = JSON.parse(JSON.stringify(response.body.data));
+                this.formOpen = true;
+            });
         },
         
         removeFilter: function(filterIndex) {
@@ -108,23 +126,9 @@ module.exports = {
         
         saveItem: function() {
             var data = JSON.stringify(this.editing);
-            this.save('saveItem', { originalName: this.originalName, index: this.index, data: data }).then(function() {
+            this.save('saveItem', { data: data }).then(function() {
                 this.loadBooks();
                 this.formOpen = false;
-            });
-        },
-        
-        onRowSelected: function(val) {
-            this.originalName = val.name;
-            this.load('getItem', { name: val.name }).then(function(response) {
-                this.editing = JSON.parse(JSON.stringify(response.body.data));
-                this.formOpen = true;
-                
-                for (var i in this.books) {
-                    if (this.books[i].name === this.editing.name) {
-                        this.index = i;
-                    }
-                }
             });
         },
         

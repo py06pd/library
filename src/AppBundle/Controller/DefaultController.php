@@ -48,6 +48,32 @@ class DefaultController extends Controller
     }
     
     /**
+     * @Route("/deleteItems")
+     */
+    public function deleteItemsAction(Request $request)
+    {
+        $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"), true);
+        
+        foreach ($request->request->get('ids', array()) as $id) {
+            unset($data[$id]);
+        }
+        
+        file_put_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json", json_encode($data, JSON_PRETTY_PRINT));
+        
+        return $this->json(array('status' => "OK"));
+    }
+    
+    /**
+     * @Route("/export")
+     */
+    public function exportAction()
+    {
+        $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"), true);
+        
+        return $this->json($data);
+    }
+    
+    /**
      * @Route("/getData")
      */
     public function getDataAction(Request $request)
@@ -70,7 +96,7 @@ class DefaultController extends Controller
         $series = array();
         $types = array();
         $books = array();
-        foreach ($data as $item) {
+        foreach ($data as $id => $item) {
             $this->addToDataArray($item, 'authors', $authors);
             $this->addToDataArray($item, 'genres', $genres);
             $this->addToDataArray($item, 'owners', $people);
@@ -94,6 +120,7 @@ class DefaultController extends Controller
             
             if ($this->checkFilters($item, $bookSeries, $eqFilters, $noFilters)) {
                 $books[] = array(
+                    'id' => $id,
                     'name' => $item->name,
                     'type' => isset($item->type)?$item->type:null,
                     'authors' => isset($item->authors)?implode(", ", $item->authors):null,
@@ -123,20 +150,17 @@ class DefaultController extends Controller
     {
         $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"));
         
-        $book = array();
-        foreach ($data as $item) {
-            if ($item->name == $request->request->get('name')) {
-                $book = array(
-                    'name' => $item->name,
-                    'type' => isset($item->type)?$item->type:null,
-                    'authors' => isset($item->authors)?$item->authors:array(),
-                    'genres' => isset($item->genres)?$item->genres:array(),
-                    'owners' => isset($item->owners)?$item->owners:array(),
-                    'read' => isset($item->read)?$item->read:array(),
-                    'series' => isset($item->series)?$item->series:array()
-                );
-            }
-        }
+        $item = $data->{$request->request->get('id')};
+        $book = array(
+            'id' => $request->request->get('id'),
+            'name' => $item->name,
+            'type' => isset($item->type)?$item->type:null,
+            'authors' => isset($item->authors)?$item->authors:array(),
+            'genres' => isset($item->genres)?$item->genres:array(),
+            'owners' => isset($item->owners)?$item->owners:array(),
+            'read' => isset($item->read)?$item->read:array(),
+            'series' => isset($item->series)?$item->series:array()
+        );
         
         return $this->json(array('status' => "OK", 'data' => $book));
     }
@@ -149,38 +173,15 @@ class DefaultController extends Controller
         $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"), true);
         $dataItem = json_decode($request->request->get('data'), true);
         
-        if ($request->request->get('index') == -1) {
-            $data[] = $dataItem;
-        } else {
-            foreach ($data as $i => $item) {
-                if ($item['name'] == $request->request->get('originalName')) {
-                    $data[$i] = $dataItem;
-                    break;
-                }
-            }
-        }
+        if ($dataItem['id'] == -1) {
+            $dataItem['id'] = max(array_keys($data)) + 1;
+        } 
+        
+        $data[$dataItem['id']] = $dataItem;
         
         file_put_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json", json_encode($data, JSON_PRETTY_PRINT));
         
-        $bookSeries = array();
-        if (isset($dataItem['series']) && is_array($dataItem['series'])) {
-            foreach ($dataItem['series'] as $value) {
-                $bookSeries[] = $value['name'];
-            }
-        }
-            
-        return $this->json(array(
-            'status' => "OK",
-            'book' => array(
-                'name' => $dataItem['name'],
-                'type' => isset($dataItem['type'])?$dataItem['type']:null,
-                'authors' => isset($dataItem['authors'])?implode(", ", $dataItem['authors']):null,
-                'genres' => isset($dataItem['genres'])?implode(", ", $dataItem['genres']):null,
-                'owners' => isset($dataItem['owners'])?implode(", ", $dataItem['owners']):null,
-                'read' => isset($dataItem['read'])?implode(", ", $dataItem['read']):null,
-                'series' => implode(", ", $bookSeries)
-            )
-        ));
+        return $this->json(array('status' => "OK"));
     }
     
     private function addToDataArray($item, $key, &$items)

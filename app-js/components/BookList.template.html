@@ -1,6 +1,7 @@
 <div>
     <div id="controls">
         <el-button type="primary" icon="plus" @click="openAdd">Add Entry</el-button>
+        <el-button type="primary" icon="delete" @click="deleteItems">Delete Selected</el-button>
         <el-button type="primary" icon="plus" @click="addFilter">Add Filter</el-button>
 
         <el-select
@@ -38,10 +39,16 @@
         :data="books"
         :default-sort = "{prop: 'name', order: 'ascending'}"
         highlight-current-row
-        @cell-click="onRowSelected"
+        @selection-change="onRowSelected"
         height="600">
         <el-table-column
-           type="selection">
+            type="selection">
+        </el-table-column>
+        <el-table-column
+            width="50">
+            <template scope="scope">
+                <el-button size="small" icon="edit" @click="openEdit(scope.row.id)"></el-button>
+            </template>
         </el-table-column>
         <el-table-column
             prop="name"

@@ -1,5 +1,5 @@
-[
-    {
+{
+    "1": {
         "name": "The Hitchhiker's Guide to the Galaxy",
         "authors": [
             "Douglas Adams"
@@ -22,7 +22,7 @@
             "Peter"
         ]
     },
-    {
+    "2": {
         "name": "The Restaurant at the End of the Universe",
         "authors": [
             "Douglas Adams"
@@ -45,7 +45,7 @@
             "Peter"
         ]
     },
-    {
+    "3": {
         "name": "Life, the Universe and Everything",
         "authors": [
             "Douglas Adams"
@@ -68,7 +68,7 @@
             "Peter"
         ]
     },
-    {
+    "4": {
         "name": "So Long, and Thanks for All the Fish",
         "authors": [
             "Douglas Adams"
@@ -91,7 +91,7 @@
             "Peter"
         ]
     },
-    {
+    "5": {
         "name": "Mostly Harmless",
         "authors": [
             "Douglas Adams"
@@ -114,7 +114,7 @@
             "Peter"
         ]
     },
-    {
+    "6": {
         "name": "Non-Stop",
         "authors": [
             "Brian Aldiss"
@@ -136,7 +136,7 @@
             "Peter"
         ]
     },
-    {
+    "7": {
         "name": "Divine Comedy",
         "authors": [
             "Dante Alighieri"
@@ -152,7 +152,7 @@
         ],
         "read": []
     },
-    {
+    "8": {
         "name": "Hidden Empire",
         "authors": [
             "Kevin J. Anderson"
@@ -174,7 +174,7 @@
             "Peter"
         ]
     },
-    {
+    "9": {
         "name": "A Forest of Stars",
         "authors": [
             "Kevin J. Anderson"
@@ -196,7 +196,7 @@
             "Peter"
         ]
     },
-    {
+    "10": {
         "name": "Horizon Storms",
         "authors": [
             "Kevin J. Anderson"
@@ -218,7 +218,7 @@
             "Peter"
         ]
     },
-    {
+    "11": {
         "name": "Scattered Suns",
         "authors": [
             "Kevin J. Anderson"
@@ -240,7 +240,7 @@
             "Peter"
         ]
     },
-    {
+    "12": {
         "name": "Of Fire and Night",
         "authors": [
             "Kevin J. Anderson"
@@ -262,7 +262,7 @@
             "Peter"
         ]
     },
-    {
+    "13": {
         "name": "Metal Swarm",
         "authors": [
             "Kevin J. Anderson"
@@ -284,7 +284,7 @@
             "Peter"
         ]
     },
-    {
+    "14": {
         "name": "The Ashes of Worlds",
         "authors": [
             "Kevin J. Anderson"
@@ -302,7 +302,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "15": {
         "name": "Tau Zero",
         "authors": [
             "Poul Anderson"
@@ -324,7 +324,7 @@
             "Peter"
         ]
     },
-    {
+    "16": {
         "name": "The Gods Themselves",
         "authors": [
             "Isaac Asimov"
@@ -341,7 +341,7 @@
             "Peter"
         ]
     },
-    {
+    "17": {
         "name": "I, Robot",
         "authors": [
             "Isaac Asimov"
@@ -367,7 +367,7 @@
             "Peter"
         ]
     },
-    {
+    "18": {
         "name": "The Caves of Steel",
         "authors": [
             "Isaac Asimov"
@@ -394,7 +394,7 @@
             "Peter"
         ]
     },
-    {
+    "19": {
         "name": "The Naked Sun",
         "authors": [
             "Isaac Asimov"
@@ -421,7 +421,7 @@
             "Peter"
         ]
     },
-    {
+    "20": {
         "name": "The Robots of Dawn",
         "authors": [
             "Isaac Asimov"
@@ -448,7 +448,7 @@
             "Peter"
         ]
     },
-    {
+    "21": {
         "name": "Robots and Empire",
         "authors": [
             "Isaac Asimov"
@@ -474,7 +474,7 @@
             "Peter"
         ]
     },
-    {
+    "22": {
         "name": "The Rest of the Robots",
         "authors": [
             "Isaac Asimov"
@@ -500,7 +500,7 @@
             "Peter"
         ]
     },
-    {
+    "23": {
         "name": "Prelude to Foundation",
         "authors": [
             "Isaac Asimov"
@@ -522,7 +522,7 @@
             "Peter"
         ]
     },
-    {
+    "24": {
         "name": "Forward the Foundation",
         "authors": [
             "Isaac Asimov"
@@ -540,7 +540,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "25": {
         "name": "Foundation",
         "authors": [
             "Isaac Asimov"
@@ -562,7 +562,7 @@
             "Peter"
         ]
     },
-    {
+    "26": {
         "name": "Foundation and Empire",
         "authors": [
             "Isaac Asimov"
@@ -584,7 +584,7 @@
             "Peter"
         ]
     },
-    {
+    "27": {
         "name": "Second Foundation",
         "authors": [
             "Isaac Asimov"
@@ -606,7 +606,7 @@
             "Peter"
         ]
     },
-    {
+    "28": {
         "name": "Foundation's Edge",
         "authors": [
             "Isaac Asimov"
@@ -628,7 +628,7 @@
             "Peter"
         ]
     },
-    {
+    "29": {
         "name": "Foundation and Earth",
         "authors": [
             "Isaac Asimov"
@@ -650,7 +650,7 @@
             "Peter"
         ]
     },
-    {
+    "30": {
         "name": "Fortune's Pawn",
         "authors": [
             "Rachel Bach"
@@ -672,7 +672,7 @@
             "Peter"
         ]
     },
-    {
+    "31": {
         "name": "Honour's Knight",
         "authors": [
             "Rachel Bach"
@@ -690,7 +690,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "32": {
         "name": "Heaven's Queen",
         "authors": [
             "Rachel Bach"
@@ -708,7 +708,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "33": {
         "name": "The Stars My Destination",
         "authors": [
             "Alfred Bester"
@@ -730,7 +730,7 @@
             "Peter"
         ]
     },
-    {
+    "34": {
         "name": "The Demolished Man",
         "authors": [
             "Alfred Bester"
@@ -752,7 +752,7 @@
             "Peter"
         ]
     },
-    {
+    "35": {
         "name": "Cities in Flight",
         "authors": [
             "James Blish"
@@ -774,7 +774,7 @@
             "Peter"
         ]
     },
-    {
+    "36": {
         "name": "The Island of Adventure",
         "authors": [
             "Enid Blyton"
@@ -797,7 +797,7 @@
             "Peter"
         ]
     },
-    {
+    "37": {
         "name": "The Castle of Adventure",
         "authors": [
             "Enid Blyton"
@@ -816,7 +816,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "38": {
         "name": "The Valley of Adventure",
         "authors": [
             "Enid Blyton"
@@ -835,7 +835,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "39": {
         "name": "The Sea of Adventure",
         "authors": [
             "Enid Blyton"
@@ -856,7 +856,7 @@
         ],
         "read": []
     },
-    {
+    "40": {
         "name": "The Mountain of Adventure",
         "authors": [
             "Enid Blyton"
@@ -877,7 +877,7 @@
         ],
         "read": []
     },
-    {
+    "41": {
         "name": "The Ship of Adventure",
         "authors": [
             "Enid Blyton"
@@ -898,7 +898,7 @@
         ],
         "read": []
     },
-    {
+    "42": {
         "name": "The Circus of Adventure",
         "authors": [
             "Enid Blyton"
@@ -917,7 +917,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "43": {
         "name": "The River of Adventure",
         "authors": [
             "Enid Blyton"
@@ -936,7 +936,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "44": {
         "name": "Fahrenheit 451",
         "authors": [
             "Ray Bradbury"
@@ -954,7 +954,7 @@
             "Peter"
         ]
     },
-    {
+    "45": {
         "name": "Sundiver",
         "authors": [
             "David Brin"
@@ -972,7 +972,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "46": {
         "name": "Startide Rising",
         "authors": [
             "David Brin"
@@ -992,7 +992,7 @@
         ],
         "read": []
     },
-    {
+    "47": {
         "name": "The Uplift War",
         "authors": [
             "David Brin"
@@ -1010,7 +1010,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "48": {
         "name": "Brightness Reef",
         "authors": [
             "David Brin"
@@ -1028,7 +1028,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "49": {
         "name": "Infinity's Shore",
         "authors": [
             "David Brin"
@@ -1046,7 +1046,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "50": {
         "name": "Heaven's Reach",
         "authors": [
             "David Brin"
@@ -1064,7 +1064,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "51": {
         "name": "Stand on Zanzibar",
         "authors": [
             "John Brunner"
@@ -1087,7 +1087,7 @@
             "Peter"
         ]
     },
-    {
+    "52": {
         "name": "Notes from a Small Island",
         "authors": [
             "Bill Bryson"
@@ -1105,7 +1105,7 @@
             "Peter"
         ]
     },
-    {
+    "53": {
         "name": "A Short History of Nearly Everything",
         "authors": [
             "Bill Bryson"
@@ -1122,7 +1122,7 @@
             "Peter"
         ]
     },
-    {
+    "54": {
         "name": "The Thirty-Nine Steps",
         "authors": [
             "John Buchan"
@@ -1145,7 +1145,7 @@
             "Peter"
         ]
     },
-    {
+    "55": {
         "name": "Greenmantle",
         "authors": [
             "John Buchan"
@@ -1168,7 +1168,7 @@
             "Peter"
         ]
     },
-    {
+    "56": {
         "name": "Mr Standfast",
         "authors": [
             "John Buchan"
@@ -1191,7 +1191,7 @@
             "Peter"
         ]
     },
-    {
+    "57": {
         "name": "The Three Hostages",
         "authors": [
             "John Buchan"
@@ -1214,7 +1214,7 @@
             "Peter"
         ]
     },
-    {
+    "58": {
         "name": "The Island of Sheep",
         "authors": [
             "John Buchan"
@@ -1237,7 +1237,7 @@
             "Peter"
         ]
     },
-    {
+    "59": {
         "name": "Riders of the Purple Sage",
         "authors": [
             "Zane Grey"
@@ -1254,7 +1254,7 @@
             "Peter"
         ]
     },
-    {
+    "60": {
         "name": "King Solomon's Mines",
         "authors": [
             "H. Rider Haggard"
@@ -1272,7 +1272,7 @@
             "Peter"
         ]
     },
-    {
+    "61": {
         "name": "Bulldog Drummond",
         "authors": [
             "Sapper"
@@ -1289,7 +1289,7 @@
             "Peter"
         ]
     },
-    {
+    "62": {
         "name": "The Feathered Serpent",
         "authors": [
             "Edgar Wallace"
@@ -1306,7 +1306,7 @@
             "Peter"
         ]
     },
-    {
+    "63": {
         "name": "Breakfast at Tiffany's",
         "authors": [
             "Truman Capote"
@@ -1321,7 +1321,7 @@
             "Peter"
         ]
     },
-    {
+    "64": {
         "name": "In Cold Blood",
         "authors": [
             "Truman Capote"
@@ -1338,7 +1338,7 @@
             "Peter"
         ]
     },
-    {
+    "65": {
         "name": "Ender's Game",
         "authors": [
             "Orson Scott Card"
@@ -1364,7 +1364,7 @@
             "Peter"
         ]
     },
-    {
+    "66": {
         "name": "Speaker for the Dead",
         "authors": [
             "Orson Scott Card"
@@ -1390,7 +1390,7 @@
             "Peter"
         ]
     },
-    {
+    "67": {
         "name": "The Girl With All The Gifts",
         "authors": [
             "M. R. Carey"
@@ -1408,7 +1408,7 @@
             "Peter"
         ]
     },
-    {
+    "68": {
         "name": "The Spy Who Came in from the Cold",
         "authors": [
             "John le Carre"
@@ -1425,7 +1425,7 @@
             "Peter"
         ]
     },
-    {
+    "69": {
         "name": "Don Quixote",
         "authors": [
             "Miguel de Cervantes"
@@ -1443,7 +1443,7 @@
             "Peter"
         ]
     },
-    {
+    "70": {
         "name": "The Big Sleep",
         "authors": [
             "Raymond Chandler"
@@ -1465,7 +1465,7 @@
             "Peter"
         ]
     },
-    {
+    "71": {
         "name": "Second Son",
         "authors": [
             "Lee Child"
@@ -1483,7 +1483,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "72": {
         "name": "High Heat",
         "authors": [
             "Lee Child"
@@ -1501,7 +1501,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "73": {
         "name": "Deep Down",
         "authors": [
             "Lee Child"
@@ -1519,7 +1519,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "74": {
         "name": "Small Wars",
         "authors": [
             "Lee Child"
@@ -1537,7 +1537,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "75": {
         "name": "The Enemy",
         "authors": [
             "Lee Child"
@@ -1559,7 +1559,7 @@
             "Peter"
         ]
     },
-    {
+    "76": {
         "name": "James Penney's New Identity",
         "authors": [
             "Lee Child"
@@ -1577,7 +1577,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "77": {
         "name": "Night School",
         "authors": [
             "Lee Child"
@@ -1599,7 +1599,7 @@
             "Peter"
         ]
     },
-    {
+    "78": {
         "name": "The Affair",
         "type": "Novel",
         "authors": [
@@ -1621,7 +1621,7 @@
             }
         ]
     },
-    {
+    "79": {
         "name": "Killing Floor",
         "authors": [
             "Lee Child"
@@ -1639,7 +1639,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "80": {
         "name": "Die trying",
         "authors": [
             "Lee Child"
@@ -1657,7 +1657,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "81": {
         "name": "Tripwire",
         "authors": [
             "Lee Child"
@@ -1675,7 +1675,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "82": {
         "name": "The Visitor",
         "authors": [
             "Lee Child"
@@ -1693,7 +1693,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "83": {
         "name": "Echo Burning",
         "authors": [
             "Lee Child"
@@ -1711,7 +1711,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "84": {
         "name": "Without Fail",
         "authors": [
             "Lee Child"
@@ -1729,7 +1729,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "85": {
         "name": "Persuader",
         "authors": [
             "Lee Child"
@@ -1747,7 +1747,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "86": {
         "name": "One Shot",
         "authors": [
             "Lee Child"
@@ -1765,7 +1765,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "87": {
         "name": "The Hard Way",
         "authors": [
             "Lee Child"
@@ -1783,7 +1783,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "88": {
         "name": "Bad Luck and Trouble",
         "authors": [
             "Lee Child"
@@ -1801,7 +1801,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "89": {
         "name": "Nothing to Lose",
         "authors": [
             "Lee Child"
@@ -1819,7 +1819,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "90": {
         "name": "Guy Walks into a Bar...",
         "authors": [
             "Lee Child"
@@ -1837,7 +1837,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "91": {
         "name": "Gone Tomorrow",
         "authors": [
             "Lee Child"
@@ -1855,7 +1855,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "92": {
         "name": "61 Hours",
         "authors": [
             "Lee Child"
@@ -1873,7 +1873,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "93": {
         "name": "Worth Dying For",
         "authors": [
             "Lee Child"
@@ -1891,7 +1891,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "94": {
         "name": "A Wanted Man",
         "authors": [
             "Lee Child"
@@ -1909,7 +1909,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "95": {
         "name": "Everyone Talks",
         "authors": [
             "Lee Child"
@@ -1927,7 +1927,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "96": {
         "name": "Never Go Back",
         "authors": [
             "Lee Child"
@@ -1945,7 +1945,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "97": {
         "name": "Not a Drill",
         "authors": [
             "Lee Child"
@@ -1963,7 +1963,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "98": {
         "name": "Personal",
         "authors": [
             "Lee Child"
@@ -1981,7 +1981,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "99": {
         "name": "Good and Valuable Consideration",
         "authors": [
             "Lee Child",
@@ -2000,7 +2000,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "100": {
         "name": "No Room at the Motel",
         "authors": [
             "Lee Child"
@@ -2018,7 +2018,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "101": {
         "name": "The Picture of the Lonely Diner",
         "authors": [
             "Lee Child"
@@ -2036,7 +2036,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "102": {
         "name": "Make Me",
         "authors": [
             "Lee Child"
@@ -2054,7 +2054,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "103": {
         "name": "Maybe they Have a Tradition",
         "authors": [
             "Lee Child"
@@ -2072,7 +2072,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "104": {
         "name": "Faking a Murderer",
         "authors": [
             "Lee Child",
@@ -2091,7 +2091,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "105": {
         "name": "Too Much Time",
         "authors": [
             "Lee Child"
@@ -2109,7 +2109,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "106": {
         "name": "The Midnight Line",
         "authors": [
             "Lee Child"
@@ -2127,7 +2127,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "107": {
         "name": "Rendezvous with Rama",
         "authors": [
             "Arthur C. Clarke"
@@ -2149,7 +2149,7 @@
             "Peter"
         ]
     },
-    {
+    "108": {
         "name": "2001: A Space Odyssey",
         "authors": [
             "Arthur C. Clarke"
@@ -2166,7 +2166,7 @@
             "Peter"
         ]
     },
-    {
+    "109": {
         "name": "Ready Player One",
         "authors": [
             "Ernest Cline"
@@ -2184,7 +2184,7 @@
             "Peter"
         ]
     },
-    {
+    "110": {
         "name": "Armada",
         "authors": [
             "Ernest Cline"
@@ -2201,7 +2201,7 @@
             "Peter"
         ]
     },
-    {
+    "111": {
         "name": "Artemis Fowl",
         "authors": [
             "Eoin Colfer"
@@ -2224,7 +2224,7 @@
             "Peter"
         ]
     },
-    {
+    "112": {
         "name": "The Arctic Incident",
         "authors": [
             "Eoin Colfer"
@@ -2247,7 +2247,7 @@
             "Peter"
         ]
     },
-    {
+    "113": {
         "name": "The Eternity Code",
         "authors": [
             "Eoin Colfer"
@@ -2270,7 +2270,7 @@
             "Peter"
         ]
     },
-    {
+    "114": {
         "name": "The Opal Deception",
         "authors": [
             "Eoin Colfer"
@@ -2293,7 +2293,7 @@
             "Peter"
         ]
     },
-    {
+    "115": {
         "name": "The Lost Colony",
         "authors": [
             "Eoin Colfer"
@@ -2316,7 +2316,7 @@
             "Peter"
         ]
     },
-    {
+    "116": {
         "name": "Half Moon Investigations",
         "authors": [
             "Eoin Colfer"
@@ -2333,7 +2333,7 @@
             "Peter"
         ]
     },
-    {
+    "117": {
         "name": "The Wish List",
         "authors": [
             "Eoin Colfer"
@@ -2350,7 +2350,7 @@
             "Peter"
         ]
     },
-    {
+    "118": {
         "name": "The Moonstone",
         "authors": [
             "Wilkie Collins"
@@ -2367,7 +2367,7 @@
             "Peter"
         ]
     },
-    {
+    "119": {
         "name": "Sharpe's Tiger",
         "authors": [
             "Bernard Cornwell"
@@ -2389,7 +2389,7 @@
             "Peter"
         ]
     },
-    {
+    "120": {
         "name": "Sharpe's Triumph",
         "authors": [
             "Bernard Cornwell"
@@ -2411,7 +2411,7 @@
             "Peter"
         ]
     },
-    {
+    "121": {
         "name": "Sharpe's Fortress",
         "authors": [
             "Bernard Cornwell"
@@ -2433,7 +2433,7 @@
             "Peter"
         ]
     },
-    {
+    "122": {
         "name": "Sharpe's Trafalgar",
         "authors": [
             "Bernard Cornwell"
@@ -2455,7 +2455,7 @@
             "Peter"
         ]
     },
-    {
+    "123": {
         "name": "Sharpe's Prey",
         "authors": [
             "Bernard Cornwell"
@@ -2477,7 +2477,7 @@
             "Peter"
         ]
     },
-    {
+    "124": {
         "name": "Sharpe's Rifles",
         "authors": [
             "Bernard Cornwell"
@@ -2499,7 +2499,7 @@
             "Peter"
         ]
     },
-    {
+    "125": {
         "name": "Sharpe's Havoc",
         "authors": [
             "Bernard Cornwell"
@@ -2521,7 +2521,7 @@
             "Peter"
         ]
     },
-    {
+    "126": {
         "name": "Sharpe's Eagle",
         "authors": [
             "Bernard Cornwell"
@@ -2543,7 +2543,7 @@
             "Peter"
         ]
     },
-    {
+    "127": {
         "name": "Sharpe's Gold",
         "authors": [
             "Bernard Cornwell"
@@ -2565,7 +2565,7 @@
             "Peter"
         ]
     },
-    {
+    "128": {
         "name": "Sharpe's Escape",
         "authors": [
             "Bernard Cornwell"
@@ -2587,7 +2587,7 @@
             "Peter"
         ]
     },
-    {
+    "129": {
         "name": "Sharpe's Fury",
         "authors": [
             "Bernard Cornwell"
@@ -2609,7 +2609,7 @@
             "Peter"
         ]
     },
-    {
+    "130": {
         "name": "Sharpe's Battle",
         "authors": [
             "Bernard Cornwell"
@@ -2631,7 +2631,7 @@
             "Peter"
         ]
     },
-    {
+    "131": {
         "name": "Sharpe's Company",
         "authors": [
             "Bernard Cornwell"
@@ -2653,7 +2653,7 @@
             "Peter"
         ]
     },
-    {
+    "132": {
         "name": "Sharpe's Sword",
         "authors": [
             "Bernard Cornwell"
@@ -2671,7 +2671,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "133": {
         "name": "Sharpe's Skirmish",
         "authors": [
             "Bernard Cornwell"
@@ -2689,7 +2689,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "134": {
         "name": "Sharpe's Enemy",
         "authors": [
             "Bernard Cornwell"
@@ -2707,7 +2707,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "135": {
         "name": "Sharpe's Honour",
         "authors": [
             "Bernard Cornwell"
@@ -2725,7 +2725,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "136": {
         "name": "Sharpe's Regiment",
         "authors": [
             "Bernard Cornwell"
@@ -2743,7 +2743,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "137": {
         "name": "Sharpe's Christmas",
         "authors": [
             "Bernard Cornwell"
@@ -2761,7 +2761,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "138": {
         "name": "Sharpe's Siege",
         "authors": [
             "Bernard Cornwell"
@@ -2779,7 +2779,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "139": {
         "name": "Sharpe's Revenge",
         "authors": [
             "Bernard Cornwell"
@@ -2797,7 +2797,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "140": {
         "name": "Sharpe's Waterloo",
         "authors": [
             "Bernard Cornwell"
@@ -2815,7 +2815,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "141": {
         "name": "Sharpe's Ransom",
         "authors": [
             "Bernard Cornwell"
@@ -2833,7 +2833,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "142": {
         "name": "Sharpe's Devil",
         "authors": [
             "Bernard Cornwell"
@@ -2851,7 +2851,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "143": {
         "name": "Pacific Vortex!",
         "authors": [
             "Clive Cussler"
@@ -2870,7 +2870,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "144": {
         "name": "The Mediterranean Caper",
         "authors": [
             "Clive Cussler"
@@ -2893,7 +2893,7 @@
             "Peter"
         ]
     },
-    {
+    "145": {
         "name": "Iceberg",
         "authors": [
             "Clive Cussler"
@@ -2916,7 +2916,7 @@
             "Peter"
         ]
     },
-    {
+    "146": {
         "name": "Raise the Titanic!",
         "authors": [
             "Clive Cussler"
@@ -2939,7 +2939,7 @@
             "Peter"
         ]
     },
-    {
+    "147": {
         "name": "Vixen 03",
         "authors": [
             "Clive Cussler"
@@ -2958,7 +2958,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "148": {
         "name": "Night Probe!",
         "authors": [
             "Clive Cussler"
@@ -2977,7 +2977,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "149": {
         "name": "Deep Six",
         "authors": [
             "Clive Cussler"
@@ -2996,7 +2996,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "150": {
         "name": "Cyclops",
         "authors": [
             "Clive Cussler"
@@ -3015,7 +3015,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "151": {
         "name": "Treasure",
         "authors": [
             "Clive Cussler"
@@ -3034,7 +3034,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "152": {
         "name": "Dragon",
         "authors": [
             "Clive Cussler"
@@ -3053,7 +3053,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "153": {
         "name": "Sahara",
         "authors": [
             "Clive Cussler"
@@ -3072,7 +3072,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "154": {
         "name": "Inca Gold",
         "authors": [
             "Clive Cussler"
@@ -3091,7 +3091,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "155": {
         "name": "Shock Wave",
         "authors": [
             "Clive Cussler"
@@ -3110,7 +3110,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "156": {
         "name": "Flood Tide",
         "authors": [
             "Clive Cussler"
@@ -3129,7 +3129,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "157": {
         "name": "Atlantis Found",
         "authors": [
             "Clive Cussler"
@@ -3148,7 +3148,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "158": {
         "name": "Valhalla Rising",
         "authors": [
             "Clive Cussler"
@@ -3167,7 +3167,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "159": {
         "name": "Trojan Odyssey",
         "authors": [
             "Clive Cussler"
@@ -3186,7 +3186,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "160": {
         "name": "Black Wind",
         "authors": [
             "Clive Cussler",
@@ -3206,7 +3206,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "161": {
         "name": "Treasure of Khan",
         "authors": [
             "Clive Cussler",
@@ -3226,7 +3226,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "162": {
         "name": "Arctic Drift",
         "authors": [
             "Clive Cussler",
@@ -3246,7 +3246,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "163": {
         "name": "Crescent Dawn",
         "authors": [
             "Clive Cussler",
@@ -3266,7 +3266,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "164": {
         "name": "Poseidon's Arrow",
         "authors": [
             "Clive Cussler",
@@ -3286,7 +3286,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "165": {
         "name": "Havana Storm",
         "authors": [
             "Clive Cussler",
@@ -3306,7 +3306,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "166": {
         "name": "Odessa Sea",
         "authors": [
             "Clive Cussler",
@@ -3326,7 +3326,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "167": {
         "name": "The Silver Pigs",
         "authors": [
             "Lindsey Davis"
@@ -3349,7 +3349,7 @@
             "Peter"
         ]
     },
-    {
+    "168": {
         "name": "Shadows in Bronze",
         "authors": [
             "Lindsey Davis"
@@ -3372,7 +3372,7 @@
             "Peter"
         ]
     },
-    {
+    "169": {
         "name": "Venus in Copper",
         "authors": [
             "Lindsey Davis"
@@ -3395,7 +3395,7 @@
             "Peter"
         ]
     },
-    {
+    "170": {
         "name": "The Iron Hand of Mars",
         "authors": [
             "Lindsey Davis"
@@ -3418,7 +3418,7 @@
             "Peter"
         ]
     },
-    {
+    "171": {
         "name": "Poseidon's Gold",
         "authors": [
             "Lindsey Davis"
@@ -3437,7 +3437,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "172": {
         "name": "Last Act in Palmyra",
         "authors": [
             "Lindsey Davis"
@@ -3456,7 +3456,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "173": {
         "name": "Time to Depart",
         "authors": [
             "Lindsey Davis"
@@ -3475,7 +3475,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "174": {
         "name": "A Dying Light in Corduba",
         "authors": [
             "Lindsey Davis"
@@ -3494,7 +3494,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "175": {
         "name": "Three Hands in the Fountain",
         "authors": [
             "Lindsey Davis"
@@ -3513,7 +3513,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "176": {
         "name": "Two for the Lions",
         "authors": [
             "Lindsey Davis"
@@ -3532,7 +3532,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "177": {
         "name": "One Virgin Too Many",
         "authors": [
             "Lindsey Davis"
@@ -3551,7 +3551,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "178": {
         "name": "Ode to a Banker",
         "authors": [
             "Lindsey Davis"
@@ -3570,7 +3570,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "179": {
         "name": "A Body in the Bath House",
         "authors": [
             "Lindsey Davis"
@@ -3589,7 +3589,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "180": {
         "name": "The Jupiter Myth",
         "authors": [
             "Lindsey Davis"
@@ -3608,7 +3608,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "181": {
         "name": "The Accusers",
         "authors": [
             "Lindsey Davis"
@@ -3627,7 +3627,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "182": {
         "name": "Scandal Takes a Holiday",
         "authors": [
             "Lindsey Davis"
@@ -3646,7 +3646,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "183": {
         "name": "See Delphi and Die",
         "authors": [
             "Lindsey Davis"
@@ -3665,7 +3665,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "184": {
         "name": "Saturnalia",
         "authors": [
             "Lindsey Davis"
@@ -3684,7 +3684,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "185": {
         "name": "Alexandria",
         "authors": [
             "Lindsey Davis"
@@ -3703,7 +3703,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "186": {
         "name": "Nemesis",
         "authors": [
             "Lindsey Davis"
@@ -3722,7 +3722,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "187": {
         "name": "Babel-17",
         "authors": [
             "Samuel R. Delany"
@@ -3744,7 +3744,7 @@
             "Peter"
         ]
     },
-    {
+    "188": {
         "name": "Do Androids Dream of Electric Sheep?",
         "authors": [
             "Philip K. Dick"
@@ -3766,7 +3766,7 @@
             "Peter"
         ]
     },
-    {
+    "189": {
         "name": "Ubik",
         "authors": [
             "Philip K. Dick"
@@ -3788,7 +3788,7 @@
             "Peter"
         ]
     },
-    {
+    "190": {
         "name": "Time Out of Joint",
         "authors": [
             "Philip K. Dick"
@@ -3811,7 +3811,7 @@
             "Peter"
         ]
     },
-    {
+    "191": {
         "name": "The Penultimate Truth",
         "authors": [
             "Philip K. Dick"
@@ -3833,7 +3833,7 @@
             "Peter"
         ]
     },
-    {
+    "192": {
         "name": "The Man in the High Castle",
         "authors": [
             "Philip K. Dick"
@@ -3855,7 +3855,7 @@
             "Peter"
         ]
     },
-    {
+    "193": {
         "name": "A Tale of Two Cities",
         "authors": [
             "Charles Dickens"
@@ -3870,7 +3870,7 @@
         ],
         "read": []
     },
-    {
+    "194": {
         "name": "The Mask of Ra",
         "authors": [
             "Paul C. Doherty"
@@ -3890,7 +3890,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "195": {
         "name": "The Horus Killings",
         "authors": [
             "Paul C. Doherty"
@@ -3914,7 +3914,7 @@
             "Peter"
         ]
     },
-    {
+    "196": {
         "name": "The Anubis Slayings",
         "authors": [
             "Paul C. Doherty"
@@ -3938,7 +3938,7 @@
             "Peter"
         ]
     },
-    {
+    "197": {
         "name": "The Slayers of Seth",
         "authors": [
             "Paul C. Doherty"
@@ -3958,7 +3958,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "198": {
         "name": "The Assassins of Isis",
         "authors": [
             "Paul C. Doherty"
@@ -3978,7 +3978,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "199": {
         "name": "The Poisoner of Ptah",
         "authors": [
             "Paul C. Doherty"
@@ -3998,7 +3998,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "200": {
         "name": "The Spies of Sobeck",
         "authors": [
             "Paul C. Doherty"
@@ -4018,7 +4018,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "201": {
         "name": "Crime and Punishment",
         "authors": [
             "Fyodor Dostoyevsky"
@@ -4035,7 +4035,7 @@
             "Peter"
         ]
     },
-    {
+    "202": {
         "name": "A Study in Scarlet",
         "authors": [
             "Arthur Conan Doyle"
@@ -4057,7 +4057,7 @@
             "Peter"
         ]
     },
-    {
+    "203": {
         "name": "The Sign of the Four",
         "authors": [
             "Arthur Conan Doyle"
@@ -4079,7 +4079,7 @@
             "Peter"
         ]
     },
-    {
+    "204": {
         "name": "The Adventures of Sherlock Holmes",
         "authors": [
             "Arthur Conan Doyle"
@@ -4101,7 +4101,7 @@
             "Peter"
         ]
     },
-    {
+    "205": {
         "name": "The Memoirs of Sherlock Holmes",
         "authors": [
             "Arthur Conan Doyle"
@@ -4123,7 +4123,7 @@
             "Peter"
         ]
     },
-    {
+    "206": {
         "name": "The Hound of the Baskervilles",
         "authors": [
             "Arthur Conan Doyle"
@@ -4145,7 +4145,7 @@
             "Peter"
         ]
     },
-    {
+    "207": {
         "name": "The Return of Sherlock Holmes",
         "authors": [
             "Arthur Conan Doyle"
@@ -4163,7 +4163,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "208": {
         "name": "The Valley of Fear",
         "authors": [
             "Arthur Conan Doyle"
@@ -4181,7 +4181,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "209": {
         "name": "His Last Bow",
         "authors": [
             "Arthur Conan Doyle"
@@ -4199,7 +4199,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "210": {
         "name": "The Case-Book of Sherlock Holmes",
         "authors": [
             "Arthur Conan Doyle"
@@ -4217,7 +4217,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "211": {
         "name": "Freakonomics",
         "authors": [
             "Steven D. Levitt",
@@ -4236,7 +4236,7 @@
             "Peter"
         ]
     },
-    {
+    "212": {
         "name": "The Count of Monte Cristo",
         "authors": [
             "Alexandre Dumas"
@@ -4254,7 +4254,7 @@
             "Peter"
         ]
     },
-    {
+    "213": {
         "name": "The Three Musketeers",
         "authors": [
             "Alexandre Dumas"
@@ -4276,7 +4276,7 @@
             "Peter"
         ]
     },
-    {
+    "214": {
         "name": "Twenty Years After",
         "authors": [
             "Alexandre Dumas"
@@ -4294,7 +4294,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "215": {
         "name": "The Vicomte of Bragelonne: Ten Years Later",
         "authors": [
             "Alexandre Dumas"
@@ -4312,7 +4312,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "216": {
         "name": "Time and the Gods",
         "authors": [
             "Lord Dunsany"
@@ -4327,7 +4327,7 @@
         ],
         "read": []
     },
-    {
+    "217": {
         "name": "The Worm Ouroboros",
         "authors": [
             "E. R. Eddison"
@@ -4344,7 +4344,7 @@
             "Peter"
         ]
     },
-    {
+    "218": {
         "name": "One for the Money",
         "authors": [
             "Janet Evanovich"
@@ -4366,7 +4366,7 @@
             "Peter"
         ]
     },
-    {
+    "219": {
         "name": "Two for the Dough",
         "authors": [
             "Janet Evanovich"
@@ -4384,7 +4384,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "220": {
         "name": "Three to Get Deadly",
         "authors": [
             "Janet Evanovich"
@@ -4402,7 +4402,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "221": {
         "name": "Four to Score",
         "authors": [
             "Janet Evanovich"
@@ -4420,7 +4420,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "222": {
         "name": "High Five",
         "authors": [
             "Janet Evanovich"
@@ -4438,7 +4438,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "223": {
         "name": "Hot Six",
         "authors": [
             "Janet Evanovich"
@@ -4456,7 +4456,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "224": {
         "name": "Seven Up",
         "authors": [
             "Janet Evanovich"
@@ -4474,7 +4474,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "225": {
         "name": "Hard Eight",
         "authors": [
             "Janet Evanovich"
@@ -4492,7 +4492,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "226": {
         "name": "To the Nines",
         "authors": [
             "Janet Evanovich"
@@ -4510,7 +4510,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "227": {
         "name": "Ten Big Ones",
         "authors": [
             "Janet Evanovich"
@@ -4528,7 +4528,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "228": {
         "name": "Eleven on Top",
         "authors": [
             "Janet Evanovich"
@@ -4546,7 +4546,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "229": {
         "name": "Twelve Sharp",
         "authors": [
             "Janet Evanovich"
@@ -4564,7 +4564,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "230": {
         "name": "Lean Mean Thirteen",
         "authors": [
             "Janet Evanovich"
@@ -4582,7 +4582,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "231": {
         "name": "Fearless Fourteen",
         "authors": [
             "Janet Evanovich"
@@ -4600,7 +4600,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "232": {
         "name": "Finger Lickin' Fifteen",
         "authors": [
             "Janet Evanovich"
@@ -4618,7 +4618,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "233": {
         "name": "Sizzling Sixteen",
         "authors": [
             "Janet Evanovich"
@@ -4636,7 +4636,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "234": {
         "name": "Smokin' Seventeen",
         "authors": [
             "Janet Evanovich"
@@ -4654,7 +4654,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "235": {
         "name": "Explosive Eighteen",
         "authors": [
             "Janet Evanovich"
@@ -4672,7 +4672,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "236": {
         "name": "Notorious Nineteen",
         "authors": [
             "Janet Evanovich"
@@ -4690,7 +4690,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "237": {
         "name": "Takedown Twenty",
         "authors": [
             "Janet Evanovich"
@@ -4708,7 +4708,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "238": {
         "name": "Top Secret Twenty-One",
         "authors": [
             "Janet Evanovich"
@@ -4726,7 +4726,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "239": {
         "name": "Tricky Twenty-Two",
         "authors": [
             "Janet Evanovich"
@@ -4744,7 +4744,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "240": {
         "name": "Turbo Twenty-Three",
         "authors": [
             "Janet Evanovich"
@@ -4762,7 +4762,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "241": {
         "name": "Hardcore Twenty-Four",
         "authors": [
             "Janet Evanovich"
@@ -4780,7 +4780,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "242": {
         "name": "The Day of the Jackal",
         "authors": [
             "Frederick Forsyth"
@@ -4795,7 +4795,7 @@
         ],
         "read": []
     },
-    {
+    "243": {
         "name": "American Gods",
         "type": "Novel",
         "authors": [
@@ -4812,7 +4812,7 @@
         ],
         "series": []
     },
-    {
+    "244": {
         "name": "Cold Comfort Farm",
         "authors": [
             "Stella Gibbons"
@@ -4829,7 +4829,7 @@
             "Peter"
         ]
     },
-    {
+    "245": {
         "name": "Epic of Gilgamesh",
         "authors": [],
         "series": [],
@@ -4845,7 +4845,7 @@
             "Peter"
         ]
     },
-    {
+    "246": {
         "name": "Guerrila Warfare",
         "authors": [
             "Che Guevara"
@@ -4863,7 +4863,7 @@
             "Peter"
         ]
     },
-    {
+    "247": {
         "name": "The Curious Incident of the Dog in the Night-Time",
         "authors": [
             "Mark Haddon"
@@ -4880,7 +4880,7 @@
             "Peter"
         ]
     },
-    {
+    "248": {
         "name": "She: A History of Adventure",
         "authors": [
             "H. Rider Haggard"
@@ -4903,7 +4903,7 @@
             "Peter"
         ]
     },
-    {
+    "249": {
         "name": "Ayesha, the Return of She",
         "authors": [
             "H. Rider Haggard"
@@ -4922,7 +4922,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "250": {
         "name": "She and Allan",
         "authors": [
             "H. Rider Haggard"
@@ -4941,7 +4941,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "251": {
         "name": "Wisdom's Daughter",
         "authors": [
             "H. Rider Haggard"
@@ -4960,7 +4960,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "252": {
         "name": "The Forever War",
         "authors": [
             "Joe Haldeman"
@@ -4977,7 +4977,7 @@
             "Peter"
         ]
     },
-    {
+    "253": {
         "name": "The Maltese Falcon",
         "authors": [
             "Dashiell Hammett"
@@ -4994,7 +4994,7 @@
             "Peter"
         ]
     },
-    {
+    "254": {
         "name": "Viriconium",
         "authors": [
             "M. John Harrison"
@@ -5011,7 +5011,7 @@
             "Peter"
         ]
     },
-    {
+    "255": {
         "name": "The Maltese Falcon",
         "authors": [
             "Dashiell Hammett"
@@ -5028,7 +5028,7 @@
             "Peter"
         ]
     },
-    {
+    "256": {
         "name": "The Scarlet Letter",
         "authors": [
             "Nathaniel Hawthorne"
@@ -5046,7 +5046,7 @@
             "Peter"
         ]
     },
-    {
+    "257": {
         "name": "The Door Into Summer",
         "authors": [
             "Robert A. Heinlein"
@@ -5063,7 +5063,7 @@
             "Peter"
         ]
     },
-    {
+    "258": {
         "name": "Double Star",
         "authors": [
             "Robert A. Heinlein"
@@ -5080,7 +5080,7 @@
             "Peter"
         ]
     },
-    {
+    "259": {
         "name": "The Moon is a Harsh Mistress",
         "authors": [
             "Robert A. Heinlein"
@@ -5097,7 +5097,7 @@
             "Peter"
         ]
     },
-    {
+    "260": {
         "name": "Catch-22",
         "authors": [
             "Joseph Heller"
@@ -5114,7 +5114,7 @@
             "Peter"
         ]
     },
-    {
+    "261": {
         "name": "Dune: House Atreides",
         "authors": [
             "Brain Herbert",
@@ -5133,7 +5133,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "262": {
         "name": "Dune: House Harkonnen",
         "authors": [
             "Brain Herbert",
@@ -5152,7 +5152,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "263": {
         "name": "Dune: House Corrino",
         "authors": [
             "Brain Herbert",
@@ -5171,7 +5171,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "264": {
         "name": "Dune: The Butlerian Jihad",
         "authors": [
             "Brain Herbert",
@@ -5194,7 +5194,7 @@
             "Peter"
         ]
     },
-    {
+    "265": {
         "name": "Dune: The Machine Crusade",
         "authors": [
             "Brain Herbert",
@@ -5217,7 +5217,7 @@
             "Peter"
         ]
     },
-    {
+    "266": {
         "name": "Dune: The Battle of Corrin",
         "authors": [
             "Brain Herbert",
@@ -5240,7 +5240,7 @@
             "Peter"
         ]
     },
-    {
+    "267": {
         "name": "Paul of Dune",
         "authors": [
             "Brain Herbert",
@@ -5259,7 +5259,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "268": {
         "name": "The Winds of Dune",
         "authors": [
             "Brain Herbert",
@@ -5278,7 +5278,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "269": {
         "name": "Sisterhood of Dune",
         "authors": [
             "Brain Herbert",
@@ -5297,7 +5297,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "270": {
         "name": "Mentats of Dune",
         "authors": [
             "Brain Herbert",
@@ -5316,7 +5316,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "271": {
         "name": "Navigators of Dune",
         "authors": [
             "Brain Herbert",
@@ -5335,7 +5335,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "272": {
         "name": "Dune",
         "authors": [
             "Frank Herbert"
@@ -5357,7 +5357,7 @@
             "Peter"
         ]
     },
-    {
+    "273": {
         "name": "Dune Messiah",
         "authors": [
             "Frank Herbert"
@@ -5379,7 +5379,7 @@
             "Peter"
         ]
     },
-    {
+    "274": {
         "name": "Children of Dune",
         "authors": [
             "Frank Herbert"
@@ -5401,7 +5401,7 @@
             "Peter"
         ]
     },
-    {
+    "275": {
         "name": "God Emperor of Dune",
         "authors": [
             "Frank Herbert"
@@ -5423,7 +5423,7 @@
             "Peter"
         ]
     },
-    {
+    "276": {
         "name": "Heretics of Dune",
         "authors": [
             "Frank Herbert"
@@ -5445,7 +5445,7 @@
             "Peter"
         ]
     },
-    {
+    "277": {
         "name": "Chapterhouse: Dune",
         "authors": [
             "Frank Herbert"
@@ -5467,7 +5467,7 @@
             "Peter"
         ]
     },
-    {
+    "278": {
         "name": "Hunters of Dune",
         "authors": [
             "Frank Herbert"
@@ -5489,7 +5489,7 @@
             "Peter"
         ]
     },
-    {
+    "279": {
         "name": "Sandworms of Dune",
         "authors": [
             "Frank Herbert"
@@ -5507,7 +5507,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "280": {
         "name": "Theogony",
         "authors": [
             "Hesiod"
@@ -5525,7 +5525,7 @@
             "Peter"
         ]
     },
-    {
+    "281": {
         "name": "Works and Days",
         "authors": [
             "Hesiod"
@@ -5543,7 +5543,7 @@
             "Peter"
         ]
     },
-    {
+    "282": {
         "name": "Shield of Heracles",
         "authors": [
             "Hesiod"
@@ -5561,7 +5561,7 @@
             "Peter"
         ]
     },
-    {
+    "283": {
         "name": "The Amateur Cracksman",
         "authors": [
             "E. W. Hornung"
@@ -5583,7 +5583,7 @@
             "Peter"
         ]
     },
-    {
+    "284": {
         "name": "Brave New World",
         "authors": [
             "Aldous Huxley"
@@ -5601,7 +5601,7 @@
             "Peter"
         ]
     },
-    {
+    "285": {
         "name": "Metamorphosis",
         "authors": [
             "Franz Kafka"
@@ -5618,7 +5618,7 @@
             "Peter"
         ]
     },
-    {
+    "286": {
         "name": "Flowers for Algernon",
         "authors": [
             "Daniel Keyes"
@@ -5635,7 +5635,7 @@
             "Peter"
         ]
     },
-    {
+    "287": {
         "name": "The Tain",
         "authors": [],
         "series": [],
@@ -5651,7 +5651,7 @@
             "Peter"
         ]
     },
-    {
+    "288": {
         "name": "The Beekeeper's Apprentice",
         "authors": [
             "Laurie R. King"
@@ -5673,7 +5673,7 @@
             "Peter"
         ]
     },
-    {
+    "289": {
         "name": "A Monstrous Regiment of Women",
         "authors": [
             "Laurie R. King"
@@ -5695,7 +5695,7 @@
             "Peter"
         ]
     },
-    {
+    "290": {
         "name": "A Letter of Mary",
         "authors": [
             "Laurie R. King"
@@ -5717,7 +5717,7 @@
             "Peter"
         ]
     },
-    {
+    "291": {
         "name": "The Moor",
         "authors": [
             "Laurie R. King"
@@ -5739,7 +5739,7 @@
             "Peter"
         ]
     },
-    {
+    "292": {
         "name": "O Jerusalem",
         "authors": [
             "Laurie R. King"
@@ -5761,7 +5761,7 @@
             "Peter"
         ]
     },
-    {
+    "293": {
         "name": "Justice Hall",
         "authors": [
             "Laurie R. King"
@@ -5783,7 +5783,7 @@
             "Peter"
         ]
     },
-    {
+    "294": {
         "name": "The Game",
         "authors": [
             "Laurie R. King"
@@ -5805,7 +5805,7 @@
             "Peter"
         ]
     },
-    {
+    "295": {
         "name": "Locked Rooms",
         "authors": [
             "Laurie R. King"
@@ -5823,7 +5823,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "296": {
         "name": "The Language of Bees",
         "authors": [
             "Laurie R. King"
@@ -5841,7 +5841,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "297": {
         "name": "The God of the Hive",
         "authors": [
             "Laurie R. King"
@@ -5859,7 +5859,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "298": {
         "name": "Pirate King",
         "authors": [
             "Laurie R. King"
@@ -5877,7 +5877,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "299": {
         "name": "Garment of Shadows",
         "authors": [
             "Laurie R. King"
@@ -5895,7 +5895,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "300": {
         "name": "Dreaming Spies",
         "authors": [
             "Laurie R. King"
@@ -5913,7 +5913,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "301": {
         "name": "The Murder of Mary Russell",
         "authors": [
             "Laurie R. King"
@@ -5931,7 +5931,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "302": {
         "name": "Kim",
         "authors": [
             "Rudyard Kipling"
@@ -5949,7 +5949,7 @@
             "Peter"
         ]
     },
-    {
+    "303": {
         "name": "The Space Merchants",
         "authors": [
             "Frederik Pohl",
@@ -5968,7 +5968,7 @@
             "Peter"
         ]
     },
-    {
+    "304": {
         "name": "Rocannon's World",
         "authors": [
             "Ursula K. Le Guin"
@@ -5986,7 +5986,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "305": {
         "name": "Planet of Exile",
         "authors": [
             "Ursula K. Le Guin"
@@ -6004,7 +6004,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "306": {
         "name": "City of Illusions",
         "authors": [
             "Ursula K. Le Guin"
@@ -6022,7 +6022,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "307": {
         "name": "The Left Hand of Darkness",
         "authors": [
             "Ursula K. Le Guin"
@@ -6044,7 +6044,7 @@
             "Peter"
         ]
     },
-    {
+    "308": {
         "name": "The Word for World is Forest",
         "authors": [
             "Ursula K. Le Guin"
@@ -6062,7 +6062,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "309": {
         "name": "The Dispossessed",
         "authors": [
             "Ursula K. Le Guin"
@@ -6084,7 +6084,7 @@
             "Peter"
         ]
     },
-    {
+    "310": {
         "name": "Four Ways to Forgiveness",
         "authors": [
             "Ursula K. Le Guin"
@@ -6102,7 +6102,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "311": {
         "name": "The Telling",
         "authors": [
             "Ursula K. Le Guin"
@@ -6120,7 +6120,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "312": {
         "name": "The Birthday of the World and Other Stories",
         "authors": [
             "Ursula K. Le Guin"
@@ -6138,7 +6138,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "313": {
         "name": "The Lathe of Heaven",
         "authors": [
             "Ursula K. Le Guin"
@@ -6155,7 +6155,7 @@
             "Peter"
         ]
     },
-    {
+    "314": {
         "name": "Ancillary Justice",
         "authors": [
             "Ann Leckie"
@@ -6177,7 +6177,7 @@
             "Peter"
         ]
     },
-    {
+    "315": {
         "name": "Ancillary Sword",
         "authors": [
             "Ann Leckie"
@@ -6195,7 +6195,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "316": {
         "name": "Ancillary Mercy",
         "authors": [
             "Ann Leckie"
@@ -6213,7 +6213,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "317": {
         "name": "Cider with Rosie",
         "authors": [
             "Laurie Lee"
@@ -6230,7 +6230,7 @@
             "Peter"
         ]
     },
-    {
+    "318": {
         "name": "The Magician's Nephew",
         "authors": [
             "C. S. Lewis"
@@ -6253,7 +6253,7 @@
             "Peter"
         ]
     },
-    {
+    "319": {
         "name": "The Lion, the Witch and the Wardrobe",
         "authors": [
             "C. S. Lewis"
@@ -6276,7 +6276,7 @@
             "Peter"
         ]
     },
-    {
+    "320": {
         "name": "The Horse and His Boy",
         "authors": [
             "C. S. Lewis"
@@ -6299,7 +6299,7 @@
             "Peter"
         ]
     },
-    {
+    "321": {
         "name": "Prince Caspian",
         "authors": [
             "C. S. Lewis"
@@ -6322,7 +6322,7 @@
             "Peter"
         ]
     },
-    {
+    "322": {
         "name": "Voyage of the Dawn Treader",
         "authors": [
             "C. S. Lewis"
@@ -6345,7 +6345,7 @@
             "Peter"
         ]
     },
-    {
+    "323": {
         "name": "The Silver Chair",
         "authors": [
             "C. S. Lewis"
@@ -6368,7 +6368,7 @@
             "Peter"
         ]
     },
-    {
+    "324": {
         "name": "The Final Battle",
         "authors": [
             "C. S. Lewis"
@@ -6391,7 +6391,7 @@
             "Peter"
         ]
     },
-    {
+    "325": {
         "name": "Necronomicon",
         "authors": [
             "H. P. Lovecraft"
@@ -6406,7 +6406,7 @@
         ],
         "read": []
     },
-    {
+    "326": {
         "name": "The Bourne Identity",
         "authors": [
             "Robert Ludlum"
@@ -6429,7 +6429,7 @@
             "Peter"
         ]
     },
-    {
+    "327": {
         "name": "The Bourne Supremacy",
         "authors": [
             "Robert Ludlum"
@@ -6452,7 +6452,7 @@
             "Peter"
         ]
     },
-    {
+    "328": {
         "name": "The Bourne Ultimatum",
         "authors": [
             "Robert Ludlum"
@@ -6475,7 +6475,7 @@
             "Peter"
         ]
     },
-    {
+    "329": {
         "name": "The Night Watch",
         "authors": [
             "Sergei Lukyanenko"
@@ -6497,7 +6497,7 @@
             "Peter"
         ]
     },
-    {
+    "330": {
         "name": "The Day Watch",
         "authors": [
             "Sergei Lukyanenko"
@@ -6519,7 +6519,7 @@
             "Peter"
         ]
     },
-    {
+    "331": {
         "name": "The Twilight Watch",
         "authors": [
             "Sergei Lukyanenko"
@@ -6541,7 +6541,7 @@
             "Peter"
         ]
     },
-    {
+    "332": {
         "name": "The Last Watch",
         "authors": [
             "Sergei Lukyanenko"
@@ -6559,7 +6559,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "333": {
         "name": "The New Watch",
         "authors": [
             "Sergei Lukyanenko"
@@ -6577,7 +6577,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "334": {
         "name": "The Sixth Watch",
         "authors": [
             "Sergei Lukyanenko"
@@ -6595,7 +6595,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "335": {
         "name": "The Prince",
         "authors": [
             "Nicollo Machiavelli"
@@ -6612,7 +6612,7 @@
             "Peter"
         ]
     },
-    {
+    "336": {
         "name": "Le Morte d'Arthur",
         "authors": [
             "Sir Thomas Malory"
@@ -6627,7 +6627,7 @@
         ],
         "read": []
     },
-    {
+    "337": {
         "name": "Tamburlaine",
         "authors": [
             "Christopher Marlowe"
@@ -6644,7 +6644,7 @@
             "Peter"
         ]
     },
-    {
+    "338": {
         "name": "A Game of Thrones",
         "authors": [
             "George R. R. Martin"
@@ -6666,7 +6666,7 @@
             "Peter"
         ]
     },
-    {
+    "339": {
         "name": "A Clash of Kings",
         "authors": [
             "George R. R. Martin"
@@ -6688,7 +6688,7 @@
             "Peter"
         ]
     },
-    {
+    "340": {
         "name": "A Storm of Swords: Steel and Snow",
         "authors": [
             "George R. R. Martin"
@@ -6710,7 +6710,7 @@
             "Peter"
         ]
     },
-    {
+    "341": {
         "name": "A Storm of Swords: Blood and Gold",
         "authors": [
             "George R. R. Martin"
@@ -6732,7 +6732,7 @@
             "Peter"
         ]
     },
-    {
+    "342": {
         "name": "A Feast for Crows",
         "authors": [
             "George R. R. Martin"
@@ -6754,7 +6754,7 @@
             "Peter"
         ]
     },
-    {
+    "343": {
         "name": "A Dance of Dragons: Dreams and Dust",
         "authors": [
             "George R. R. Martin"
@@ -6776,7 +6776,7 @@
             "Peter"
         ]
     },
-    {
+    "344": {
         "name": "A Dance of Dragons: After the Feast",
         "authors": [
             "George R. R. Martin"
@@ -6798,7 +6798,7 @@
             "Peter"
         ]
     },
-    {
+    "345": {
         "name": "The Winds of Winter",
         "authors": [
             "George R. R. Martin"
@@ -6816,7 +6816,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "346": {
         "name": "A Dream of Spring",
         "authors": [
             "George R. R. Martin"
@@ -6834,7 +6834,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "347": {
         "name": "I Am Legend",
         "authors": [
             "Richard Matheson"
@@ -6852,7 +6852,7 @@
             "Peter"
         ]
     },
-    {
+    "348": {
         "name": "Winnie-the-Pooh",
         "authors": [
             "A. A. Milne"
@@ -6869,7 +6869,7 @@
             "Peter"
         ]
     },
-    {
+    "349": {
         "name": "The House at Pooh Corner",
         "authors": [
             "A. A. Milne"
@@ -6886,7 +6886,7 @@
             "Peter"
         ]
     },
-    {
+    "350": {
         "name": "Speed of Dark",
         "authors": [
             "Elizabeth Moon"
@@ -6903,7 +6903,7 @@
             "Peter"
         ]
     },
-    {
+    "351": {
         "name": "The Wind Singer",
         "authors": [
             "William Nicholson"
@@ -6926,7 +6926,7 @@
             "Peter"
         ]
     },
-    {
+    "352": {
         "name": "Slaves of the Mastery",
         "authors": [
             "William Nicholson"
@@ -6949,7 +6949,7 @@
             "Peter"
         ]
     },
-    {
+    "353": {
         "name": "Firesong",
         "authors": [
             "William Nicholson"
@@ -6972,7 +6972,7 @@
             "Peter"
         ]
     },
-    {
+    "354": {
         "name": "Ringworld",
         "authors": [
             "Larry Niven"
@@ -6994,7 +6994,7 @@
             "Peter"
         ]
     },
-    {
+    "355": {
         "name": "The Ringworld Engineers",
         "authors": [
             "Larry Niven"
@@ -7012,7 +7012,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "356": {
         "name": "The Ringworld Throne",
         "authors": [
             "Larry Niven"
@@ -7030,7 +7030,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "357": {
         "name": "Ringworld's Children",
         "authors": [
             "Larry Niven"
@@ -7048,7 +7048,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "358": {
         "name": "The Laughing Cavalier",
         "authors": [
             "Baroness Orczy"
@@ -7066,7 +7066,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "359": {
         "name": "The First Sir Percy",
         "authors": [
             "Baroness Orczy"
@@ -7084,7 +7084,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "360": {
         "name": "The Scarlet Pimpernel",
         "authors": [
             "Baroness Orczy"
@@ -7106,7 +7106,7 @@
             "Peter"
         ]
     },
-    {
+    "361": {
         "name": "Sir Percy Leads the Band",
         "authors": [
             "Baroness Orczy"
@@ -7124,7 +7124,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "362": {
         "name": "I Will Repay",
         "authors": [
             "Baroness Orczy"
@@ -7142,7 +7142,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "363": {
         "name": "The Elusive Pimpernel",
         "authors": [
             "Baroness Orczy"
@@ -7160,7 +7160,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "364": {
         "name": "Lord Tony's Wife",
         "authors": [
             "Baroness Orczy"
@@ -7178,7 +7178,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "365": {
         "name": "The Way of the Scarlet Pimpernel",
         "authors": [
             "Baroness Orczy"
@@ -7196,7 +7196,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "366": {
         "name": "Mam'zelle Guillotine",
         "authors": [
             "Baroness Orczy"
@@ -7214,7 +7214,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "367": {
         "name": "Eldorado",
         "authors": [
             "Baroness Orczy"
@@ -7232,7 +7232,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "368": {
         "name": "Sir Percy Hits Back",
         "authors": [
             "Baroness Orczy"
@@ -7250,7 +7250,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "369": {
         "name": "The Triumph of the Scarlet Pimpernel",
         "authors": [
             "Baroness Orczy"
@@ -7268,7 +7268,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "370": {
         "name": "A Child of the Revolution",
         "authors": [
             "Baroness Orczy"
@@ -7286,7 +7286,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "371": {
         "name": "Pimpernel and Rosemary",
         "authors": [
             "Baroness Orczy"
@@ -7304,7 +7304,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "372": {
         "name": "The League of the Scarlet Pimpernel",
         "authors": [
             "Baroness Orczy"
@@ -7322,7 +7322,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "373": {
         "name": "Adventures of the Scarlet Pimpernel",
         "authors": [
             "Baroness Orczy"
@@ -7340,7 +7340,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "374": {
         "name": "1984",
         "authors": [
             "George Orwell"
@@ -7358,7 +7358,7 @@
             "Peter"
         ]
     },
-    {
+    "375": {
         "name": "Animal Farm",
         "authors": [
             "George Orwell"
@@ -7376,7 +7376,7 @@
             "Peter"
         ]
     },
-    {
+    "376": {
         "name": "Metamorphoses",
         "authors": [
             "Ovid"
@@ -7394,7 +7394,7 @@
             "Peter"
         ]
     },
-    {
+    "377": {
         "name": "A Morbid Taste for Bones",
         "authors": [
             "Ellis Peters"
@@ -7417,7 +7417,7 @@
             "Peter"
         ]
     },
-    {
+    "378": {
         "name": "One Corpse Too Many",
         "authors": [
             "Ellis Peters"
@@ -7440,7 +7440,7 @@
             "Peter"
         ]
     },
-    {
+    "379": {
         "name": "Monk's Hood",
         "authors": [
             "Ellis Peters"
@@ -7463,7 +7463,7 @@
             "Peter"
         ]
     },
-    {
+    "380": {
         "name": "Saint Peter's Fair",
         "authors": [
             "Ellis Peters"
@@ -7486,7 +7486,7 @@
             "Peter"
         ]
     },
-    {
+    "381": {
         "name": "The Leper of Saint Giles",
         "authors": [
             "Ellis Peters"
@@ -7505,7 +7505,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "382": {
         "name": "The Virgin in the Ice",
         "authors": [
             "Ellis Peters"
@@ -7524,7 +7524,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "383": {
         "name": "The Sanctuary Sparrow",
         "authors": [
             "Ellis Peters"
@@ -7543,7 +7543,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "384": {
         "name": "The Devil's Novice",
         "authors": [
             "Ellis Peters"
@@ -7562,7 +7562,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "385": {
         "name": "Dead Man's Ransom",
         "authors": [
             "Ellis Peters"
@@ -7581,7 +7581,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "386": {
         "name": "The Pilgrim of Hate",
         "authors": [
             "Ellis Peters"
@@ -7600,7 +7600,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "387": {
         "name": "An Excellent Mystery",
         "authors": [
             "Ellis Peters"
@@ -7619,7 +7619,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "388": {
         "name": "The Raven in the Foregate",
         "authors": [
             "Ellis Peters"
@@ -7638,7 +7638,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "389": {
         "name": "The Rose Rent",
         "authors": [
             "Ellis Peters"
@@ -7657,7 +7657,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "390": {
         "name": "The Hermit of Eyton Forest",
         "authors": [
             "Ellis Peters"
@@ -7676,7 +7676,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "391": {
         "name": "The Confession of Brother Haluin",
         "authors": [
             "Ellis Peters"
@@ -7695,7 +7695,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "392": {
         "name": "A Rare Benedictine",
         "authors": [
             "Ellis Peters"
@@ -7714,7 +7714,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "393": {
         "name": "The Heretic's Apprentice",
         "authors": [
             "Ellis Peters"
@@ -7733,7 +7733,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "394": {
         "name": "The Potter's Field",
         "authors": [
             "Ellis Peters"
@@ -7752,7 +7752,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "395": {
         "name": "The Summer of the Danes",
         "authors": [
             "Ellis Peters"
@@ -7771,7 +7771,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "396": {
         "name": "The Holy Thief",
         "authors": [
             "Ellis Peters"
@@ -7790,7 +7790,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "397": {
         "name": "Brother Cadfael's Penance",
         "authors": [
             "Ellis Peters"
@@ -7809,7 +7809,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "398": {
         "name": "The Bell Jar",
         "authors": [
             "Sylvia Plath"
@@ -7826,7 +7826,7 @@
             "Peter"
         ]
     },
-    {
+    "399": {
         "name": "The Republic",
         "authors": [
             "Plato"
@@ -7843,7 +7843,7 @@
             "Peter"
         ]
     },
-    {
+    "400": {
         "name": "Gateway",
         "authors": [
             "Frederik Pohl"
@@ -7860,7 +7860,7 @@
             "Peter"
         ]
     },
-    {
+    "401": {
         "name": "The Colour of Magic",
         "authors": [
             "Terry Pratchett"
@@ -7883,7 +7883,7 @@
             "Peter"
         ]
     },
-    {
+    "402": {
         "name": "The Light Fantastic",
         "authors": [
             "Terry Pratchett"
@@ -7906,7 +7906,7 @@
             "Peter"
         ]
     },
-    {
+    "403": {
         "name": "Equal Rites",
         "authors": [
             "Terry Pratchett"
@@ -7929,7 +7929,7 @@
             "Peter"
         ]
     },
-    {
+    "404": {
         "name": "Mort",
         "authors": [
             "Terry Pratchett"
@@ -7952,7 +7952,7 @@
             "Peter"
         ]
     },
-    {
+    "405": {
         "name": "Sourcery",
         "authors": [
             "Terry Pratchett"
@@ -7975,7 +7975,7 @@
             "Peter"
         ]
     },
-    {
+    "406": {
         "name": "Wyrd Sisters",
         "authors": [
             "Terry Pratchett"
@@ -7998,7 +7998,7 @@
             "Peter"
         ]
     },
-    {
+    "407": {
         "name": "Pyramids",
         "authors": [
             "Terry Pratchett"
@@ -8021,7 +8021,7 @@
             "Peter"
         ]
     },
-    {
+    "408": {
         "name": "Guards! Guards!",
         "authors": [
             "Terry Pratchett"
@@ -8040,7 +8040,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "409": {
         "name": "Eric",
         "authors": [
             "Terry Pratchett"
@@ -8059,7 +8059,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "410": {
         "name": "Moving Pictures",
         "authors": [
             "Terry Pratchett"
@@ -8078,7 +8078,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "411": {
         "name": "Reaper Man",
         "authors": [
             "Terry Pratchett"
@@ -8097,7 +8097,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "412": {
         "name": "Witches Abroad",
         "authors": [
             "Terry Pratchett"
@@ -8116,7 +8116,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "413": {
         "name": "Small Gods",
         "authors": [
             "Terry Pratchett"
@@ -8135,7 +8135,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "414": {
         "name": "Lords and Ladies",
         "authors": [
             "Terry Pratchett"
@@ -8154,7 +8154,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "415": {
         "name": "Men at Arms",
         "authors": [
             "Terry Pratchett"
@@ -8177,7 +8177,7 @@
             "Peter"
         ]
     },
-    {
+    "416": {
         "name": "Soul Music",
         "authors": [
             "Terry Pratchett"
@@ -8196,7 +8196,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "417": {
         "name": "Interesting Times",
         "authors": [
             "Terry Pratchett"
@@ -8215,7 +8215,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "418": {
         "name": "Maskerade",
         "authors": [
             "Terry Pratchett"
@@ -8234,7 +8234,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "419": {
         "name": "Feet of Clay",
         "authors": [
             "Terry Pratchett"
@@ -8253,7 +8253,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "420": {
         "name": "Hogfather",
         "authors": [
             "Terry Pratchett"
@@ -8276,7 +8276,7 @@
             "Peter"
         ]
     },
-    {
+    "421": {
         "name": "Amazon Adventure",
         "authors": [
             "Willard Price"
@@ -8294,7 +8294,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "422": {
         "name": "South Sea Adventure",
         "authors": [
             "Willard Price"
@@ -8312,7 +8312,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "423": {
         "name": "Underwater Adventure",
         "authors": [
             "Willard Price"
@@ -8330,7 +8330,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "424": {
         "name": "Volcano Adventure",
         "authors": [
             "Willard Price"
@@ -8348,7 +8348,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "425": {
         "name": "Whale Adventure",
         "authors": [
             "Willard Price"
@@ -8366,7 +8366,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "426": {
         "name": "African Adventure",
         "authors": [
             "Willard Price"
@@ -8384,7 +8384,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "427": {
         "name": "Elephant Adventure",
         "authors": [
             "Willard Price"
@@ -8406,7 +8406,7 @@
             "Peter"
         ]
     },
-    {
+    "428": {
         "name": "Safari Adventure",
         "authors": [
             "Willard Price"
@@ -8424,7 +8424,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "429": {
         "name": "Lion Adventure",
         "authors": [
             "Willard Price"
@@ -8442,7 +8442,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "430": {
         "name": "Gorilla Adventure",
         "authors": [
             "Willard Price"
@@ -8460,7 +8460,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "431": {
         "name": "Diving Adventure",
         "authors": [
             "Willard Price"
@@ -8478,7 +8478,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "432": {
         "name": "Cannibal Adventure",
         "authors": [
             "Willard Price"
@@ -8498,7 +8498,7 @@
         ],
         "read": []
     },
-    {
+    "433": {
         "name": "Tiger Adventure",
         "authors": [
             "Willard Price"
@@ -8516,7 +8516,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "434": {
         "name": "Arctic Adventure",
         "authors": [
             "Willard Price"
@@ -8534,7 +8534,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "435": {
         "name": "Chasm City",
         "authors": [
             "Alastair Reynolds"
@@ -8556,7 +8556,7 @@
             "Peter"
         ]
     },
-    {
+    "436": {
         "name": "Revelation Space",
         "authors": [
             "Alastair Reynolds"
@@ -8578,7 +8578,7 @@
             "Peter"
         ]
     },
-    {
+    "437": {
         "name": "Redemption Ark",
         "authors": [
             "Alastair Reynolds"
@@ -8600,7 +8600,7 @@
             "Peter"
         ]
     },
-    {
+    "438": {
         "name": "Absolution Gap",
         "authors": [
             "Alastair Reynolds"
@@ -8622,7 +8622,7 @@
             "Peter"
         ]
     },
-    {
+    "439": {
         "name": "Diamond Dogs, Turquoise Days",
         "authors": [
             "Alastair Reynolds"
@@ -8644,7 +8644,7 @@
             "Peter"
         ]
     },
-    {
+    "440": {
         "name": "Cyrano de Bergerac",
         "authors": [
             "Edmond Rostand"
@@ -8662,7 +8662,7 @@
             "Peter"
         ]
     },
-    {
+    "441": {
         "name": "Harry Potter and the Philosopher's Stone",
         "authors": [
             "J. K. Rowling"
@@ -8685,7 +8685,7 @@
             "Peter"
         ]
     },
-    {
+    "442": {
         "name": "Harry Potter and the Chamber of Secrets",
         "authors": [
             "J. K. Rowling"
@@ -8708,7 +8708,7 @@
             "Peter"
         ]
     },
-    {
+    "443": {
         "name": "Harry Potter and the Prisoner of Azkaban",
         "authors": [
             "J. K. Rowling"
@@ -8731,7 +8731,7 @@
             "Peter"
         ]
     },
-    {
+    "444": {
         "name": "Harry Potter and the Goblet of Fire",
         "authors": [
             "J. K. Rowling"
@@ -8754,7 +8754,7 @@
             "Peter"
         ]
     },
-    {
+    "445": {
         "name": "Harry Potter and the Order of the Phoenix",
         "authors": [
             "J. K. Rowling"
@@ -8777,7 +8777,7 @@
             "Peter"
         ]
     },
-    {
+    "446": {
         "name": "Harry Potter and the Half-Blood Prince",
         "authors": [
             "J. K. Rowling"
@@ -8800,7 +8800,7 @@
             "Peter"
         ]
     },
-    {
+    "447": {
         "name": "Harry Potter and the Deathly Hallows",
         "authors": [
             "J. K. Rowling"
@@ -8823,7 +8823,7 @@
             "Peter"
         ]
     },
-    {
+    "448": {
         "name": "Ivanhoe",
         "authors": [
             "Sir Walter Scott"
@@ -8840,7 +8840,7 @@
             "Peter"
         ]
     },
-    {
+    "449": {
         "name": "Black Beauty",
         "authors": [
             "Anna Sewell"
@@ -8857,7 +8857,7 @@
             "Peter"
         ]
     },
-    {
+    "450": {
         "name": "Ilium",
         "authors": [
             "Dan Simmons"
@@ -8879,7 +8879,7 @@
             "Peter"
         ]
     },
-    {
+    "451": {
         "name": "Olympos",
         "authors": [
             "Dan Simmons"
@@ -8897,7 +8897,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "452": {
         "name": "The Tempest",
         "authors": [
             "William Shakespeare"
@@ -8914,7 +8914,7 @@
             "Peter"
         ]
     },
-    {
+    "453": {
         "name": "Roderick",
         "authors": [
             "John Sladek"
@@ -8936,7 +8936,7 @@
             "Peter"
         ]
     },
-    {
+    "454": {
         "name": "Roderick at Random",
         "authors": [
             "John Sladek"
@@ -8958,7 +8958,7 @@
             "Peter"
         ]
     },
-    {
+    "455": {
         "name": "The Faerie Queene",
         "authors": [
             "Edmund Spenser"
@@ -8974,7 +8974,7 @@
         ],
         "read": []
     },
-    {
+    "456": {
         "name": "Into the Void",
         "authors": [
             "Tim Lebbon"
@@ -8996,7 +8996,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "457": {
         "name": "Revan",
         "authors": [
             "Drew Karpyshyn"
@@ -9018,7 +9018,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "458": {
         "name": "Deceived",
         "authors": [
             "Paul S. Kemp"
@@ -9040,7 +9040,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "459": {
         "name": "Red Harvest",
         "authors": [
             "Joe Schreiber"
@@ -9062,7 +9062,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "460": {
         "name": "Fatal Alliance",
         "authors": [
             "Sean Williams"
@@ -9084,7 +9084,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "461": {
         "name": "Annihilation",
         "authors": [
             "Drew Karpyshyn"
@@ -9106,7 +9106,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "462": {
         "name": "Knight Errant",
         "authors": [
             "John Jackson Miller"
@@ -9124,7 +9124,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "463": {
         "name": "Path of Destruction",
         "authors": [
             "Drew Karpyshyn"
@@ -9150,7 +9150,7 @@
             "Peter"
         ]
     },
-    {
+    "464": {
         "name": "Rule of Two",
         "authors": [
             "Drew Karpyshyn"
@@ -9172,7 +9172,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "465": {
         "name": "Dynasty of Evil",
         "authors": [
             "Drew Karpyshyn"
@@ -9194,7 +9194,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "466": {
         "name": "Darth Plagueis",
         "authors": [
             "James Luceno"
@@ -9212,7 +9212,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "467": {
         "name": "Saboteur",
         "authors": [
             "James Luceno"
@@ -9238,7 +9238,7 @@
             "Peter"
         ]
     },
-    {
+    "468": {
         "name": "Lockdown",
         "authors": [
             "Joe Schreiber"
@@ -9260,7 +9260,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "469": {
         "name": "Cloak of Deception",
         "authors": [
             "James Luceno"
@@ -9282,7 +9282,7 @@
             "Peter"
         ]
     },
-    {
+    "470": {
         "name": "Shadow Hunter",
         "authors": [
             "Michael Reaves"
@@ -9308,7 +9308,7 @@
             "Peter"
         ]
     },
-    {
+    "471": {
         "name": "The Phantom Menace",
         "authors": [
             "Terry Brooks"
@@ -9331,7 +9331,7 @@
             "Peter"
         ]
     },
-    {
+    "472": {
         "name": "Rogue Planet",
         "authors": [
             "Greg Bear"
@@ -9353,7 +9353,7 @@
             "Peter"
         ]
     },
-    {
+    "473": {
         "name": "Outbound Flight",
         "authors": [
             "Timothy Zahn"
@@ -9375,7 +9375,7 @@
             "Peter"
         ]
     },
-    {
+    "474": {
         "name": "The Approaching Storm",
         "authors": [
             "Alan Dean Foster"
@@ -9397,7 +9397,7 @@
             "Peter"
         ]
     },
-    {
+    "475": {
         "name": "Attack of the Clones",
         "authors": [
             "R. A. Salvatore"
@@ -9420,7 +9420,7 @@
             "Peter"
         ]
     },
-    {
+    "476": {
         "name": "Jedi Trial",
         "authors": [
             "David Sherman",
@@ -9447,7 +9447,7 @@
             "Peter"
         ]
     },
-    {
+    "477": {
         "name": "The Clone Wars",
         "authors": [
             "Karen Traviss"
@@ -9469,7 +9469,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "478": {
         "name": "Wild Space",
         "authors": [
             "Karen Miller"
@@ -9491,7 +9491,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "479": {
         "name": "Hard Contact",
         "authors": [
             "Karen Traviss"
@@ -9521,7 +9521,7 @@
             "Peter"
         ]
     },
-    {
+    "480": {
         "name": "Omega Squad: Targets",
         "authors": [
             "Karen Traviss"
@@ -9551,7 +9551,7 @@
             "Peter"
         ]
     },
-    {
+    "481": {
         "name": "Shatterpoint",
         "authors": [
             "Matthew Stover"
@@ -9577,7 +9577,7 @@
             "Peter"
         ]
     },
-    {
+    "482": {
         "name": "No Prisoners",
         "authors": [
             "Karen Traviss"
@@ -9599,7 +9599,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "483": {
         "name": "The Cestus Deception",
         "authors": [
             "Steven Barnes"
@@ -9625,7 +9625,7 @@
             "Peter"
         ]
     },
-    {
+    "484": {
         "name": "The Hive",
         "authors": [
             "Steven Barnes"
@@ -9651,7 +9651,7 @@
             "Peter"
         ]
     },
-    {
+    "485": {
         "name": "Triple Zero",
         "authors": [
             "Karen Traviss"
@@ -9681,7 +9681,7 @@
             "Peter"
         ]
     },
-    {
+    "486": {
         "name": "Stealth",
         "authors": [
             "Karen Miller"
@@ -9703,7 +9703,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "487": {
         "name": "Siege",
         "authors": [
             "Karen Miller"
@@ -9725,7 +9725,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "488": {
         "name": "Odds",
         "authors": [
             "Karen Traviss"
@@ -9755,7 +9755,7 @@
             "Peter"
         ]
     },
-    {
+    "489": {
         "name": "True Colours",
         "authors": [
             "Karen Traviss"
@@ -9785,7 +9785,7 @@
             "Peter"
         ]
     },
-    {
+    "490": {
         "name": "Battle Surgeons",
         "authors": [
             "Michael Reaves",
@@ -9816,7 +9816,7 @@
             "Peter"
         ]
     },
-    {
+    "491": {
         "name": "Jedi Healer",
         "authors": [
             "Michael Reaves",
@@ -9847,7 +9847,7 @@
             "Peter"
         ]
     },
-    {
+    "492": {
         "name": "Yoda: Dark Rendezvous",
         "authors": [
             "Sean Stewart"
@@ -9873,7 +9873,7 @@
             "Peter"
         ]
     },
-    {
+    "493": {
         "name": "Labyrinth of Evil",
         "authors": [
             "James Luceno"
@@ -9899,7 +9899,7 @@
             "Peter"
         ]
     },
-    {
+    "494": {
         "name": "Revenge of the Sith",
         "authors": [
             "Matthew Stover"
@@ -9926,7 +9926,7 @@
             "Peter"
         ]
     },
-    {
+    "495": {
         "name": "Order 66",
         "authors": [
             "Karen Traviss"
@@ -9952,7 +9952,7 @@
             "Peter"
         ]
     },
-    {
+    "496": {
         "name": "Kenobi",
         "authors": [
             "John Jackson Miller"
@@ -9970,7 +9970,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "497": {
         "name": "Dark Lord: The Rise of Darth Vader",
         "authors": [
             "James Luceno"
@@ -9996,7 +9996,7 @@
             "Peter"
         ]
     },
-    {
+    "498": {
         "name": "501st",
         "authors": [
             "Karen Traviss"
@@ -10022,7 +10022,7 @@
             "Peter"
         ]
     },
-    {
+    "499": {
         "name": "Jedi Twilight",
         "authors": [
             "Michael Reaves"
@@ -10044,7 +10044,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "500": {
         "name": "Street of Shadows",
         "authors": [
             "Michael Reaves"
@@ -10066,7 +10066,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "501": {
         "name": "Patterns of Force",
         "authors": [
             "Michael Reaves"
@@ -10088,7 +10088,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "502": {
         "name": "The Last Jedi",
         "authors": [
             "Michael Reaves",
@@ -10107,7 +10107,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "503": {
         "name": "The Paradise Snare",
         "authors": [
             "A. C. Crispin"
@@ -10133,7 +10133,7 @@
             "Peter"
         ]
     },
-    {
+    "504": {
         "name": "The Hutt Gambit",
         "authors": [
             "A. C. Crispin"
@@ -10159,7 +10159,7 @@
             "Peter"
         ]
     },
-    {
+    "505": {
         "name": "Lando Calrissian and the Mindharp of Sharu",
         "authors": [
             "L. Neil Smith"
@@ -10185,7 +10185,7 @@
             "Peter"
         ]
     },
-    {
+    "506": {
         "name": "Lando Calrissian and the Flamewind of Oseon",
         "authors": [
             "L. Neil Smith"
@@ -10211,7 +10211,7 @@
             "Peter"
         ]
     },
-    {
+    "507": {
         "name": "Lando Calrissian and the Starcave of ThonBoka",
         "authors": [
             "L. Neil Smith"
@@ -10237,7 +10237,7 @@
             "Peter"
         ]
     },
-    {
+    "508": {
         "name": "The Force Unleashed",
         "authors": [
             "Sean Williams"
@@ -10255,7 +10255,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "509": {
         "name": "Death Star",
         "authors": [
             "Michael Reaves",
@@ -10274,7 +10274,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "510": {
         "name": "Han Solo at Stars' End",
         "authors": [
             "Brian Daley"
@@ -10300,7 +10300,7 @@
             "Peter"
         ]
     },
-    {
+    "511": {
         "name": "Han Solo's Revenge",
         "authors": [
             "Brian Daley"
@@ -10326,7 +10326,7 @@
             "Peter"
         ]
     },
-    {
+    "512": {
         "name": "Han Solo and the Lost Legacy",
         "authors": [
             "Brian Daley"
@@ -10352,7 +10352,7 @@
             "Peter"
         ]
     },
-    {
+    "513": {
         "name": "Rebel Dawn",
         "authors": [
             "A. C. Crispin"
@@ -10378,7 +10378,7 @@
             "Peter"
         ]
     },
-    {
+    "514": {
         "name": "Death Troopers",
         "authors": [
             "Joe Schreiber"
@@ -10396,7 +10396,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "515": {
         "name": "The Force Unleashed II",
         "authors": [
             "Sean Williams"
@@ -10414,7 +10414,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "516": {
         "name": "Shadow Games",
         "authors": [
             "Michael Reaves",
@@ -10433,7 +10433,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "517": {
         "name": "A New Hope",
         "authors": [
             "George Lucas"
@@ -10456,7 +10456,7 @@
             "Peter"
         ]
     },
-    {
+    "518": {
         "name": "Tales from the Mos Eisley Cantina",
         "authors": [],
         "series": [
@@ -10476,7 +10476,7 @@
             "Peter"
         ]
     },
-    {
+    "519": {
         "name": "Scoundrels",
         "authors": [
             "Timothy Zahn"
@@ -10494,7 +10494,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "520": {
         "name": "Allegiance",
         "authors": [
             "Timothy Zahn"
@@ -10516,7 +10516,7 @@
             "Peter"
         ]
     },
-    {
+    "521": {
         "name": "Choices of One",
         "authors": [
             "Timothy Zahn"
@@ -10534,7 +10534,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "522": {
         "name": "Honour Among Thieves",
         "authors": [
             "James S. A. Corey"
@@ -10556,7 +10556,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "523": {
         "name": "The Ruins of Dantooine",
         "authors": [
             "Voronica Whitney-Robinson"
@@ -10578,7 +10578,7 @@
             "Peter"
         ]
     },
-    {
+    "524": {
         "name": "Splinter of the Mind's Eye",
         "authors": [
             "Alan Dean Foster"
@@ -10600,7 +10600,7 @@
             "Peter"
         ]
     },
-    {
+    "525": {
         "name": "Razor's Edge",
         "authors": [
             "Martha Wells"
@@ -10622,7 +10622,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "526": {
         "name": "The Empire Strikes Back",
         "authors": [
             "Donald F. Glut"
@@ -10645,7 +10645,7 @@
             "Peter"
         ]
     },
-    {
+    "527": {
         "name": "Tales of the Bounty Hunters",
         "authors": [],
         "series": [
@@ -10665,7 +10665,7 @@
             "Peter"
         ]
     },
-    {
+    "528": {
         "name": "Shadows of the Empire",
         "authors": [
             "Steve Perry"
@@ -10687,7 +10687,7 @@
             "Peter"
         ]
     },
-    {
+    "529": {
         "name": "Tales of the Empire",
         "authors": [],
         "series": [
@@ -10707,7 +10707,7 @@
             "Peter"
         ]
     },
-    {
+    "530": {
         "name": "Return of the Jedi",
         "authors": [
             "James Kahn"
@@ -10730,7 +10730,7 @@
             "Peter"
         ]
     },
-    {
+    "531": {
         "name": "Tales from Jabba's Palace",
         "authors": [],
         "series": [
@@ -10750,7 +10750,7 @@
             "Peter"
         ]
     },
-    {
+    "532": {
         "name": "The Mandalorian Armour",
         "authors": [
             "K.W. Jeter"
@@ -10776,7 +10776,7 @@
             "Peter"
         ]
     },
-    {
+    "533": {
         "name": "Slave Ship",
         "authors": [
             "K.W. Jeter"
@@ -10802,7 +10802,7 @@
             "Peter"
         ]
     },
-    {
+    "534": {
         "name": "Hard Merchandise",
         "authors": [
             "K.W. Jeter"
@@ -10828,7 +10828,7 @@
             "Peter"
         ]
     },
-    {
+    "535": {
         "name": "The Truce at Bakura",
         "authors": [
             "Kathy Tyers"
@@ -10850,7 +10850,7 @@
             "Peter"
         ]
     },
-    {
+    "536": {
         "name": "Tales from the New Republic",
         "authors": [],
         "series": [
@@ -10870,7 +10870,7 @@
             "Peter"
         ]
     },
-    {
+    "537": {
         "name": "Rogue Squadron",
         "authors": [
             "Michael A. Stackpole"
@@ -10896,7 +10896,7 @@
             "Peter"
         ]
     },
-    {
+    "538": {
         "name": "Wedge's Gamble",
         "authors": [
             "Michael A. Stackpole"
@@ -10922,7 +10922,7 @@
             "Peter"
         ]
     },
-    {
+    "539": {
         "name": "The Krytos Trap",
         "authors": [
             "Michael A. Stackpole"
@@ -10948,7 +10948,7 @@
             "Peter"
         ]
     },
-    {
+    "540": {
         "name": "The Bacta War",
         "authors": [
             "Michael A. Stackpole"
@@ -10974,7 +10974,7 @@
             "Peter"
         ]
     },
-    {
+    "541": {
         "name": "Wraith Squadron",
         "authors": [
             "Aaron Allston"
@@ -11000,7 +11000,7 @@
             "Peter"
         ]
     },
-    {
+    "542": {
         "name": "Iron Fist",
         "authors": [
             "Aaron Allston"
@@ -11026,7 +11026,7 @@
             "Peter"
         ]
     },
-    {
+    "543": {
         "name": "Solo Command",
         "authors": [
             "Aaron Allston"
@@ -11052,7 +11052,7 @@
             "Peter"
         ]
     },
-    {
+    "544": {
         "name": "The Courtship of Princess Leia",
         "authors": [
             "Dave Wolverton"
@@ -11074,7 +11074,7 @@
             "Peter"
         ]
     },
-    {
+    "545": {
         "name": "Corphelion Interlude",
         "authors": [
             "Troy Denning"
@@ -11096,7 +11096,7 @@
             "Peter"
         ]
     },
-    {
+    "546": {
         "name": "A Forest Apart",
         "authors": [
             "Troy Denning"
@@ -11118,7 +11118,7 @@
             "Peter"
         ]
     },
-    {
+    "547": {
         "name": "Tatooine Ghost",
         "authors": [
             "Troy Denning"
@@ -11140,7 +11140,7 @@
             "Peter"
         ]
     },
-    {
+    "548": {
         "name": "Heir to the Empire",
         "authors": [
             "Timothy Zahn"
@@ -11166,7 +11166,7 @@
             "Peter"
         ]
     },
-    {
+    "549": {
         "name": "Dark Force Rising",
         "authors": [
             "Timothy Zahn"
@@ -11192,7 +11192,7 @@
             "Peter"
         ]
     },
-    {
+    "550": {
         "name": "The Last Command",
         "authors": [
             "Timothy Zahn"
@@ -11218,7 +11218,7 @@
             "Peter"
         ]
     },
-    {
+    "551": {
         "name": "Isard's Revenge",
         "authors": [
             "Michael A. Stackpole"
@@ -11244,7 +11244,7 @@
             "Peter"
         ]
     },
-    {
+    "552": {
         "name": "Jedi Search",
         "authors": [
             "Kevin J. Anderson"
@@ -11270,7 +11270,7 @@
             "Peter"
         ]
     },
-    {
+    "553": {
         "name": "Dark Apprentice",
         "authors": [
             "Kevin J. Anderson"
@@ -11296,7 +11296,7 @@
             "Peter"
         ]
     },
-    {
+    "554": {
         "name": "Champions of the Force",
         "authors": [
             "Kevin J. Anderson"
@@ -11322,7 +11322,7 @@
             "Peter"
         ]
     },
-    {
+    "555": {
         "name": "I, Jedi",
         "authors": [
             "Michael A. Stackpole"
@@ -11344,7 +11344,7 @@
             "Peter"
         ]
     },
-    {
+    "556": {
         "name": "Children of the Jedi",
         "authors": [
             "Barbara Hambly"
@@ -11370,7 +11370,7 @@
             "Peter"
         ]
     },
-    {
+    "557": {
         "name": "Darksaber",
         "authors": [
             "Kevin J. Anderson"
@@ -11396,7 +11396,7 @@
             "Peter"
         ]
     },
-    {
+    "558": {
         "name": "Starfighters of Adumar",
         "authors": [
             "Aaron Allston"
@@ -11422,7 +11422,7 @@
             "Peter"
         ]
     },
-    {
+    "559": {
         "name": "Planet of Twilight",
         "authors": [
             "Barbara Hambly"
@@ -11448,7 +11448,7 @@
             "Peter"
         ]
     },
-    {
+    "560": {
         "name": "The Crystal Star",
         "authors": [
             "Vonda N. McIntyre"
@@ -11470,7 +11470,7 @@
             "Peter"
         ]
     },
-    {
+    "561": {
         "name": "Before the Storm",
         "authors": [
             "Michael P. Kube-McDowell"
@@ -11496,7 +11496,7 @@
             "Peter"
         ]
     },
-    {
+    "562": {
         "name": "Shield of Lies",
         "authors": [
             "Michael P. Kube-McDowell"
@@ -11522,7 +11522,7 @@
             "Peter"
         ]
     },
-    {
+    "563": {
         "name": "Tyrant's Test",
         "authors": [
             "Michael P. Kube-McDowell"
@@ -11548,7 +11548,7 @@
             "Peter"
         ]
     },
-    {
+    "564": {
         "name": "The New Rebellion",
         "authors": [
             "Kristine Kathryn Rusch"
@@ -11570,7 +11570,7 @@
             "Peter"
         ]
     },
-    {
+    "565": {
         "name": "Ambush at Corellia",
         "authors": [
             "Roger MacBride Allen"
@@ -11596,7 +11596,7 @@
             "Peter"
         ]
     },
-    {
+    "566": {
         "name": "Assault at Selonia",
         "authors": [
             "Roger MacBride Allen"
@@ -11622,7 +11622,7 @@
             "Peter"
         ]
     },
-    {
+    "567": {
         "name": "Showdown at Centerpoint",
         "authors": [
             "Roger MacBride Allen"
@@ -11648,7 +11648,7 @@
             "Peter"
         ]
     },
-    {
+    "568": {
         "name": "Spectre of the Past",
         "authors": [
             "Timothy Zahn"
@@ -11674,7 +11674,7 @@
             "Peter"
         ]
     },
-    {
+    "569": {
         "name": "Vision of the Future",
         "authors": [
             "Timothy Zahn"
@@ -11700,7 +11700,7 @@
             "Peter"
         ]
     },
-    {
+    "570": {
         "name": "Fool's Bargain",
         "authors": [
             "Timothy Zahn"
@@ -11722,7 +11722,7 @@
             "Peter"
         ]
     },
-    {
+    "571": {
         "name": "Survivor's Quest",
         "authors": [
             "Timothy Zahn"
@@ -11744,7 +11744,7 @@
             "Peter"
         ]
     },
-    {
+    "572": {
         "name": "Boba Fett: A Practical Man",
         "authors": [
             "Karen Traviss"
@@ -11766,7 +11766,7 @@
             "Peter"
         ]
     },
-    {
+    "573": {
         "name": "Vector Prime",
         "authors": [
             "R. A. Salvatore"
@@ -11792,7 +11792,7 @@
             "Peter"
         ]
     },
-    {
+    "574": {
         "name": "Onslaught",
         "authors": [
             "Michael A. Stackpole"
@@ -11822,7 +11822,7 @@
             "Peter"
         ]
     },
-    {
+    "575": {
         "name": "Ruin",
         "authors": [
             "Michael A. Stackpole"
@@ -11852,7 +11852,7 @@
             "Peter"
         ]
     },
-    {
+    "576": {
         "name": "Hero's Trial",
         "authors": [
             "James Luceno"
@@ -11882,7 +11882,7 @@
             "Peter"
         ]
     },
-    {
+    "577": {
         "name": "Jedi Eclipse",
         "authors": [
             "James Luceno"
@@ -11912,7 +11912,7 @@
             "Peter"
         ]
     },
-    {
+    "578": {
         "name": "Balance Point",
         "authors": [
             "Kathy Tyers"
@@ -11938,7 +11938,7 @@
             "Peter"
         ]
     },
-    {
+    "579": {
         "name": "Recovery",
         "authors": [
             "Troy Denning"
@@ -11964,7 +11964,7 @@
             "Peter"
         ]
     },
-    {
+    "580": {
         "name": "Conquest",
         "authors": [
             "Greg Keyes"
@@ -11994,7 +11994,7 @@
             "Peter"
         ]
     },
-    {
+    "581": {
         "name": "Rebirth",
         "authors": [
             "Greg Keyes"
@@ -12024,7 +12024,7 @@
             "Peter"
         ]
     },
-    {
+    "582": {
         "name": "Star by Star",
         "authors": [
             "Troy Denning"
@@ -12050,7 +12050,7 @@
             "Peter"
         ]
     },
-    {
+    "583": {
         "name": "Dark Journey",
         "authors": [
             "Elaine Cunningham"
@@ -12076,7 +12076,7 @@
             "Peter"
         ]
     },
-    {
+    "584": {
         "name": "Rebel Dream",
         "authors": [
             "Aaron Allston"
@@ -12106,7 +12106,7 @@
             "Peter"
         ]
     },
-    {
+    "585": {
         "name": "Rebel Stand",
         "authors": [
             "Aaron Allston"
@@ -12136,7 +12136,7 @@
             "Peter"
         ]
     },
-    {
+    "586": {
         "name": "Traitor",
         "authors": [
             "Matthew Stover"
@@ -12162,7 +12162,7 @@
             "Peter"
         ]
     },
-    {
+    "587": {
         "name": "Destiny's Way",
         "authors": [
             "Walter Jon Williams"
@@ -12188,7 +12188,7 @@
             "Peter"
         ]
     },
-    {
+    "588": {
         "name": "Ylesia",
         "authors": [
             "Walter Jon Williams"
@@ -12214,7 +12214,7 @@
             "Peter"
         ]
     },
-    {
+    "589": {
         "name": "Remnant",
         "authors": [
             "Sean Williams",
@@ -12245,7 +12245,7 @@
             "Peter"
         ]
     },
-    {
+    "590": {
         "name": "Refugee",
         "authors": [
             "Sean Williams",
@@ -12276,7 +12276,7 @@
             "Peter"
         ]
     },
-    {
+    "591": {
         "name": "Reunion",
         "authors": [
             "Sean Williams",
@@ -12307,7 +12307,7 @@
             "Peter"
         ]
     },
-    {
+    "592": {
         "name": "The Final Prophecy",
         "authors": [
             "Greg Keyes"
@@ -12333,7 +12333,7 @@
             "Peter"
         ]
     },
-    {
+    "593": {
         "name": "The Unifying Force",
         "authors": [
             "James Luceno"
@@ -12359,7 +12359,7 @@
             "Peter"
         ]
     },
-    {
+    "594": {
         "name": "The Joiner King",
         "authors": [
             "Troy Denning"
@@ -12385,7 +12385,7 @@
             "Peter"
         ]
     },
-    {
+    "595": {
         "name": "The Unseen Queen",
         "authors": [
             "Troy Denning"
@@ -12411,7 +12411,7 @@
             "Peter"
         ]
     },
-    {
+    "596": {
         "name": "The Swarm War",
         "authors": [
             "Troy Denning"
@@ -12437,7 +12437,7 @@
             "Peter"
         ]
     },
-    {
+    "597": {
         "name": "Betrayal",
         "authors": [
             "Aaron Allston"
@@ -12463,7 +12463,7 @@
             "Peter"
         ]
     },
-    {
+    "598": {
         "name": "Bloodlines",
         "authors": [
             "Karen Traviss"
@@ -12489,7 +12489,7 @@
             "Peter"
         ]
     },
-    {
+    "599": {
         "name": "Tempest",
         "authors": [
             "Troy Denning"
@@ -12515,7 +12515,7 @@
             "Peter"
         ]
     },
-    {
+    "600": {
         "name": "Exile",
         "authors": [
             "Aaron Allston"
@@ -12541,7 +12541,7 @@
             "Peter"
         ]
     },
-    {
+    "601": {
         "name": "Sacrifice",
         "authors": [
             "Karen Traviss"
@@ -12567,7 +12567,7 @@
             "Peter"
         ]
     },
-    {
+    "602": {
         "name": "Inferno",
         "authors": [
             "Troy Denning"
@@ -12593,7 +12593,7 @@
             "Peter"
         ]
     },
-    {
+    "603": {
         "name": "Fury",
         "authors": [
             "Aaron Allston"
@@ -12619,7 +12619,7 @@
             "Peter"
         ]
     },
-    {
+    "604": {
         "name": "Revelation",
         "authors": [
             "Karen Traviss"
@@ -12645,7 +12645,7 @@
             "Peter"
         ]
     },
-    {
+    "605": {
         "name": "Invincible",
         "authors": [
             "Troy Denning"
@@ -12671,7 +12671,7 @@
             "Peter"
         ]
     },
-    {
+    "606": {
         "name": "Crosscurrent",
         "authors": [
             "Paul S. Kemp"
@@ -12689,7 +12689,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "607": {
         "name": "Riptide",
         "authors": [
             "Paul S. Kemp"
@@ -12707,7 +12707,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "608": {
         "name": "Millennium Falcon",
         "authors": [
             "James Luceno"
@@ -12725,7 +12725,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "609": {
         "name": "Outcast",
         "authors": [
             "Aaron Allston"
@@ -12747,7 +12747,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "610": {
         "name": "Omen",
         "authors": [
             "Christie Golden"
@@ -12769,7 +12769,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "611": {
         "name": "Abyss",
         "authors": [
             "Troy Denning"
@@ -12791,7 +12791,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "612": {
         "name": "Backlash",
         "authors": [
             "Aaron Allston"
@@ -12813,7 +12813,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "613": {
         "name": "Allies",
         "authors": [
             "Christie Golden"
@@ -12835,7 +12835,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "614": {
         "name": "Vortex",
         "authors": [
             "Troy Denning"
@@ -12857,7 +12857,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "615": {
         "name": "Conviction",
         "authors": [
             "Aaron Allston"
@@ -12879,7 +12879,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "616": {
         "name": "Ascension",
         "authors": [
             "Christie Golden"
@@ -12901,7 +12901,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "617": {
         "name": "Apocalypse",
         "authors": [
             "Troy Denning"
@@ -12923,7 +12923,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "618": {
         "name": "Mercy Kill",
         "authors": [
             "Aaron Allston"
@@ -12949,7 +12949,7 @@
             "Peter"
         ]
     },
-    {
+    "619": {
         "name": "Crucible",
         "authors": [
             "Troy Denning"
@@ -12967,7 +12967,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "620": {
         "name": "The Hunter",
         "authors": [
             "Richard Stark"
@@ -12989,7 +12989,7 @@
             "Peter"
         ]
     },
-    {
+    "621": {
         "name": "The Man With the Getaway Face",
         "authors": [
             "Richard Stark"
@@ -13007,7 +13007,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "622": {
         "name": "The Outfit",
         "authors": [
             "Richard Stark"
@@ -13025,7 +13025,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "623": {
         "name": "The Mourner",
         "authors": [
             "Richard Stark"
@@ -13043,7 +13043,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "624": {
         "name": "The Score",
         "authors": [
             "Richard Stark"
@@ -13061,7 +13061,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "625": {
         "name": "The Juggler",
         "authors": [
             "Richard Stark"
@@ -13079,7 +13079,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "626": {
         "name": "The Seventh",
         "authors": [
             "Richard Stark"
@@ -13097,7 +13097,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "627": {
         "name": "The Handle",
         "authors": [
             "Richard Stark"
@@ -13115,7 +13115,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "628": {
         "name": "The Rare Coin Score",
         "authors": [
             "Richard Stark"
@@ -13133,7 +13133,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "629": {
         "name": "The Green Eagle Score",
         "authors": [
             "Richard Stark"
@@ -13151,7 +13151,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "630": {
         "name": "The Black Ice Score",
         "authors": [
             "Richard Stark"
@@ -13169,7 +13169,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "631": {
         "name": "The Sour Lemon Score",
         "authors": [
             "Richard Stark"
@@ -13187,7 +13187,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "632": {
         "name": "Deadly Edge",
         "authors": [
             "Richard Stark"
@@ -13205,7 +13205,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "633": {
         "name": "Slayground",
         "authors": [
             "Richard Stark"
@@ -13223,7 +13223,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "634": {
         "name": "Plunder Squad",
         "authors": [
             "Richard Stark"
@@ -13241,7 +13241,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "635": {
         "name": "Butcher's Moon",
         "authors": [
             "Richard Stark"
@@ -13259,7 +13259,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "636": {
         "name": "Comeback",
         "authors": [
             "Richard Stark"
@@ -13277,7 +13277,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "637": {
         "name": "Backflash",
         "authors": [
             "Richard Stark"
@@ -13295,7 +13295,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "638": {
         "name": "Flashfire",
         "authors": [
             "Richard Stark"
@@ -13313,7 +13313,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "639": {
         "name": "Firebreak",
         "authors": [
             "Richard Stark"
@@ -13331,7 +13331,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "640": {
         "name": "Breakout",
         "authors": [
             "Richard Stark"
@@ -13349,7 +13349,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "641": {
         "name": "Nobody Runs Forever",
         "authors": [
             "Richard Stark"
@@ -13367,7 +13367,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "642": {
         "name": "Ask the Parrot",
         "authors": [
             "Richard Stark"
@@ -13385,7 +13385,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "643": {
         "name": "Dirty Money",
         "authors": [
             "Richard Stark"
@@ -13403,7 +13403,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "644": {
         "name": "Of Mice and Men",
         "authors": [
             "John Steinbeck"
@@ -13421,7 +13421,7 @@
             "Peter"
         ]
     },
-    {
+    "645": {
         "name": "The Life and Opinions of Tristram Shandy, Gentleman",
         "authors": [
             "Laurence Sterne"
@@ -13438,7 +13438,7 @@
         ],
         "read": []
     },
-    {
+    "646": {
         "name": "Prose Edda",
         "authors": [
             "Snorri Sturluson"
@@ -13455,7 +13455,7 @@
             "Peter"
         ]
     },
-    {
+    "647": {
         "name": "Beowulf",
         "authors": [],
         "series": [],
@@ -13471,7 +13471,7 @@
             "Peter"
         ]
     },
-    {
+    "648": {
         "name": "The Hobbit",
         "authors": [
             "J. R. R. Tolkien"
@@ -13491,7 +13491,7 @@
             "Peter"
         ]
     },
-    {
+    "649": {
         "name": "The Lord of the Rings",
         "authors": [
             "J. R. R. Tolkien"
@@ -13513,7 +13513,7 @@
             "Peter"
         ]
     },
-    {
+    "650": {
         "name": "War and Peace",
         "authors": [
             "Leo Tolstoy"
@@ -13530,7 +13530,7 @@
             "Peter"
         ]
     },
-    {
+    "651": {
         "name": "The Adventures of Tom Sawyer",
         "authors": [
             "Mark Twain"
@@ -13548,7 +13548,7 @@
             "Peter"
         ]
     },
-    {
+    "652": {
         "name": "The Adventures of Huckleberry Finn",
         "authors": [
             "Mark Twain"
@@ -13566,7 +13566,7 @@
             "Peter"
         ]
     },
-    {
+    "653": {
         "name": "Tao Te Ching",
         "authors": [
             "Lao Tzu"
@@ -13583,7 +13583,7 @@
             "Peter"
         ]
     },
-    {
+    "654": {
         "name": "The Art of War",
         "authors": [
             "Sun Tzu"
@@ -13601,7 +13601,7 @@
             "Peter"
         ]
     },
-    {
+    "655": {
         "name": "Tales of the Dying Earth",
         "authors": [
             "Jack Vance"
@@ -13618,7 +13618,7 @@
             "Peter"
         ]
     },
-    {
+    "656": {
         "name": "Candide",
         "authors": [
             "Voltaire"
@@ -13636,7 +13636,7 @@
             "Peter"
         ]
     },
-    {
+    "657": {
         "name": "Cat's Cradle",
         "authors": [
             "Kurt Vonnegut"
@@ -13654,7 +13654,7 @@
             "Peter"
         ]
     },
-    {
+    "658": {
         "name": "Slaughterhouse-Five",
         "authors": [
             "Kurt Vonnegut"
@@ -13672,7 +13672,7 @@
             "Peter"
         ]
     },
-    {
+    "659": {
         "name": "Decline and Fall",
         "authors": [
             "Evelyn Waugh"
@@ -13689,7 +13689,7 @@
             "Peter"
         ]
     },
-    {
+    "660": {
         "name": "The Island of Doctor Moreau",
         "authors": [
             "H. G. Wells"
@@ -13706,7 +13706,7 @@
             "Peter"
         ]
     },
-    {
+    "661": {
         "name": "The Time Machine",
         "authors": [
             "H. G. Wells"
@@ -13723,7 +13723,7 @@
             "Peter"
         ]
     },
-    {
+    "662": {
         "name": "The Invisible Man",
         "authors": [
             "H. G. Wells"
@@ -13740,7 +13740,7 @@
             "Peter"
         ]
     },
-    {
+    "663": {
         "name": "The Picture of Dorian Gray",
         "authors": [
             "Oscar Wilde"
@@ -13757,7 +13757,7 @@
             "Peter"
         ]
     },
-    {
+    "664": {
         "name": "Doomsday Book",
         "authors": [
             "Connie Willis"
@@ -13772,7 +13772,7 @@
         ],
         "read": []
     },
-    {
+    "665": {
         "name": "The Fifth Head of Cerberus",
         "authors": [
             "Gene Wolfe"
@@ -13789,7 +13789,7 @@
             "Peter"
         ]
     },
-    {
+    "666": {
         "name": "The Shadow of the Torturer",
         "authors": [
             "Gene Wolfe"
@@ -13811,7 +13811,7 @@
             "Peter"
         ]
     },
-    {
+    "667": {
         "name": "The Claw of the Conciliator",
         "authors": [
             "Gene Wolfe"
@@ -13833,7 +13833,7 @@
             "Peter"
         ]
     },
-    {
+    "668": {
         "name": "The Sword of the Lictor",
         "authors": [
             "Gene Wolfe"
@@ -13851,7 +13851,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "669": {
         "name": "The Citadel of the Autarch",
         "authors": [
             "Gene Wolfe"
@@ -13869,7 +13869,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "670": {
         "name": "The Man with Two Left Feet",
         "authors": [
             "P. G. Wodehouse"
@@ -13887,7 +13887,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "671": {
         "name": "My Man Jeeves",
         "authors": [
             "P. G. Wodehouse"
@@ -13905,7 +13905,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "672": {
         "name": "The Inimitable Jeeves",
         "authors": [
             "P. G. Wodehouse"
@@ -13927,7 +13927,7 @@
             "Peter"
         ]
     },
-    {
+    "673": {
         "name": "Carry On, Jeeves",
         "authors": [
             "P. G. Wodehouse"
@@ -13949,7 +13949,7 @@
             "Peter"
         ]
     },
-    {
+    "674": {
         "name": "Very Good, Jeeves",
         "authors": [
             "P. G. Wodehouse"
@@ -13971,7 +13971,7 @@
             "Peter"
         ]
     },
-    {
+    "675": {
         "name": "Thank You, Jeeves",
         "authors": [
             "P. G. Wodehouse"
@@ -13993,7 +13993,7 @@
             "Peter"
         ]
     },
-    {
+    "676": {
         "name": "Right Ho, Jeeves",
         "authors": [
             "P. G. Wodehouse"
@@ -14015,7 +14015,7 @@
             "Peter"
         ]
     },
-    {
+    "677": {
         "name": "The Code of the Woosters",
         "authors": [
             "P. G. Wodehouse"
@@ -14037,7 +14037,7 @@
             "Peter"
         ]
     },
-    {
+    "678": {
         "name": "Joy in the Morning",
         "authors": [
             "P. G. Wodehouse"
@@ -14059,7 +14059,7 @@
             "Peter"
         ]
     },
-    {
+    "679": {
         "name": "The Mating Season",
         "authors": [
             "P. G. Wodehouse"
@@ -14077,7 +14077,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "680": {
         "name": "Ring for Jeeves",
         "authors": [
             "P. G. Wodehouse"
@@ -14095,7 +14095,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "681": {
         "name": "Jeeves and the Feudal Spirit",
         "authors": [
             "P. G. Wodehouse"
@@ -14113,7 +14113,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "682": {
         "name": "Jeeves in the Offing",
         "authors": [
             "P. G. Wodehouse"
@@ -14131,7 +14131,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "683": {
         "name": "Stiff Upper Lip, Jeeves",
         "authors": [
             "P. G. Wodehouse"
@@ -14149,7 +14149,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "684": {
         "name": "Much Obliged, Jeeves",
         "authors": [
             "P. G. Wodehouse"
@@ -14167,7 +14167,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "685": {
         "name": "Aunts Aren't Gentlemen",
         "authors": [
             "P. G. Wodehouse"
@@ -14185,7 +14185,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "686": {
         "name": "Journey to the West Volume 1",
         "authors": [
             "Wu Cheng'en"
@@ -14209,7 +14209,7 @@
             "Peter"
         ]
     },
-    {
+    "687": {
         "name": "Journey to the West Volume 2",
         "authors": [
             "Wu Cheng'en"
@@ -14229,7 +14229,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "688": {
         "name": "Journey to the West Volume 3",
         "authors": [
             "Wu Cheng'en"
@@ -14249,7 +14249,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "689": {
         "name": "Journey to the West Volume 4",
         "authors": [
             "Wu Cheng'en"
@@ -14269,7 +14269,7 @@
         "owners": [],
         "read": []
     },
-    {
+    "690": {
         "name": "To the Lighthouse",
         "type": "Novel",
         "authors": [
@@ -14284,7 +14284,7 @@
         "read": [],
         "series": []
     },
-    {
+    "691": {
         "name": "Dirk Gently's Holistic Detective Agency",
         "type": "Novel",
         "genres": [
@@ -14307,7 +14307,7 @@
             }
         ]
     },
-    {
+    "692": {
         "name": "The Long Dark Tea-Time of the Soul",
         "type": "Novel",
         "genres": [
@@ -14326,7 +14326,7 @@
             }
         ]
     },
-    {
+    "693": {
         "name": "The Salmon of Doubt",
         "type": "Novel",
         "genres": [
@@ -14345,7 +14345,7 @@
             }
         ]
     },
-    {
+    "694": {
         "name": "Mrs Dalloway",
         "type": "Novel",
         "genres": [
@@ -14360,7 +14360,7 @@
         "read": [],
         "series": []
     },
-    {
+    "695": {
         "name": "Middlemarch",
         "type": "Novel",
         "genres": [
@@ -14375,7 +14375,7 @@
         "read": [],
         "series": []
     },
-    {
+    "696": {
         "name": "Robinson Crusoe",
         "type": "Novel",
         "genres": [
@@ -14391,7 +14391,7 @@
         "read": [],
         "series": []
     },
-    {
+    "697": {
         "name": "The Pilgrim's Progress",
         "type": "Novel",
         "genres": [
@@ -14406,7 +14406,7 @@
         "read": [],
         "series": []
     },
-    {
+    "698": {
         "name": "The Turn of the Screw",
         "type": "Novella",
         "genres": [
@@ -14423,4 +14423,4 @@
         "read": [],
         "series": []
     }
-]
+}
