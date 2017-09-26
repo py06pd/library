@@ -124,11 +124,14 @@ module.exports = {
             this.loadBooks();
         },
         
-        saveItem: function() {
+        saveItem: function(close) {
             var data = JSON.stringify(this.editing);
             this.save('saveItem', { data: data }).then(function() {
                 this.loadBooks();
-                this.formOpen = false;
+                this.showSucessMessage('Update successful');
+                if (close) {
+                    this.formOpen = false;
+                }
             });
         },
         

@@ -72,11 +72,13 @@
         </el-table-column>
         <el-table-column
             prop="owners"
-            label="Owner">
+            label="Owner"
+            width="100">
         </el-table-column>
         <el-table-column
             prop="read"
-            label="Read">
+            label="Read"
+            width="100">
         </el-table-column>  
     </el-table>
     
@@ -122,7 +124,8 @@
                             clearable
                             filterable
                             v-model="current.name"
-                            placeholder="Please select a series">
+                            placeholder="Please select a series"
+                            @change="seriesChange">
                             <el-option v-for="serie in series" :label="serie" :value="serie"></el-option>
                         </el-select>
                         <el-input class="series-number" v-model="current.number"></el-input>
@@ -133,7 +136,8 @@
                             clearable
                             filterable
                             v-model="newSeries.name"
-                            placeholder="Please select a series">
+                            placeholder="Please select a series"
+                            @change="seriesChange">
                             <el-option v-for="serie in series" :label="serie" :value="serie"></el-option>
                         </el-select>
                         <el-input class="series-number" v-model="newSeries.number"></el-input>
@@ -162,7 +166,8 @@
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="saveItem">Confirm</el-button>
+            <el-button type="primary" @click="saveItem(true)">Save and Close</el-button>
+            <el-button v-if="editing.id === -1" type="primary" @click="saveItem(false)">Save</el-button>
             <el-button @click="formOpen = false">Cancel</el-button>
         </span>
     </el-dialog>
