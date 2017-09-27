@@ -13,6 +13,7 @@ class Book {
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
      */
     public $id;
 
@@ -27,27 +28,27 @@ class Book {
     public $type;
     
     /**
-     * @ORM\Column(type="json", length=1024)
+     * @ORM\Column(type="json_array", length=1024)
      */
     public $authors;
     
     /**
-     * @ORM\Column(type="json", length=1024)
+     * @ORM\Column(type="json_array", length=1024)
      */
     public $genres;
     
     /**
-     * @ORM\Column(type="json", length=1024)
+     * @ORM\Column(type="json_array", length=1024)
      */
     public $series;
     
     /**
-     * @ORM\Column(type="json", length=1024)
+     * @ORM\Column(type="json_array", length=1024)
      */
     public $owners;
     
     /**
-     * @ORM\Column(type="json", length=1024)
+     * @ORM\Column(type="json_array", length=1024)
      */
     public $read;
 }

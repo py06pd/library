@@ -10,6 +10,62 @@ use AppBundle\Entity\Book;
 class DefaultController extends Controller
 {
     /**
+     * @Route("/info")
+     */
+    public function info()
+    {
+        echo phpinfo();
+        return $this->json(array());
+    }
+    
+    /**
+     * @Route("/todb")
+     */
+    public function todb()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"));
+        foreach ($data as $id => $item) {
+            $book = new Book();
+            $book->id = $id;
+            $book->name = $item->name;
+            if (isset($item->type) && $item->type != '') {
+                $book->type = (string)$item->type;
+            }
+
+            $book->authors = array();
+            if (isset($item->authors) && is_array($item->authors)) {
+                $book->authors = $item->authors;
+            }
+
+            $book->genres = array();
+            if (isset($item->genres) && is_array($item->genres)) {
+                $book->genres = $item->genres;
+            }
+
+            $book->series = array();
+            if (isset($item->series) && is_array($item->series)) {
+                $book->series = $item->series;
+            }
+
+            $book->owners = array();
+            if (isset($item->owners) && is_array($item->owners)) {
+                $book->owners = $item->owners;
+            }
+
+            $book->read = array();
+            if (isset($item->read) && is_array($item->read)) {
+                $book->read = $item->read;
+            }
+            
+            $em->persist($book);
+            $em->flush();
+        }
+        
+        return $this->json(array('status' => "OK"));
+    }
+    
+    /**
      * @Route("/", name="homepage")
      */
     public function indexAction(Request $request)
@@ -53,14 +109,15 @@ class DefaultController extends Controller
      */
     public function deleteItemsAction(Request $request)
     {
-        $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"), true);
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository(Book::class);
         
-        foreach ($request->request->get('ids', array()) as $id) {
-            unset($data[$id]);
+        $books = $repo->findBy(array('id' => $request->request->get('ids')));
+        foreach ($books as $item) {
+            $em->remove($item);
         }
-        
-        file_put_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json", json_encode($data, JSON_PRETTY_PRINT));
-        
+        $em->flush();
+                
         return $this->json(array('status' => "OK"));
     }
     
@@ -79,12 +136,8 @@ class DefaultController extends Controller
      */
     public function getDataAction(Request $request)
     {
-        if ($this->getParameter('source') == 'pgsql') {
-            $data = $this->getDoctrine()->getRepository(Book::class)->findAll();
-        } else {        
-            $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"));
-        }
-        
+        $data = $this->getDoctrine()->getRepository(Book::class)->findAll();
+                
         $filters = json_decode($request->request->get('filters', json_encode(array())));
         
         $eqFilters = $noFilters = array();
@@ -102,37 +155,35 @@ class DefaultController extends Controller
         $series = array();
         $types = array();
         $books = array();
-        foreach ($data as $id => $item) {
+        foreach ($data as $item) {
             $this->addToDataArray($item, 'authors', $authors);
             $this->addToDataArray($item, 'genres', $genres);
             $this->addToDataArray($item, 'owners', $people);
             $this->addToDataArray($item, 'read', $people);
-            if (isset($item->type) && $item->type != '' && !in_array($item->type, $types)) {
+            if ($item->type != '' && !in_array($item->type, $types)) {
                 $types[] = $item->type;
             }
             sort($types);
             
             $bookSeries = array();
-            if (isset($item->series) && is_array($item->series)) {
-                foreach ($item->series as $value) {
-                    $bookSeries[] = $value->name;
-                    if (!in_array($value->name, $series)) {
-                        $series[] = $value->name;
-                    }
+            foreach ($item->series as $value) {
+                $bookSeries[] = $value['name'];
+                if (!in_array($value['name'], $series)) {
+                    $series[] = $value['name'];
                 }
-                
-                sort($series);
             }
+                
+            sort($series);
             
             if ($this->checkFilters($item, $bookSeries, $eqFilters, $noFilters)) {
                 $books[] = array(
-                    'id' => $id,
+                    'id' => $item->id,
                     'name' => $item->name,
-                    'type' => isset($item->type)?$item->type:null,
-                    'authors' => isset($item->authors)?implode(", ", $item->authors):null,
-                    'genres' => isset($item->genres)?implode(", ", $item->genres):null,
-                    'owners' => isset($item->owners)?implode(", ", $item->owners):null,
-                    'read' => isset($item->read)?implode(", ", $item->read):null,
+                    'type' => $item->type,
+                    'authors' => implode(", ", $item->authors),
+                    'genres' => implode(", ", $item->genres),
+                    'owners' => implode(", ", $item->owners),
+                    'read' => implode(", ", $item->read),
                     'series' => implode(", ", $bookSeries)
                 );
             }
@@ -154,21 +205,11 @@ class DefaultController extends Controller
      */
     public function getItemAction(Request $request)
     {
-        $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"));
+        $item = $this->getDoctrine()
+                     ->getRepository(Book::class)
+                     ->findOneBy(array('id' => $request->request->get('id')));
         
-        $item = $data->{$request->request->get('id')};
-        $book = array(
-            'id' => $request->request->get('id'),
-            'name' => $item->name,
-            'type' => isset($item->type)?$item->type:null,
-            'authors' => isset($item->authors)?$item->authors:array(),
-            'genres' => isset($item->genres)?$item->genres:array(),
-            'owners' => isset($item->owners)?$item->owners:array(),
-            'read' => isset($item->read)?$item->read:array(),
-            'series' => isset($item->series)?$item->series:array()
-        );
-        
-        return $this->json(array('status' => "OK", 'data' => $book));
+        return $this->json(array('status' => "OK", 'data' => $item));
     }
     
     /**
@@ -176,16 +217,29 @@ class DefaultController extends Controller
      */
     public function saveItemAction(Request $request)
     {
-        $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"), true);
         $dataItem = json_decode($request->request->get('data'), true);
         
+        $em = $this->getDoctrine()->getManager();
         if ($dataItem['id'] == -1) {
-            $dataItem['id'] = max(array_keys($data)) + 1;
-        } 
+            $item = new Book();
+        } else {
+            $item = $em->getRepository(Book::class)
+                       ->findOneBy(array('id' => $dataItem['id']));
+        }
         
-        $data[$dataItem['id']] = $dataItem;
+        $item->name = $dataItem['name'];
+        $item->type = $dataItem['type'];
+        $item->authors = $dataItem['authors'];
+        $item->genres = $dataItem['genres'];
+        $item->series = $dataItem['series'];
+        $item->owners = $dataItem['owners'];
+        $item->read = $dataItem['read'];
         
-        file_put_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json", json_encode($data, JSON_PRETTY_PRINT));
+        if ($dataItem['id'] == -1) {
+            $em->persist($item);
+        }
+        
+        $em->flush();
         
         return $this->json(array('status' => "OK"));
     }
