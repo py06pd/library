@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\Book;
 
 class DefaultController extends Controller
 {
@@ -78,7 +79,12 @@ class DefaultController extends Controller
      */
     public function getDataAction(Request $request)
     {
-        $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"));
+        if ($this->getParameter('source') == 'pgsql') {
+            $data = $this->getDoctrine()->getRepository(Book::class)->findAll();
+        } else {        
+            $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"));
+        }
+        
         $filters = json_decode($request->request->get('filters', json_encode(array())));
         
         $eqFilters = $noFilters = array();
