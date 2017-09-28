@@ -1,0 +1,6 @@
+<div>
+    <ul>
+        <li v-for="file in files" @click="onFileSelected(file)">{{ file }}</li>
+    </ul>
+    <div v-if="showLogs">{{ contents }}</div>
+</div>

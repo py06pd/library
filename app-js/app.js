@@ -7,6 +7,7 @@ import VueResource from 'vue-resource';
 import router from './router';
 
 import BookList from './components/BookList';
+import LogsList from './components/LogsList';
 
 import {
     Button,
@@ -30,6 +31,7 @@ Vue.use(VueResource);
 //Vue.use(new Navigator(), { 'router' : router, 'messageBox' : MessageBox });
 
 Vue.component(BookList.name, BookList);
+Vue.component(LogsList.name, LogsList);
 
 // Register the Element UI components we're using
 Vue.use(Button);

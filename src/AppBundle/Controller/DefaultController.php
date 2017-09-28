@@ -19,9 +19,44 @@ class DefaultController extends Controller
     }
     
     /**
+     * @Route("/getLogFile")
+     */
+    public function getLogFileAction(Request $request)
+    {
+        $contents = file_get_contents(
+            $this->getParameter('kernel.project_dir') .
+            "/var/logs/" .
+            $request->request->get('file')
+        );
+        
+        return $this->json(array('status' => "OK", 'contents' => $contents));
+    }
+    
+    /**
+     * @Route("/getLogFiles")
+     */
+    public function getLogFilesAction()
+    {
+        $logfiles = glob($this->getParameter('kernel.project_dir') . "/var/logs/*");
+        $files = array();
+        foreach ($logfiles as $file) {
+            $files[] = substr($file, strrpos($file, '/') + 1);
+        }
+        return $this->json(array('status' => "OK", 'files' => $files));
+    }
+    
+    /**
+     * @Route("/logs")
+     */
+    public function logsAction()
+    {
+        return $this->render('main/logs.html.twig');
+    }
+    
+    /**
      * @Route("/todb")
      */
-    public function todb()
+    public function todbAction()
     {
         $em = $this->getDoctrine()->getManager();
         $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"));
