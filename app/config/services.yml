@@ -33,3 +33,7 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+    facebook.graph:
+        class: Facebook\Facebook
+        arguments: [{'app_id': '%facebookAppId%', 'app_secret': '%facebookSecret%'}]
+        
