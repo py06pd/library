@@ -6,12 +6,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
+use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
                
 use AppBundle\Entity\User;
 
-class UsersController extends Controller
+class UserController extends Controller
 {
     /**
      * @Route("/users/delete")
@@ -88,12 +89,16 @@ class UsersController extends Controller
     {
         $id = $request->request->get('id');
         
-        $helper = $this->get('facebook.graph')->getRedirectLoginHelper();
+        //$helper = $this->get('facebook.graph')->getRedirectLoginHelper();
+        $helper = (new Facebook(array(
+            'app_id' => $this->getParameter('facebookAppId'),
+            'app_secret' => $this->getParameter('facebookSecret')
+        )))->getRedirectLoginHelper();
         $loginUrl = $helper->getLoginUrl($request->getBasePath() . "/users/callback/" . $id, array(
             'user_actions.books'
         ));
         
-        return $this->redirect($loginUrl);
+        return $this->json(array('status' => "OK", 'url' => $loginUrl));
     }
     
     /**
@@ -101,7 +106,10 @@ class UsersController extends Controller
      */
     public function callbackAction($id, Request $request)
     {
-        $fb = $this->get('facebook.graph');
+        $fb = new Facebook(array(
+            'app_id' => $this->getParameter('facebookAppId'),
+            'app_secret' => $this->getParameter('facebookSecret')
+        ));
         $logger = $this->get('logger');
         $helper = $fb->getRedirectLoginHelper();
         

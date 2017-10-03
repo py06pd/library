@@ -1,0 +1,42 @@
+<div>
+    <div id="controls">
+        <el-button type="primary" icon="plus" @click="openAdd">Add User</el-button>
+        <el-button type="primary" icon="delete" @click="deleteItems">Delete Selected</el-button>
+    </div>
+    
+    <el-table class="cic-table"
+        :data="users"
+        :default-sort = "{prop: 'name', order: 'ascending'}"
+        highlight-current-row
+        @selection-change="onRowSelected"
+        height="600">
+        <el-table-column
+            type="selection">
+        </el-table-column>
+        <el-table-column
+            width="50">
+            <template scope="scope">
+                <el-button size="small" icon="edit" @click="openEdit(scope.row.id)"></el-button>
+            </template>
+        </el-table-column>
+        <el-table-column
+            prop="name"
+            label="Name">
+        </el-table-column>
+    </el-table>
+    
+    <el-dialog id="frmBook" title="Edit User" :visible.sync="formOpen">
+        <el-form :model="editing">
+            <el-form-item label="Name">
+                <el-input class="name" v-model="editing.name"></el-input>
+            </el-form-item>
+        </el-form>
+        <template v-if="editing.id !== -1 && editing.facebookToken === null">
+            <el-button type="primary" @click="addAccount">Set Facebook Account</el-button>
+        </template>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="saveItem">Save</el-button>
+            <el-button @click="formOpen = false">Cancel</el-button>
+        </span>
+    </el-dialog>
+</div>

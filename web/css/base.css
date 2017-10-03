@@ -54,14 +54,12 @@ p { margin: 0px; padding: 0px; margin-top: 10px; }
 
 img { border: 0; vertical-align: middle; }
 
-.MenuContent { width:180px; overflow-y:auto; display:inline-block; border: 1px solid #cccccc; display:none; }
+.MenuContent { overflow-y:auto; display:inline-block; }
 .PageContent { display:inline-block; vertical-align:top; margin-left:10px; }
-
-.has-menu .MenuContent { display:block; }
 
 .el-form-item { margin-bottom: 10px !important; }
 
-#tblBooks table { width:100%; }
+.cic-table table { width:100%; }
 #controls { margin:10px 0px; }
 #frmBook .name { width: 217px; }
 #frmBook .series-number { width: 50px; }

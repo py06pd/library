@@ -8,6 +8,8 @@ import router from './router';
 
 import BookList from './components/BookList';
 import LogsList from './components/LogsList';
+import AppMenu from './components/Menu';
+import UserList from './components/UserList';
 
 import {
     Button,
@@ -15,6 +17,8 @@ import {
     Form,
     FormItem,
     Input,
+    Menu,
+    MenuItem,
     MessageBox,
     Notification,
     Option,
@@ -32,6 +36,8 @@ Vue.use(VueResource);
 
 Vue.component(BookList.name, BookList);
 Vue.component(LogsList.name, LogsList);
+Vue.component(AppMenu.name, AppMenu);
+Vue.component(UserList.name, UserList);
 
 // Register the Element UI components we're using
 Vue.use(Button);
@@ -39,6 +45,8 @@ Vue.use(Dialog);
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Input);
+Vue.use(Menu);
+Vue.use(MenuItem);
 Vue.use(Option);
 Vue.use(Select);
 Vue.use(Table);
@@ -57,4 +65,14 @@ locale.use(lang);
 new Vue({
     el: '#app',
     router,
+    data: function () {
+        return {
+            menuSelectedOption: 'books',
+        };
+    },
+    methods: {
+        menuSelectOption: function(option) {
+            this.menuSelectedOption = option;
+        },
+    },
 });

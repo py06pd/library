@@ -1,0 +1,7 @@
+<div>
+    <el-button type="primary" icon="menu" @click="toggleMenu"></el-button>
+    <el-menu default-active="1" v-show="showMenu">
+        <el-menu-item index="1" @click="onOptionSelected('books')">Books</el-menu-item>
+        <el-menu-item index="2" @click="onOptionSelected('users')">Users</el-menu-item>
+    </el-menu>
+</div>

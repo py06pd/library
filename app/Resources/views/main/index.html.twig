@@ -8,9 +8,16 @@
     <body>
         <div id="app">
             <div id="content">
-                <div class="MenuContent"></div>
+                <div class="MenuContent">
+                    <cic-menu v-on:select="menuSelectOption"></cic-menu>
+                </div>
                 <div class="PageContent">
-                    <cic-book-list></cic-book-list>
+                    <div v-if="menuSelectedOption === 'books'">
+                        <cic-book-list></cic-book-list>
+                    </div>
+                    <div v-if="menuSelectedOption === 'users'">
+                        <cic-user-list></cic-user-list>
+                    </div>
                 </div>
             </div>
         </div>
