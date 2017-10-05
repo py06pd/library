@@ -37,3 +37,10 @@ services:
         class: Facebook\Facebook
         arguments: [{'app_id': '%facebookAppId%', 'app_secret': '%facebookSecret%'}]
         
+    app.userprovider:
+        class: AppBundle\Security\UserProvider
+        arguments: ['@doctrine.orm.entity_manager']
+        
+    app.userauthenticator:
+        class: AppBundle\Security\UserAuthenticator
+        arguments: ['@doctrine.orm.entity_manager']

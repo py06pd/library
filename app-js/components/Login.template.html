@@ -1,0 +1,6 @@
+<div id="userSection">
+    <el-select :value="value.id" v-on:input="onOptionSelected">
+        <el-option :value="0" :label="'Anonymous'"></el-option>
+        <el-option v-for="userOption in users" :value="userOption.id" :label="userOption.name"></el-option>
+    </el-select>
+</div>

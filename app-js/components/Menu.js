@@ -3,12 +3,14 @@ module.exports = {
     template: require('./Menu.template.html'),
     data: function () {
         return {
+            activeIndex: 1,
             showMenu: false,
         };
     },
     methods: {
-        onOptionSelected: function(option) {
+        onOptionSelected: function(option, index) {
             this.$emit('select', option);
+            this.activeIndex = index;
         },
         toggleMenu: function() {
             this.showMenu = !this.showMenu;

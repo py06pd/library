@@ -6,18 +6,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Book;
+use AppBundle\Entity\User;
 
 class DefaultController extends Controller
 {
-    /**
-     * @Route("/info")
-     */
-    public function info()
-    {
-        echo phpinfo();
-        return $this->json(array());
-    }
-    
     /**
      * @Route("/getLogFile")
      */
@@ -51,53 +43,6 @@ class DefaultController extends Controller
     public function logsAction()
     {
         return $this->render('main/logs.html.twig');
-    }
-    
-    /**
-     * @Route("/todb")
-     */
-    public function todbAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"));
-        foreach ($data as $id => $item) {
-            $book = new Book();
-            $book->id = $id;
-            $book->name = $item->name;
-            if (isset($item->type) && $item->type != '') {
-                $book->type = (string)$item->type;
-            }
-
-            $book->authors = array();
-            if (isset($item->authors) && is_array($item->authors)) {
-                $book->authors = $item->authors;
-            }
-
-            $book->genres = array();
-            if (isset($item->genres) && is_array($item->genres)) {
-                $book->genres = $item->genres;
-            }
-
-            $book->series = array();
-            if (isset($item->series) && is_array($item->series)) {
-                $book->series = $item->series;
-            }
-
-            $book->owners = array();
-            if (isset($item->owners) && is_array($item->owners)) {
-                $book->owners = $item->owners;
-            }
-
-            $book->read = array();
-            if (isset($item->read) && is_array($item->read)) {
-                $book->read = $item->read;
-            }
-            
-            $em->persist($book);
-            $em->flush();
-        }
-        
-        return $this->json(array('status' => "OK"));
     }
     
     /**
@@ -154,16 +99,6 @@ class DefaultController extends Controller
         $em->flush();
                 
         return $this->json(array('status' => "OK"));
-    }
-    
-    /**
-     * @Route("/export")
-     */
-    public function exportAction()
-    {
-        $data = json_decode(file_get_contents($this->getParameter('kernel.project_dir') . "/app/Resources/data.json"), true);
-        
-        return $this->json($data);
     }
     
     /**
@@ -224,6 +159,12 @@ class DefaultController extends Controller
             }
         }
         
+        $dbUsers = $this->getDoctrine()->getRepository(User::class)->findAll();
+        $users = array();
+        foreach ($dbUsers as $user) {
+            $users[$user->id] = $user;
+        }
+        
         return $this->json(array(
             'status' => "OK",
             'data' => $books,
@@ -231,7 +172,9 @@ class DefaultController extends Controller
             'genres' => $genres,
             'people' => $people,
             'types' => $types,
-            'series' => $series
+            'series' => $series,
+            'user' => $this->getUser(),
+            'users' => $users
         ));
     }
     

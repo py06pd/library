@@ -4,6 +4,8 @@ security:
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
+        app:
+            id: app.userprovider
         in_memory:
             memory: ~
 
@@ -15,6 +17,9 @@ security:
 
         main:
             anonymous: ~
+            guard:
+                authenticators:
+                    - app.userauthenticator
             # activate different ways to authenticate
 
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate

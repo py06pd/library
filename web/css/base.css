@@ -54,8 +54,8 @@ p { margin: 0px; padding: 0px; margin-top: 10px; }
 
 img { border: 0; vertical-align: middle; }
 
-.MenuContent { overflow-y:auto; display:inline-block; }
-.PageContent { display:inline-block; vertical-align:top; margin-left:10px; }
+.MenuContent { margin: 10px 0px 0px 10px; }
+.PageContent { margin-left:10px; }
 
 .el-form-item { margin-bottom: 10px !important; }
 
@@ -65,3 +65,11 @@ img { border: 0; vertical-align: middle; }
 #frmBook .series-number { width: 50px; }
 #frmBook .el-form-item__label { width: 70px; text-align: left; }
 #frmBook .el-form-item__content { margin-left: 70px; }
+
+#menuSection, #userSection { display: inline-block; }
+#menuSection .el-menu {
+    position: absolute;
+    width: 200px;
+    border: 1px solid #20a0ff;
+    z-index: 2;
+}

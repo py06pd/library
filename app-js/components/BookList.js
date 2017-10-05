@@ -88,6 +88,12 @@ module.exports = {
                 this.people = response.body.people;
                 this.series = response.body.series;
                 this.types = response.body.types;
+                var user = { id: 0, name: '', role: '' };
+                if (response.body.user !== null) {
+                    user = response.body.user;
+                }
+                this.$emit('user', user);
+                this.$emit('users', response.body.users);
             });
         },
         

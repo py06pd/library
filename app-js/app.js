@@ -7,6 +7,7 @@ import VueResource from 'vue-resource';
 import router from './router';
 
 import BookList from './components/BookList';
+import Login from './components/Login';
 import LogsList from './components/LogsList';
 import AppMenu from './components/Menu';
 import UserList from './components/UserList';
@@ -35,6 +36,7 @@ Vue.use(VueResource);
 //Vue.use(new Navigator(), { 'router' : router, 'messageBox' : MessageBox });
 
 Vue.component(BookList.name, BookList);
+Vue.component(Login.name, Login);
 Vue.component(LogsList.name, LogsList);
 Vue.component(AppMenu.name, AppMenu);
 Vue.component(UserList.name, UserList);
@@ -68,11 +70,21 @@ new Vue({
     data: function () {
         return {
             menuSelectedOption: 'books',
+            user: { id: 0, name: '', role: '' },
+            users: {},
         };
     },
     methods: {
         menuSelectOption: function(option) {
             this.menuSelectedOption = option;
+        },
+        
+        setUser: function(val) {
+            this.user = val;
+        },
+        
+        setUsers: function(val) {
+            this.users = val;
         },
     },
 });

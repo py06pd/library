@@ -1,7 +1,7 @@
-<div>
+<div id="menuSection">
     <el-button type="primary" icon="menu" @click="toggleMenu"></el-button>
-    <el-menu default-active="1" v-show="showMenu">
-        <el-menu-item index="1" @click="onOptionSelected('books')">Books</el-menu-item>
-        <el-menu-item index="2" @click="onOptionSelected('users')">Users</el-menu-item>
-    </el-menu>
+    <ul class="el-menu" v-show="showMenu">
+        <li class="el-menu-item" :class="{ 'is-active': activeIndex == 1 }" index="1" @click="onOptionSelected('books', 1)">Books</li>
+        <li class="el-menu-item" :class="{ 'is-active': activeIndex == 2 }" index="2" @click="onOptionSelected('users', 2)">Users</li>
+    </ul>
 </div>
