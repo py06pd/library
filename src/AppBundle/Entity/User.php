@@ -41,6 +41,11 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=256)
      */
+    public $password;
+    
+    /**
+     * @ORM\Column(type="string", length=256)
+     */
     public $sessionid;
     
     public function getSalt()
@@ -55,7 +60,7 @@ class User implements UserInterface
     
     public function getPassword()
     {
-        return null;
+        return $this->password;
     }
     
     public function getRoles()

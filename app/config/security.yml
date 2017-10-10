@@ -17,9 +17,12 @@ security:
 
         main:
             anonymous: ~
+            stateless: true
             guard:
                 authenticators:
+                    - app.cookieauthenticator
                     - app.userauthenticator
+                entry_point: app.cookieauthenticator
             # activate different ways to authenticate
 
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate

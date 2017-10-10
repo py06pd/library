@@ -26,7 +26,9 @@ class UserProvider implements UserProviderInterface
     
     public function loadUserByUsername($username)
     {
-        return $this->entityManager->getRepository(User::class)->findOneBy(array('username' => $username));
+        if ($username != null) {
+            return $this->entityManager->getRepository(User::class)->findOneBy(array('username' => $username));
+        }
     }
 
     public function refreshUser(UserInterface $user)

@@ -18,5 +18,8 @@ parameters:
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
 
+    cookieDomain: localhost
+    cookieSecure: false
+
     facebookAppId: 1798994673726098
     facebookSecret: eb200eb294ccdda94b006ce86a392d4a

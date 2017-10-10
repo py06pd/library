@@ -21,11 +21,18 @@ class UserAuthenticator extends AbstractGuardAuthenticator
     private $entityManager;
     
     /**
-     * @param Doctrine\ORM\EntityManager $entityManager
+     * @var string
      */
-    public function __construct($entityManager)
+    private $secret;
+    
+    /**
+     * @param Doctrine\ORM\EntityManager $entityManager
+     * @param string $secret
+     */
+    public function __construct($entityManager, $secret)
     {
         $this->entityManager = $entityManager;
+        $this->secret = $secret;
     }
     
     /**
@@ -35,28 +42,26 @@ class UserAuthenticator extends AbstractGuardAuthenticator
      */
     public function getCredentials(Request $request)
     {
-        if (!$request->cookies->has('library')) {
+        if (!$request->cookies->has('username') || $request->cookies->has('password')) {
             return null;
         }
         
-        $data = explode("|", $request->cookies->get('library'));
-        
         // What you return here will be passed to getUser() as $credentials
         return array(
-            'id' => $data[0],
-            'datetime' => $data[1],
-            'code' => $data[2]
+            'username' => $request->cookies->get('username'),
+            'password' => $request->cookies->get('password')
         );
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        return $this->entityManager->getRepository(User::class)->findOneBy(array('id' => $credentials['id']));
+        return $this->entityManager->getRepository(User::class)->findOneBy(array('username' => $credentials['username']));
     }
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        if ($credentials['code'] == hash("sha256", $user->id . $credentials['datetime'] . $user->sessionid)) {
+        $salt = substr($user->getPassword(), 0, 16);
+        if ($user->getPassword() == $salt . hash_hmac("sha256", $salt.$credentials['password'], $this->secret)) {
             return true;
         }
         

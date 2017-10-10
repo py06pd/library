@@ -3,4 +3,15 @@
         <el-option :value="0" :label="'Anonymous'"></el-option>
         <el-option v-for="userOption in users" :value="userOption.id" :label="userOption.name"></el-option>
     </el-select>
+    <div id="loginForm" v-if="forceLogin">
+        <el-form>
+            <el-form-item label="Username">
+                <el-input v-model="username"/>
+            </el-form-item>
+            <el-form-item label="Password">
+                <el-input type="password" v-model="password"/>
+            </el-form-item>
+            <el-button @click="login">Login</el-button>
+        </el-form>
+    </div>
 </div>
