@@ -16,24 +16,14 @@ class LoginController extends Controller
      */
     public function loginAction(Request $request)
     {
-        $salt = substr("e0ub94b6430t384534vuy6304t4y-tv394uym", 0, 16);
-        $this->get('logger')->info($salt . hash_hmac("sha256", $salt . $request->request->get('password'), $this->getParameter('secret')));
-              
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneBy(array(
-            'id' => $request->request->get('id')
-        ));
-        
-        if (!$user) {
-            return $this->json(array('status' => "error"));
-        }
-        
-        if ($user->role != "anon" && (!$this->getUser() || $this->getUser()->id != $user->id)) {
+        if (!$this->getUser()) {
             return $this->json(array('status' => "forceLogin"));
         }
         
         $sessionid = hash("sha256", mt_rand(1, 32));
         
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->findOneBy(array('id' => $this->getUser()->id));       
         $user->sessionid = $sessionid;
         $em->flush();
         
@@ -54,7 +44,7 @@ class LoginController extends Controller
         $bag = new ResponseHeaderBag();
         $bag->setCookie($auth);
         
-        return $this->json(array('status' => "OK"), 200, $bag->all());
+        return $this->json(array('status' => "OK", 'user' => $user), 200, $bag->all());
     }
     
     /**

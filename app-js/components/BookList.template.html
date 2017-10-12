@@ -47,7 +47,7 @@
         <el-table-column
             width="50">
             <template scope="scope">
-                <el-button size="small" icon="edit" @click="openEdit(scope.row.id)"></el-button>
+                <el-button size="small" icon="menu" @click="openMenu(scope.row.id)"></el-button>
             </template>
         </el-table-column>
         <el-table-column
@@ -81,6 +81,13 @@
             width="100">
         </el-table-column>  
     </el-table>
+    
+    <el-dialog id="bookMenu" :visible.sync="menuOpen">
+        <el-button @click="openEdit">Edit</el-button>
+        <div v-if="$root.user.id > 0">
+            <el-button @click="borrowRequest">Borrow Request</el-button>
+        </div>
+    </el-dialog>
     
     <el-dialog id="frmBook" title="Edit Book" :visible.sync="formOpen">
         <el-form :model="editing">

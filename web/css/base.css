@@ -58,6 +58,7 @@ img { border: 0; vertical-align: middle; }
 .PageContent { margin-left:10px; }
 
 .el-form-item { margin-bottom: 10px !important; }
+.cic-table.el-table .cell { word-break: normal; }
 
 .cic-table table { width:100%; }
 #controls { margin:10px 0px; }
@@ -73,3 +74,21 @@ img { border: 0; vertical-align: middle; }
     border: 1px solid #20a0ff;
     z-index: 2;
 }
+
+#loginForm {
+    position: absolute;
+    z-index: 2;
+    background: #fff;
+    box-shadow: 0px 0px 9px rgba(0,0,0,0.5);
+    padding: 10px;
+    margin-left: 3px;
+}
+
+#userName {
+    font-weight: bold;
+    margin: 0px 20px;
+}
+
+#bookMenu .el-dialog__body { padding: 30px 0px 0px 0px; }
+#bookMenu .el-dialog--small { width: 150px; }
+#bookMenu .el-dialog__body button { width: 100%; }

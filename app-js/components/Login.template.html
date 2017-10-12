@@ -1,8 +1,9 @@
 <div id="userSection">
-    <el-select :value="value.id" v-on:input="onOptionSelected">
-        <el-option :value="0" :label="'Anonymous'"></el-option>
-        <el-option v-for="userOption in users" :value="userOption.id" :label="userOption.name"></el-option>
-    </el-select>
+    <el-button v-if="$root.user.id == 0" @click="onLoginClicked">Login</el-button>
+    <span v-if="$root.user.id > 0">
+        <span id="userName">{{ $root.user.name }}</span>
+        <el-button  @click="onLogoutClicked">Logout</el-button>
+    </span>
     <div id="loginForm" v-if="forceLogin">
         <el-form>
             <el-form-item label="Username">
@@ -12,6 +13,7 @@
                 <el-input type="password" v-model="password"/>
             </el-form-item>
             <el-button @click="login">Login</el-button>
+            <el-button @click="cancelLogin">Cancel</el-button>
         </el-form>
     </div>
 </div>

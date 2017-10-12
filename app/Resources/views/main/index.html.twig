@@ -10,11 +10,11 @@
             <div id="content">
                 <div class="MenuContent">
                     <cic-menu v-if="user.role === 'admin'" v-on:select="menuSelectOption"></cic-menu>
-                    <cic-login v-model="user" :users="users"></cic-login>
+                    <cic-login></cic-login>
                 </div>
                 <div class="PageContent">
                     <div v-if="menuSelectedOption === 'books'">
-                        <cic-book-list v-on:user="setUser" v-on:users="setUsers"></cic-book-list>
+                        <cic-book-list></cic-book-list>
                     </div>
                     <div v-if="menuSelectedOption === 'users'">
                         <cic-user-list></cic-user-list>

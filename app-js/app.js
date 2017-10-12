@@ -78,13 +78,5 @@ new Vue({
         menuSelectOption: function(option) {
             this.menuSelectedOption = option;
         },
-        
-        setUser: function(val) {
-            this.user = val;
-        },
-        
-        setUsers: function(val) {
-            this.users = val;
-        },
     },
 });

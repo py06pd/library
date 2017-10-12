@@ -14,6 +14,7 @@ module.exports = {
             books: [],
             editing: {},
             formOpen: false,
+            menuOpen: false,
             newSeries: { name: '', number: '' },
             // filters
             fields: ['author', 'genre', 'owner', 'read', 'series', 'type'],
@@ -49,6 +50,12 @@ module.exports = {
                 });
                 this.loadBooks();
             }
+        },
+        
+        borrowRequest: function() {
+            this.load('request', { id: this.editing.id }).then(function(response) {
+                this.menuOpen = false;
+            });
         },
         
         deleteItems: function() {
@@ -88,12 +95,11 @@ module.exports = {
                 this.people = response.body.people;
                 this.series = response.body.series;
                 this.types = response.body.types;
-                var user = { id: 0, name: '', role: '' };
+                this.$root.user = { id: 0, name: '', role: '' };
                 if (response.body.user !== null) {
-                    user = response.body.user;
+                    this.$root.user = response.body.user;
                 }
-                this.$emit('user', user);
-                this.$emit('users', response.body.users);
+                this.$root.users = response.body.users;
             });
         },
         
@@ -118,11 +124,16 @@ module.exports = {
             this.formOpen = true;
         },
         
-        openEdit: function(id) {
-            this.load('getItem', { id: id }).then(function(response) {
+        openEdit: function() {
+            this.load('getItem', { id: this.editing.id }).then(function(response) {
                 this.editing = JSON.parse(JSON.stringify(response.body.data));
                 this.formOpen = true;
             });
+        },
+        
+        openMenu: function(id) {
+            this.menuOpen = true;
+            this.editing = { id: id };
         },
         
         removeFilter: function(filterIndex) {

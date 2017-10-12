@@ -25,14 +25,17 @@ class UserAuthenticator extends AbstractGuardAuthenticator
      */
     private $secret;
     
+    private $logger;
+    
     /**
      * @param Doctrine\ORM\EntityManager $entityManager
      * @param string $secret
      */
-    public function __construct($entityManager, $secret)
+    public function __construct($entityManager, $secret, $logger)
     {
         $this->entityManager = $entityManager;
         $this->secret = $secret;
+        $this->logger = $logger;
     }
     
     /**
@@ -42,14 +45,14 @@ class UserAuthenticator extends AbstractGuardAuthenticator
      */
     public function getCredentials(Request $request)
     {
-        if (!$request->cookies->has('username') || $request->cookies->has('password')) {
+        if (!$request->request->has('username') || !$request->request->has('password')) {
             return null;
         }
         
         // What you return here will be passed to getUser() as $credentials
         return array(
-            'username' => $request->cookies->get('username'),
-            'password' => $request->cookies->get('password')
+            'username' => $request->request->get('username'),
+            'password' => $request->request->get('password')
         );
     }
 
