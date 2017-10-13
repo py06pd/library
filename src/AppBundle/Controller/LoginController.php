@@ -16,14 +16,24 @@ class LoginController extends Controller
      */
     public function loginAction(Request $request)
     {
-        if (!$this->getUser()) {
+        $em = $this->getDoctrine()->getManager();
+        
+        $user = null;
+        if ($this->getUser()) {
+            $user = $em->getRepository(User::class)->findOneBy(array('id' => $this->getUser()->id));
+        } elseif ($request->request->has('id')) {
+            $user = $em->getRepository(User::class)->findOneBy(array(
+                'id' => $request->request->get('id'),
+                'role' => "anon"
+            ));
+        }
+        
+        if (!$user) {
             return $this->json(array('status' => "forceLogin"));
         }
         
         $sessionid = hash("sha256", mt_rand(1, 32));
         
-        $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository(User::class)->findOneBy(array('id' => $this->getUser()->id));       
         $user->sessionid = $sessionid;
         $em->flush();
         

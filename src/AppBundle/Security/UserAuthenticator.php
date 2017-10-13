@@ -45,7 +45,8 @@ class UserAuthenticator extends AbstractGuardAuthenticator
      */
     public function getCredentials(Request $request)
     {
-        if (!$request->request->has('username') || !$request->request->has('password')) {
+        if (!$request->request->has('username') || !$request->request->has('password') ||
+            $request->request->get('username') == "" || $request->request->get('password') == "") {
             return null;
         }
         

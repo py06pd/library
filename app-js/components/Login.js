@@ -9,6 +9,7 @@ module.exports = {
             forceLogin: false,
             username: '',
             password: '',
+            selectedUser: { id: null, name: '', role: 'anon' },
         };
     },
     methods: {
@@ -17,7 +18,7 @@ module.exports = {
         },
 
         login: function() {
-            this.post('login', { username: this.username, password: this.password }).then(function(response) {
+            this.load('login', { id: this.selectedUser.id, username: this.username, password: this.password }).then(function(response) {
                 if (response.body.status === 'OK') {
                     this.$root.user = response.body.user;
                     this.forceLogin = false;
@@ -35,8 +36,15 @@ module.exports = {
         
         onLogoutClicked: function() {
             this.forceLogin = false;
-            this.$root.user = { id: 0, name: '', role: '' };
-            this.post('logout');
+            this.$root.user = { id: 0, name: '', role: 'anon' };
+            this.load('logout');
+        },
+        
+        selectUser: function(value) {
+            this.selectedUser = this.$root.users[value];
+            if (this.selectedUser.role == 'anon') {
+                this.login();
+            }
         },
     },
 };

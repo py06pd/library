@@ -8,7 +8,6 @@ module.exports = {
         return {
             authors: [],
             genres: [],
-            people: [],
             series: [],
             types: [],
             books: [],
@@ -92,7 +91,6 @@ module.exports = {
                 this.books = response.body.data;
                 this.authors = response.body.authors;
                 this.genres = response.body.genres;
-                this.people = response.body.people;
                 this.series = response.body.series;
                 this.types = response.body.types;
                 this.$root.user = { id: 0, name: '', role: '' };
@@ -127,6 +125,8 @@ module.exports = {
         openEdit: function() {
             this.load('getItem', { id: this.editing.id }).then(function(response) {
                 this.editing = JSON.parse(JSON.stringify(response.body.data));
+                this.editing.owners = JSON.parse(JSON.stringify(response.body.owned));
+                this.editing.read = JSON.parse(JSON.stringify(response.body.read));
                 this.formOpen = true;
             });
         },

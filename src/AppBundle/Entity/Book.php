@@ -41,14 +41,4 @@ class Book {
      * @ORM\Column(type="json_array", length=1024)
      */
     public $series;
-    
-    /**
-     * @ORM\Column(type="json_array", length=1024)
-     */
-    public $owners;
-    
-    /**
-     * @ORM\Column(type="json_array", length=1024)
-     */
-    public $read;
 }

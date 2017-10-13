@@ -153,22 +153,18 @@
             </el-form-item>
             <el-form-item label="Owners">
                 <el-select
-                    allow-create
-                    filterable
                     multiple
                     v-model="editing.owners"
                     placeholder="Please select a person">
-                    <el-option v-for="person in people" :label="person" :value="person"></el-option>
+                    <el-option v-for="user in $root.users" :label="user.name" :value="user.id"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="Read">
                 <el-select
-                    allow-create
-                    filterable
                     multiple
                     v-model="editing.read"
                     placeholder="Please select a person">
-                    <el-option v-for="person in people" :label="person" :value="person"></el-option>
+                    <el-option v-for="user in $root.users" :label="user.name" :value="user.id"></el-option>
                 </el-select>
             </el-form-item>
         </el-form>

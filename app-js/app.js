@@ -70,7 +70,7 @@ new Vue({
     data: function () {
         return {
             menuSelectedOption: 'books',
-            user: { id: 0, name: '', role: '' },
+            user: { id: 0, name: '', role: 'anon' },
             users: {},
         };
     },
