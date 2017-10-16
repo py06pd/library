@@ -9,7 +9,7 @@
         <div id="app">
             <div id="content">
                 <div class="MenuContent">
-                    <cic-menu v-if="user.role === 'admin'" v-on:select="menuSelectOption"></cic-menu>
+                    <cic-menu v-if="$root.user.id > 0" v-model="menuSelectedOption"></cic-menu>
                     <cic-login></cic-login>
                 </div>
                 <div class="PageContent">

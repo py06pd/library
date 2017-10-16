@@ -97,6 +97,7 @@ module.exports = {
                 if (response.body.user !== null) {
                     this.$root.user = response.body.user;
                 }
+                this.$root.requests = response.body.requests;
                 this.$root.users = response.body.users;
             });
         },
@@ -125,8 +126,7 @@ module.exports = {
         openEdit: function() {
             this.load('getItem', { id: this.editing.id }).then(function(response) {
                 this.editing = JSON.parse(JSON.stringify(response.body.data));
-                this.editing.owners = JSON.parse(JSON.stringify(response.body.owned));
-                this.editing.read = JSON.parse(JSON.stringify(response.body.read));
+                this.menuOpen = false;
                 this.formOpen = true;
             });
         },

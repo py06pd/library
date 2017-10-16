@@ -1,10 +1,7 @@
 <?php
-
+// src/AppBundle/Controller/DefaultController
 namespace AppBundle\Controller;
 
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Expr\Comparison;
-use Doctrine\Common\Collections\Expr\CompositeExpression;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -93,19 +90,14 @@ class DefaultController extends Controller
      */
     public function deleteItemsAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-                
-        $history = $em->getRepository(BookHistory::class)->findBy(array('id' => $request->request->get('ids')));
-        $books = $em->getRepository(Book::class)->findBy(array('id' => $request->request->get('ids')));
-        foreach ($books as $item) {
-            $em->remove($item);
-        }
-        foreach ($history as $item) {
-            $em->remove($item);
+        $result = $this->get('app.book')->delete($request->request->get('ids'));
+        if ($result === false) {
+            return $this->json(array(
+                'status' => "error",
+                'errorMessage' => "Invalid form data"
+            ));
         }
         
-        $em->flush();
-                
         return $this->json(array('status' => "OK"));
     }
     
@@ -116,7 +108,8 @@ class DefaultController extends Controller
     {
         $em = $this->getDoctrine();
         $data = $em->getRepository(Book::class)->findAll();
-                
+        $user = $this->getUser();
+        
         $filters = json_decode($request->request->get('filters', json_encode(array())));
         
         $eqFilters = $noFilters = array();
@@ -130,19 +123,24 @@ class DefaultController extends Controller
         
         $dbUsers = $this->getDoctrine()->getRepository(User::class)->findAll();
         $users = array();
-        foreach ($dbUsers as $user) {
-            $users[$user->id] = $user;
+        foreach ($dbUsers as $dbUser) {
+            $users[$dbUser->id] = $dbUser;
         }
         
         $owned = $read = array();
+        $requests = 0;
         $history = $em->getRepository(BookHistory::class)->findBy(array('latest' => true));
         foreach ($history as $row) {
-            if ($row->status & BookHistory::OWNED) {
+            if ($row->owned()) {
                 $owned[$row->id][] = $users[$row->userid]->name;
             }
             
-            if ($row->status & BookHistory::READ) {
+            if ($row->read()) {
                 $read[$row->id][] = $users[$row->userid]->name;
+            }
+            
+            if ($row->requested() && $user && $row->otheruserid == $user->id) {
+                $requests++;
             }
         }
         
@@ -189,8 +187,9 @@ class DefaultController extends Controller
             'authors' => $authors,
             'genres' => $genres,
             'types' => $types,
+            'requests' => $requests,
             'series' => $series,
-            'user' => $this->getUser(),
+            'user' => $user,
             'users' => $users
         ));
     }
@@ -200,30 +199,10 @@ class DefaultController extends Controller
      */
     public function getItemAction(Request $request)
     {
-        $em = $this->getDoctrine();
-        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
+        $book = $this->get('app.book');
+        $book->init($request->request->get('id'));
         
-        $owned = $read = array();
-        $history = $em->getRepository(BookHistory::class)->findBy(array(
-            'id' => $request->request->get('id'),
-            'latest' => true
-        ));
-        foreach ($history as $row) {
-            if ($row->status & BookHistory::OWNED) {
-                $owned[] = $row->userid;
-            }
-            
-            if ($row->status & BookHistory::READ) {
-                $read[] = $row->userid;
-            }
-        }
-        
-        return $this->json(array(
-            'status' => "OK",
-            'data' => $item,
-            'owned' => $owned,
-            'read' => $read
-        ));
+        return $this->json(array('status' => "OK", 'data' => $book));
     }
     
     /**
@@ -233,72 +212,17 @@ class DefaultController extends Controller
     {
         $dataItem = json_decode($request->request->get('data'), true);
         
-        $em = $this->getDoctrine()->getManager();
-        if ($dataItem['id'] == -1) {
-            $item = new Book();
-        } else {
-            $item = $em->getRepository(Book::class)->findOneBy(array('id' => $dataItem['id']));
-        }
+        $book = $this->get('app.book');
+        $book->id = $dataItem['id'];
+        $book->name = $dataItem['name'];
+        $book->type = $dataItem['type'];
+        $book->authors = $dataItem['authors'];
+        $book->genres = $dataItem['genres'];
+        $book->series = $dataItem['series'];
+        $book->owners = $dataItem['owners'];
+        $book->read = $dataItem['read'];
         
-        $item->name = $dataItem['name'];
-        $item->type = $dataItem['type'];
-        $item->authors = $dataItem['authors'];
-        $item->genres = $dataItem['genres'];
-        $item->series = $dataItem['series'];
-        
-        if ($dataItem['id'] == -1) {
-            $em->persist($item);
-        }
-        
-        $em->flush();
-        
-        if ($dataItem['id'] != -1) {
-            $userbooks = $em->getRepository(BookHistory::class)->findBy(array('id' => $item->id, 'latest' => true));
-            $users = array();
-            foreach ($userbooks as $book) {
-                $users[$book->userid] = $book;
-            }
-        }
-        
-        $newRecords = array();
-                
-        foreach ($dataItem['owners'] as $id) {
-            if (isset($users[$id]) && !($users[$id]->status & BookHistory::OWNED)) {
-                $newRecord = new BookHistory();
-                $newRecord->init($item->id, $id, BookHistory::OWNED, $users[$id], 1);
-                $newRecords[$id] = $newRecord;
-            } elseif ($dataItem['id'] == -1) {
-                $newRecord = new BookHistory();
-                $newRecord->init($item->id, $id, BookHistory::OWNED, 1);
-                $newRecords[$id] = $newRecord;
-            }
-        }
-        
-        foreach ($dataItem['read'] as $id) {
-            if (isset($newRecords[$id]) && !($newRecords[$id]->status & BookHistory::READ)) {
-                $newRecords[$id]->status += BookHistory::READ;
-            } elseif (isset($users[$id]) && !($users[$id]->status & BookHistory::READ)) {
-                $newRecord = new BookHistory();
-                $newRecord->init($item->id, $id, BookHistory::READ, $users[$id]);
-                $newRecords[$id] = $newRecord;
-            } elseif ($dataItem['id'] == -1) {
-                $newRecord = new BookHistory();
-                $newRecord->init($item->id, $id, BookHistory::READ);
-                $newRecords[$id] = $newRecord;
-            }
-        }
-        
-        if (count($newRecords) > 0) {
-            foreach ($newRecords as $id => $record) {
-                if (isset($users[$id])) {
-                    $users[$id]->latest = false;
-                }
-                
-                $em->persist($record);
-            }
-        }
-        
-        $em->flush();
+        $book->save();
         
         return $this->json(array('status' => "OK"));
     }
@@ -310,61 +234,22 @@ class DefaultController extends Controller
     {
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
+            return $this->json(array(
+                'status' => "error",
+                'errorMessage' => "You must be logged in to make request"
+            ));
         }
         
-        $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
-        if (!$item) {
-            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
+        $result = $this->get('app.book')->request(
+            $request->request->get('id'),
+            $user->id
+        );
+        if ($result !== true) {
+            return $this->json(array(
+                'status' => "error",
+                'errorMessage' => $result
+            ));
         }
-        
-        $userbook = $em->getRepository(BookHistory::class)->findOneBy(array(
-            'id' => $item->id,
-            'userid' => $user->id,
-            'latest' => true
-        ));
-        if ($userbook->status & BookHistory::OWNED) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You own this"));
-        }
-        if ($userbook->status & BookHistory::BORROWED) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You are already borrowing this"));
-        } 
-        if ($userbook->status & BookHistory::REQUESTED) { 
-            return $this->json(array('status' => "error", 'errorMessage' => "You have already requested this"));
-        }  
-        
-        $criteria = new Criteria(new CompositeExpression('AND', array(
-            new Comparison('id', '=', $item->id),
-            new Comparison('latest', '=', true),
-            new Comparison('stock', '>', 0)
-        )));        
-        $history = $em->getRepository(BookHistory::class)->findBy($criteria);
-        $total = array();
-        foreach ($history as $record) {
-            if ($record->status & BookHistory::OWNED) {
-                $total[$record->userid] += $record->stock;
-            } elseif ($record->status & BookHistory::BORROWED || $record->status & BookHistory::REQUESTED) {
-                $total[$record->otheruserid] -= 1;
-            }
-        }
-        
-        if (array_sum($total) <= 0) {
-            return $this->json(array('status' => "error", 'errorMessage' => "None available to borrow"));
-        }
-        
-        foreach ($total as $userId => $stock) {
-            if ($stock > 0) {
-                $userbook->latest = false;
-                
-                $newRecord = new BookHistory();
-                $newRecord->init($item->id, $user->id, BookHistory::REQUESTED, $userbook, 0, $userId);
-                $em->persist($newRecord);
-                break;
-            }
-        }
-        
-        $em->flush();
         
         return $this->json(array('status' => "OK"));
     }

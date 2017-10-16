@@ -36,6 +36,7 @@ services:
     facebook.graph:
         class: Facebook\Facebook
         arguments: [{'app_id': '%facebookAppId%', 'app_secret': '%facebookSecret%'}]
+        public: true
         
     app.userprovider:
         class: AppBundle\Security\UserProvider
@@ -48,3 +49,8 @@ services:
     app.cookieauthenticator:
         class: AppBundle\Security\CookieAuthenticator
         arguments: ['@doctrine.orm.entity_manager']
+        
+    app.book:
+        class: AppBundle\Services\Book
+        arguments: ['@doctrine.orm.entity_manager']
+        public: true

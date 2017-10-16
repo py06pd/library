@@ -12,15 +12,17 @@ class BookHistory {
     
     const OWNED = 1;
     const READ = 2;
-    const REQUESTED = 3;
-    const BORROWED = 4;
+    const REQUESTED = 4;
+    const BORROWED = 8;
     
     /**
+     * @ORM\Id
      * @ORM\Column(type="integer")
      */
     public $id;
 
     /**
+     * @ORM\Id
      * @ORM\Column(type="integer")
      */
     public $userid;
@@ -31,9 +33,10 @@ class BookHistory {
     public $status;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Id
+     * @ORM\Column(type="integer")
      */
-    public $datetime;
+    public $timestamp;
     
     /**
      * @ORM\Column(type="boolean")
@@ -50,24 +53,23 @@ class BookHistory {
      */
     public $otheruserid;
     
-    public function init($id, $userId, $status, $old = null, $stock = 0, $otheruserid = null)
+    public function borrowed()
     {
-        $this->id = $id;
-        $this->userid = $userId;
-        $this->datetime = new \DateTime();
-        
-        if ($old) {
-            $this->status += $old->status + $status;
-        } else {
-            $this->status = $status;
-        }
-        
-        $this->latest = true;
-        if ($old) {
-            $this->stock += $old->stock + $stock;
-        } else {
-            $this->stock = $stock;
-        }
-        $this->otheruserid = $otheruserid;
+        return $this->status & self::BORROWED;
+    }
+    
+    public function owned()
+    {
+        return $this->status & self::OWNED;
+    }
+    
+    public function read()
+    {
+        return $this->status & self::READ;
+    }
+    
+    public function requested()
+    {
+        return $this->status & self::REQUESTED;
     }
 }

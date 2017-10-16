@@ -13,6 +13,7 @@ import AppMenu from './components/Menu';
 import UserList from './components/UserList';
 
 import {
+    Badge,
     Button,
     Dialog,
     Form,
@@ -42,6 +43,7 @@ Vue.component(AppMenu.name, AppMenu);
 Vue.component(UserList.name, UserList);
 
 // Register the Element UI components we're using
+Vue.use(Badge);
 Vue.use(Button);
 Vue.use(Dialog);
 Vue.use(Form);
@@ -70,13 +72,9 @@ new Vue({
     data: function () {
         return {
             menuSelectedOption: 'books',
+            requests: 0,
             user: { id: 0, name: '', role: 'anon' },
             users: {},
         };
-    },
-    methods: {
-        menuSelectOption: function(option) {
-            this.menuSelectedOption = option;
-        },
     },
 });

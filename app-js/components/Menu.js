@@ -9,7 +9,7 @@ module.exports = {
     },
     methods: {
         onOptionSelected: function(option, index) {
-            this.$emit('select', option);
+            this.$emit('input', option);
             this.activeIndex = index;
         },
         toggleMenu: function() {

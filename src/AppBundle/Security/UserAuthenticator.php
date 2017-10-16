@@ -65,6 +65,7 @@ class UserAuthenticator extends AbstractGuardAuthenticator
     public function checkCredentials($credentials, UserInterface $user)
     {
         $salt = substr($user->getPassword(), 0, 16);
+        $this->logger->info($salt . hash_hmac("sha256", $salt.$credentials['password'], $this->secret));
         if ($user->getPassword() == $salt . hash_hmac("sha256", $salt.$credentials['password'], $this->secret)) {
             return true;
         }

@@ -74,6 +74,9 @@ img { border: 0; vertical-align: middle; }
     border: 1px solid #20a0ff;
     z-index: 2;
 }
+#menuSection .el-menu-item,
+#menuSection .el-submenu__title { height: auto; line-height: 20px; padding: 10px; }
+#menuSection .el-badge__content.is-fixed { right: 0px; }
 
 #loginForm {
     position: absolute;
