@@ -131,15 +131,15 @@ class DefaultController extends Controller
         $requests = 0;
         $history = $em->getRepository(BookHistory::class)->findBy(array('latest' => true));
         foreach ($history as $row) {
-            if ($row->owned()) {
+            if ($row->isOwned()) {
                 $owned[$row->id][] = $users[$row->userid]->name;
             }
             
-            if ($row->read()) {
+            if ($row->isRead()) {
                 $read[$row->id][] = $users[$row->userid]->name;
             }
             
-            if ($row->requested() && $user && $row->otheruserid == $user->id) {
+            if ($row->isRequested() && $user && $row->otheruserid == $user->id) {
                 $requests++;
             }
         }
@@ -200,7 +200,7 @@ class DefaultController extends Controller
     public function getItemAction(Request $request)
     {
         $book = $this->get('app.book');
-        $book->init($request->request->get('id'));
+        $book->get($request->request->get('id'));
         
         return $this->json(array('status' => "OK", 'data' => $book));
     }

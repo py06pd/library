@@ -2,10 +2,6 @@
 
 namespace AppBundle\Services;
 
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Expr\Comparison;
-use Doctrine\Common\Collections\Expr\CompositeExpression;
-
 use AppBundle\Entity\Book as BookEntity;
 use AppBundle\Entity\BookHistory;
 
@@ -64,6 +60,85 @@ class Book
         $this->em = $em; 
     }
     
+    public function borrow($id, $userId)
+    {
+        $item = $this->em->getRepository(BookEntity::class)
+                         ->findOneBy(array('id' => $id));
+        if (!$item) {
+            return "Invalid request";
+        }
+        
+        $userbook = $this->em->getRepository(BookHistory::class)
+                            ->findOneBy(array(
+                                'id' => $id,
+                                'userid' => $userId,
+                                'latest' => true
+                            ));
+        
+        if ($userbook) {
+            if ($userbook->isOwned()) {
+                return "You own this";
+            }
+
+            if ($userbook->isBorrowed()) {
+                return "You are already borrowing this";
+            }
+        }
+        
+        if ($userbook && $userbook->isRequested()) {
+            $userbook->latest = false;
+            
+            $newRecord = $userbook->double()->borrow();
+
+            $this->em->persist($newRecord);
+        } else {
+            $history = $this->em->getRepository(BookHistory::class)->findBy(array(
+                'id' => $item->id,
+                'latest' => true
+            ));
+
+            $total = array();
+            foreach ($history as $record) {
+                if ($record->isOwned()) {
+                    if (!isset($total[$record->userid])) {
+                        $total[$record->userid] = $record->stock;
+                    } else {
+                        $total[$record->userid] += $record->stock;
+                    }
+                } elseif ($record->isBorrowed() || $record->isRequested()) {
+                    if (!isset($total[$record->otheruserid])) {
+                        $total[$record->otheruserid] = -1;
+                    } else {
+                        $total[$record->otheruserid] -= 1;
+                    }
+                }
+            }
+
+            if (array_sum($total) <= 0) {
+                return "None available to borrow";
+            }
+
+            foreach ($total as $ownerId => $stock) {
+                if ($stock > 0) {
+                    if ($userbook) {
+                        $userbook->latest = false;
+                        $newRecord = $userbook->double()->borrow($ownerId);
+                    } else {
+                        $newRecord = new BookHistory();
+                        $newRecord->init($item->id, $userId)->borrow($ownerId);
+                    }
+
+                    $this->em->persist($newRecord);
+                    break;
+                }
+            }
+        }
+        
+        $this->em->flush();
+        
+        return true;
+    }
+    
     /**
      * @param array $ids
      * @return type
@@ -93,29 +168,7 @@ class Book
         return true;
     }
     
-    public function history($id, $userId, $status, $old = null, $stock = 0, $otheruserid = null)
-    {
-        $history = new BookHistory();
-        
-        $history->id = $id;
-        $history->userid = $userId;
-        $history->timestamp = time();
-        
-        if ($old) {
-            $history->status += $old->status + $status;
-            $history->stock += $old->stock + $stock;
-        } else {
-            $history->status = $status;
-            $history->stock = $stock;
-        }
-        
-        $history->latest = true;
-        $history->otheruserid = $otheruserid;
-        
-        return $history;
-    }
-    
-    public function init($id)
+    public function get($id)
     {
         $item = $this->em->getRepository(BookEntity::class)
                         ->findOneBy(array('id' => $id));
@@ -128,11 +181,11 @@ class Book
         ));
         
         foreach ($history as $row) {
-            if ($row->owned()) {
+            if ($row->isOwned()) {
                 $owned[] = $row->userid;
             }
             
-            if ($row->read()) {
+            if ($row->isRead()) {
                 $read[] = $row->userid;
             }
         }
@@ -163,15 +216,15 @@ class Book
                             ));
         
         if ($userbook) {
-            if ($userbook->owned()) {
+            if ($userbook->isOwned()) {
                 return "You own this";
             }
 
-            if ($userbook->borrowed()) {
+            if ($userbook->isBorrowed()) {
                 return "You are already borrowing this";
             } 
 
-            if ($userbook->requested()) { 
+            if ($userbook->isRequested()) { 
                 return "You have already requested this";
             }
         }
@@ -183,13 +236,13 @@ class Book
         
         $total = array();
         foreach ($history as $record) {
-            if ($record->owned()) {
+            if ($record->isOwned()) {
                 if (!isset($total[$record->userid])) {
                     $total[$record->userid] = $record->stock;
                 } else {
                     $total[$record->userid] += $record->stock;
                 }
-            } elseif ($record->borrowed() || $record->requested()) {
+            } elseif ($record->isBorrowed() || $record->isRequested()) {
                 if (!isset($total[$record->otheruserid])) {
                     $total[$record->otheruserid] = -1;
                 } else {
@@ -206,16 +259,11 @@ class Book
             if ($stock > 0) {
                 if ($userbook) {
                     $userbook->latest = false;
+                    $newRecord = $userbook->double()->request($ownerId);
+                } else {
+                    $newRecord = new BookHistory();
+                    $newRecord->init($item->id, $userId)->request($ownerId);
                 }
-                
-                $newRecord = $this->history(
-                    $item->id,
-                    $userId,
-                    BookHistory::REQUESTED,
-                    $userbook,
-                    0,
-                    $ownerId
-                );
                 
                 $this->em->persist($newRecord);
                 break;
@@ -250,6 +298,8 @@ class Book
         
         $users = array();
         
+        $newRecords = array();
+        
         if ($this->id != -1) {
             $userbooks = $this->em->getRepository(BookHistory::class)
                                   ->findBy(array(
@@ -259,41 +309,42 @@ class Book
             
             foreach ($userbooks as $book) {
                 $users[$book->userid] = $book;
+                $newRecords[$book->userid] = $book->double();
+                if (!in_array($book->userid, $this->owners)) {
+                    $newRecords[$book->userid]->unown();
+                }
+                
+                if (!in_array($book->userid, $this->read)) {
+                    $newRecords[$book->userid]->unread();
+                }
             }
         }
         
-        $newRecords = array();
-                
         foreach ($this->owners as $id) {
-            if($this->id == -1 || !$users[$id]->owned()) {
-                $newRecords[$id] = $this->history(
-                    $item->id,
-                    $id,
-                    BookHistory::OWNED,
-                    ($this->id == -1) ? null : $users[$id],
-                    1
-                );
+            if (!isset($newRecords[$id])) {
+                $newRecords[$id] = new BookHistory();
+                $newRecords[$id]->init($item->id, $id);
             }
+            
+            $newRecords[$id]->own();
         }
         
         foreach ($this->read as $id) {
-            if (isset($newRecords[$id])) {
-                if(!$newRecords[$id]->read()) {
-                    $newRecords[$id]->status += BookHistory::READ;
-                }
-            } else {
-                $newRecords[$id] = $this->history(
-                    $item->id,
-                    $id,
-                    BookHistory::READ,
-                    ($this->id == -1) ? null : $users[$id]
-                );
+            if (!isset($newRecords[$id])) {
+                $newRecords[$id] = new BookHistory();
+                $newRecords[$id]->init($item->id, $id);
             }
+            
+            $newRecords[$id]->read();
         }
         
         if (count($newRecords) > 0) {
             foreach ($newRecords as $id => $record) {
                 if (isset($users[$id])) {
+                    if ($users[$id]->status === $record->status) {
+                        continue;
+                    }
+                    
                     $users[$id]->latest = false;
                 }
                 

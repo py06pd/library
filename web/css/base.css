@@ -55,7 +55,7 @@ p { margin: 0px; padding: 0px; margin-top: 10px; }
 img { border: 0; vertical-align: middle; }
 
 .MenuContent { margin: 10px 0px 0px 10px; }
-.PageContent { margin-left:10px; }
+.PageContent { margin:10px; }
 
 .el-form-item { margin-bottom: 10px !important; }
 .cic-table.el-table .cell { word-break: normal; }
@@ -95,3 +95,10 @@ img { border: 0; vertical-align: middle; }
 #bookMenu .el-dialog__body { padding: 30px 0px 0px 0px; }
 #bookMenu .el-dialog--small { width: 150px; }
 #bookMenu .el-dialog__body button { width: 100%; }
+#lending-list li { display:inline-block; }
+#lending-list .date-column,
+#lending-list .from-column { width:170px; }
+#lending-list .delivered-column,
+#lending-list .returned-column { width:100px; }
+#lending-list .cancel-column,
+#lending-list .reject-column { width:85px; }

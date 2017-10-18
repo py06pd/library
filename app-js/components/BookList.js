@@ -52,7 +52,7 @@ module.exports = {
         },
         
         borrowRequest: function() {
-            this.load('request', { id: this.editing.id }).then(function(response) {
+            this.save('request', { id: this.editing.id }).then(function() {
                 this.menuOpen = false;
             });
         },

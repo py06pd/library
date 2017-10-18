@@ -11,6 +11,7 @@ module.exports = {
         onOptionSelected: function(option, index) {
             this.$emit('input', option);
             this.activeIndex = index;
+            this.showMenu = false;
         },
         toggleMenu: function() {
             this.showMenu = !this.showMenu;

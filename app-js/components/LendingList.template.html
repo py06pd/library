@@ -1,0 +1,46 @@
+<div id="lending-list">
+    <h2>Requested By You</h2>
+    <el-table class="cic-table" :data="requesting">
+        <el-table-column prop="name" label="Title"></el-table-column>
+        <el-table-column prop="datetime" label="Date" width="170"></el-table-column>
+        <el-table-column prop="from" label="From" width="170"></el-table-column>
+        <el-table-column label="Delivered" width="100">
+            <template scope="scope">
+                <el-button size="small" icon="check" @click="delivered(scope.row.id)"></el-button>
+            </template>
+        </el-table-column>
+        <el-table-column label="Cancel" width="85">
+            <template scope="scope">
+                <el-button size="small" icon="close" @click="cancelled(scope.row.id)"></el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <h2>Borrowed By You</h2>
+    <el-table class="cic-table" :data="borrowing">
+        <el-table-column prop="name" label="Title"></el-table-column>
+        <el-table-column prop="datetime" label="Date" width="170"></el-table-column>
+        <el-table-column prop="from" label="From" width="170"></el-table-column>
+    </el-table>
+    <h2>Requested From You</h2>
+    <el-table class="cic-table" :data="requested">
+        <el-table-column prop="name" label="Title"></el-table-column>
+        <el-table-column prop="datetime" label="Date" width="170"></el-table-column>
+        <el-table-column prop="from" label="From" width="170"></el-table-column>
+        <el-table-column label="Reject" width="85">
+            <template scope="scope">
+                <el-button size="small" icon="close" @click="rejected(scope.row.id)"></el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <h2>Borrowed From You</h2>
+    <el-table class="cic-table" :data="borrowed">
+        <el-table-column prop="name" label="Title"></el-table-column>
+        <el-table-column prop="datetime" label="Date" width="170"></el-table-column>
+        <el-table-column prop="from" label="From" width="170"></el-table-column>
+        <el-table-column label="Returned" width="100">
+            <template scope="scope">
+                <el-button size="small" icon="check" @click="returned(scope.row.id)"></el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+</div>

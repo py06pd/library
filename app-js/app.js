@@ -7,6 +7,7 @@ import VueResource from 'vue-resource';
 import router from './router';
 
 import BookList from './components/BookList';
+import LendingList from './components/LendingList';
 import Login from './components/Login';
 import LogsList from './components/LogsList';
 import AppMenu from './components/Menu';
@@ -37,6 +38,7 @@ Vue.use(VueResource);
 //Vue.use(new Navigator(), { 'router' : router, 'messageBox' : MessageBox });
 
 Vue.component(BookList.name, BookList);
+Vue.component(LendingList.name, LendingList);
 Vue.component(Login.name, Login);
 Vue.component(LogsList.name, LogsList);
 Vue.component(AppMenu.name, AppMenu);
