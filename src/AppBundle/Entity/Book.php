@@ -8,8 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="books")
  */
-class Book {
-    
+class Book
+{
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id

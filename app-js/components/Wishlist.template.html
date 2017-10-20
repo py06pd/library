@@ -1,0 +1,18 @@
+<div id="wishlist">
+    <el-table class="cic-table" :data="books">
+        <el-table-column prop="name" label="Title"></el-table-column>
+        <el-table-column prop="authors" label="Authors"></el-table-column>
+        <el-table-column prop="datetime" label="Date"></el-table-column>
+        <el-table-column v-if="$root.user.id != userid" prop="gift" label="Gift From"></el-table-column>
+        <el-table-column label="Got" width="100">
+            <template scope="scope">
+                <el-button size="small" icon="check" @click="own(scope.row.id)"></el-button>
+            </template>
+        </el-table-column>
+        <el-table-column label="Remove" width="100">
+            <template scope="scope">
+                <el-button size="small" icon="close" @click="remove(scope.row.id)"></el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+</div>

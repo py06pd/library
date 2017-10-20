@@ -7,20 +7,24 @@
     </head>
     <body>
         <div id="app">
+            <span data="{{ data }}"/>
             <div id="content">
                 <div class="MenuContent">
-                    <cic-menu v-if="$root.user.id > 0" v-model="menuSelectedOption"></cic-menu>
+                    <cic-menu v-if="$root.user.id > 0" v-model="page"></cic-menu>
                     <cic-login></cic-login>
                 </div>
                 <div class="PageContent">
-                    <div v-if="menuSelectedOption === 'books'">
+                    <div v-if="page === 'books'">
                         <cic-book-list></cic-book-list>
                     </div>
-                    <div v-if="menuSelectedOption === 'lending'">
+                    <div v-if="page === 'lending'">
                         <cic-lending-list></cic-lending-list>
                     </div>
-                    <div v-if="menuSelectedOption === 'users'">
+                    <div v-if="page === 'users'">
                         <cic-user-list></cic-user-list>
+                    </div>
+                    <div v-if="page === 'wishlist'">
+                        <cic-wishlist :books="params.books" :userid="params.userid"></cic-wishlist>
                     </div>
                 </div>
             </div>

@@ -48,7 +48,7 @@ services:
         
     app.cookieauthenticator:
         class: AppBundle\Security\CookieAuthenticator
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments: ['@doctrine.orm.entity_manager', {'domain': '%cookieDomain%', 'secure': '%cookieSecure%'}]
         
     app.book:
         class: AppBundle\Services\Book

@@ -49,14 +49,19 @@ class DefaultController extends Controller
     /**
      * @Route("/", name="homepage")
      */
-    public function indexAction(Request $request)
+    public function indexAction($page = null, $params = array())
     {
-        return $this->render('main/index.html.twig');
+        return $this->render('main/index.html.twig', array('data' => json_encode(array(
+            'page' => $page,
+            'params' => $params,
+            'user' => $this->getUser()
+        ))));
     }
     
     private function checkFilters($item, $bookSeries, $eqFilters, $noFilters)
     {
-        foreach (array('author' => 'authors', 'genre' => 'genres', 'owner' => 'owners', 'read' => 'read') as $filter => $field) {
+        $fields = array('author' => 'authors', 'genre' => 'genres', 'owner' => 'owners', 'read' => 'read');
+        foreach ($fields as $filter => $field) {
             if (isset($eqFilters[$filter]) && count(array_intersect($item->$field, $eqFilters[$filter])) == 0) {
                 return false;
             }
@@ -92,10 +97,7 @@ class DefaultController extends Controller
     {
         $result = $this->get('app.book')->delete($request->request->get('ids'));
         if ($result === false) {
-            return $this->json(array(
-                'status' => "error",
-                'errorMessage' => "Invalid form data"
-            ));
+            return $this->json(array('status' => "error", 'errorMessage' => "Invalid form data"));
         }
         
         return $this->json(array('status' => "OK"));
@@ -234,10 +236,7 @@ class DefaultController extends Controller
     {
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(array(
-                'status' => "error",
-                'errorMessage' => "You must be logged in to make request"
-            ));
+            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
         }
         
         $result = $this->get('app.book')->request(
@@ -245,10 +244,7 @@ class DefaultController extends Controller
             $user->id
         );
         if ($result !== true) {
-            return $this->json(array(
-                'status' => "error",
-                'errorMessage' => $result
-            ));
+            return $this->json(array('status' => "error", 'errorMessage' => $result));
         }
         
         return $this->json(array('status' => "OK"));

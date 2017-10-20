@@ -4,8 +4,7 @@
 namespace AppBundle\Security;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -20,12 +19,15 @@ class CookieAuthenticator extends AbstractGuardAuthenticator
      */
     private $entityManager;
     
+    private $cookieParams;
+    
     /**
      * @param Doctrine\ORM\EntityManager $entityManager
      */
-    public function __construct($entityManager)
+    public function __construct($entityManager, $cookieParams)
     {
         $this->entityManager = $entityManager;
+        $this->cookieParams = $cookieParams;
     }
     
     /**
@@ -71,14 +73,7 @@ class CookieAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $data = array(
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
-
-            // or to translate this message
-            // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
-        );
-
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
+        return $this->start($request, $exception);
     }
 
     /**
@@ -86,12 +81,12 @@ class CookieAuthenticator extends AbstractGuardAuthenticator
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $data = array(
-            // you might translate this message
-            'message' => 'Authentication Required'
-        );
-
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
+        $response = new RedirectResponse($request->getBasePath() . "/");
+        
+        // clear cookie
+        $response->headers->clearCookie('library', '/', $this->cookieParams['domain'], $this->cookieParams['secure']);
+        
+        return $response;
     }
 
     public function supportsRememberMe()

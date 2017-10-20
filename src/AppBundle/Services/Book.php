@@ -48,7 +48,7 @@ class Book
     public $read;
     
     /**
-     * @var \Doctrine\ORM\EntityManager 
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
     
@@ -57,7 +57,7 @@ class Book
      */
     public function __construct($em)
     {
-        $this->em = $em; 
+        $this->em = $em;
     }
     
     public function borrow($id, $userId)
@@ -144,7 +144,7 @@ class Book
      * @return type
      */
     public function delete($ids)
-    {               
+    {
         $books = $this->em->getRepository(BookEntity::class)
                           ->findBy(array('id' => $ids));
         
@@ -222,9 +222,9 @@ class Book
 
             if ($userbook->isBorrowed()) {
                 return "You are already borrowing this";
-            } 
+            }
 
-            if ($userbook->isRequested()) { 
+            if ($userbook->isRequested()) {
                 return "You have already requested this";
             }
         }

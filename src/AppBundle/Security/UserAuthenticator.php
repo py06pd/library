@@ -59,7 +59,8 @@ class UserAuthenticator extends AbstractGuardAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        return $this->entityManager->getRepository(User::class)->findOneBy(array('username' => $credentials['username']));
+        return $this->entityManager->getRepository(User::class)
+                                ->findOneBy(array('username' => $credentials['username']));
     }
 
     public function checkCredentials($credentials, UserInterface $user)

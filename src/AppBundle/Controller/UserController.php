@@ -89,14 +89,11 @@ class UserController extends Controller
     {
         $id = $request->request->get('id');
         
-        //$helper = $this->get('facebook.graph')->getRedirectLoginHelper();
-        $helper = (new Facebook(array(
-            'app_id' => $this->getParameter('facebookAppId'),
-            'app_secret' => $this->getParameter('facebookSecret')
-        )))->getRedirectLoginHelper();
-        $loginUrl = $helper->getLoginUrl($request->getBasePath() . "/users/callback/" . $id, array(
-            'user_actions.books'
-        ));
+        $helper = $this->get('facebook.graph')->getRedirectLoginHelper();
+        $loginUrl = $helper->getLoginUrl(
+            $request->getSchemeAndHttpHost() . $request->getBasePath() . "/users/callback/" . $id,
+            array('user_actions.books')
+        );
         
         return $this->json(array('status' => "OK", 'url' => $loginUrl));
     }
@@ -106,10 +103,7 @@ class UserController extends Controller
      */
     public function callbackAction($id, Request $request)
     {
-        $fb = new Facebook(array(
-            'app_id' => $this->getParameter('facebookAppId'),
-            'app_secret' => $this->getParameter('facebookSecret')
-        ));
+        $fb = $this->get('facebook.graph');
         $logger = $this->get('logger');
         $helper = $fb->getRedirectLoginHelper();
         

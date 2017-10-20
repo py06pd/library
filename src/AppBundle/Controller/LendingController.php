@@ -18,17 +18,14 @@ class LendingController extends Controller
     {
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(array(
-                'status' => "error",
-                'errorMessage' => "You must be logged in to make request"
-            ));
+            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
         }
         
         $em = $this->getDoctrine()->getManager();
         $item = $em->getRepository(Book::class)
                    ->findOneBy(array('id' => $request->request->get('id')));
         if (!$item) {
-            return "Invalid request";
+            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
         }
         
         $userbook = $em->getRepository(BookHistory::class)
@@ -36,16 +33,16 @@ class LendingController extends Controller
                             'id' => $request->request->get('id'),
                             'userid' => $user->id,
                             'latest' => true
-                        ));    
+                        ));
         if (!$userbook || !$userbook->isRequested()) {
-            return "You have not requested this";
+            return $this->json(array('status' => "error", 'errorMessage' => "You have not requested this"));
         }
 
         $userbook->latest = false;
         
         $newRecord = $userbook->double()->unrequest($user->id);
         
-        $em->persist($newRecord);      
+        $em->persist($newRecord);
         $em->flush();
         
         return $this->json(array('status' => "OK"));
@@ -58,18 +55,12 @@ class LendingController extends Controller
     {
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(array(
-                'status' => "error",
-                'errorMessage' => "You must be logged in to make request"
-            ));
+            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
         }
         
         $result = $this->get('app.book')->borrow($request->request->get('id'), $user->id);
         if ($result !== true) {
-            return $this->json(array(
-                'status' => "error",
-                'errorMessage' => $result
-            ));
+            return $this->json(array('status' => "error", 'errorMessage' => $result));
         }
         
         return $this->json(array('status' => "OK"));
@@ -108,13 +99,13 @@ class LendingController extends Controller
                 $aBooks = array();
                 foreach ($books as $book) {
                     $aBooks[$book->id] = $book->name;
-                } 
+                }
                 
                 $dbUsers = $this->getDoctrine()->getRepository(User::class)->findAll();
                 $users = array();
                 foreach ($dbUsers as $user) {
                     $users[$user->id] = $user;
-                }      
+                }
         
                 foreach ($history[0] as $row) {
                     if ($row->isRequested() || $row->isBorrowed()) {
@@ -166,17 +157,14 @@ class LendingController extends Controller
     {
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(array(
-                'status' => "error",
-                'errorMessage' => "You must be logged in to make request"
-            ));
+            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
         }
         
         $em = $this->getDoctrine()->getManager();
         $item = $em->getRepository(Book::class)
                    ->findOneBy(array('id' => $request->request->get('id')));
         if (!$item) {
-            return "Invalid request";
+            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
         }
         
         $userbook = $em->getRepository(BookHistory::class)
@@ -184,16 +172,16 @@ class LendingController extends Controller
                             'id' => $request->request->get('id'),
                             'otheruserid' => $user->id,
                             'latest' => true
-                        ));    
+                        ));
         if (!$userbook || !$userbook->isRequested()) {
-            return "No one has requested this";
+            return $this->json(array('status' => "error", 'errorMessage' => "No one has requested this"));
         }
 
         $userbook->latest = false;
         
         $newRecord = $userbook->double()->unrequest($user->id);
         
-        $em->persist($newRecord);      
+        $em->persist($newRecord);
         $em->flush();
         
         return $this->json(array('status' => "OK"));
@@ -206,17 +194,14 @@ class LendingController extends Controller
     {
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(array(
-                'status' => "error",
-                'errorMessage' => "You must be logged in to make request"
-            ));
+            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
         }
         
         $em = $this->getDoctrine()->getManager();
         $item = $em->getRepository(Book::class)
                    ->findOneBy(array('id' => $request->request->get('id')));
         if (!$item) {
-            return "Invalid request";
+            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
         }
         
         $userbook = $em->getRepository(BookHistory::class)
@@ -224,16 +209,16 @@ class LendingController extends Controller
                             'id' => $request->request->get('id'),
                             'otheruserid' => $user->id,
                             'latest' => true
-                        ));    
+                        ));
         if (!$userbook || !$userbook->isBorrowed()) {
-            return "No one has borrowed this";
+            return $this->json(array('status' => "error", 'errorMessage' => "No one has borrowed this"));
         }
 
         $userbook->latest = false;
         
         $newRecord = $userbook->double()->unborrow();
         
-        $em->persist($newRecord);      
+        $em->persist($newRecord);
         $em->flush();
         
         return $this->json(array('status' => "OK"));

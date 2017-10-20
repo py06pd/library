@@ -8,12 +8,14 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="bookhistory")
  */
-class BookHistory {
-    
+class BookHistory
+{
     const OWNED = 1;
     const READ = 2;
     const REQUESTED = 4;
     const BORROWED = 8;
+    const WISHLIST = 16;
+    const GIFTED = 32;
     
     /**
      * @ORM\Id
@@ -84,6 +86,16 @@ class BookHistory {
         return $item;
     }
     
+    public function gift($userId)
+    {
+        if (!$this->isGifted()) {
+            $this->status += self::GIFTED;
+            $this->otheruserid = $userId;
+        }
+        
+        return $this;
+    }
+    
     public function init($id, $userId)
     {
         $this->id = $id;
@@ -99,6 +111,16 @@ class BookHistory {
     public function isBorrowed()
     {
         return $this->status & self::BORROWED;
+    }
+    
+    public function isGifted()
+    {
+        return $this->status & self::GIFTED;
+    }
+    
+    public function isOnWishlist()
+    {
+        return $this->status & self::WISHLIST;
     }
     
     public function isOwned()
@@ -121,6 +143,10 @@ class BookHistory {
         if (!$this->isOwned()) {
             $this->status += self::OWNED;
             $this->stock += 1;
+            $this->otheruserid = null;
+            
+            $this->unwish();
+            $this->ungift();
         }
         
         return $this;
@@ -128,7 +154,7 @@ class BookHistory {
     
     public function read()
     {
-        if (!$this->isRead()) {              
+        if (!$this->isRead()) {
             $this->status += self::READ;
         }
         
@@ -137,10 +163,12 @@ class BookHistory {
     
     public function request($fromId = null)
     {
-        $this->status += self::REQUESTED;
-        
-        if ($fromId) {
-            $this->otheruserid = $fromId;
+        if (!$this->isRequested()) {
+            $this->status += self::REQUESTED;
+
+            if ($fromId) {
+                $this->otheruserid = $fromId;
+            }
         }
         
         return $this;
@@ -150,6 +178,16 @@ class BookHistory {
     {
         if ($this->isBorrowed()) {
             $this->status -= self::BORROWED;
+            $this->otheruserid = null;
+        }
+        
+        return $this;
+    }
+    
+    public function ungift()
+    {
+        if ($this->isGifted()) {
+            $this->status -= self::GIFTED;
             $this->otheruserid = null;
         }
         
@@ -184,6 +222,24 @@ class BookHistory {
         if ($this->isRequested()) {
             $this->status -= self::REQUESTED;
             $this->otheruserid = $userid;
+        }
+        
+        return $this;
+    }
+    
+    public function unwish()
+    {
+        if ($this->isOnWishlist()) {
+            $this->status -= self::WISHLIST;
+        }
+        
+        return $this;
+    }
+    
+    public function wish()
+    {
+        if (!$this->isOnWishlist()) {
+            $this->status += self::WISHLIST;
         }
         
         return $this;
