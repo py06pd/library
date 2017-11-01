@@ -134,7 +134,7 @@ class DefaultController extends Controller
         $history = $em->getRepository(BookHistory::class)->findBy(array('latest' => true));
         foreach ($history as $row) {
             if ($row->isOwned()) {
-                $owned[$row->id][] = $users[$row->userid]->name;
+                $owned[$row->id][$row->userid] = $users[$row->userid]->name;
             }
             
             if ($row->isRead()) {
@@ -161,10 +161,15 @@ class DefaultController extends Controller
             sort($types);
             
             $bookSeries = array();
+            $seriesSeg = "";
             foreach ($item->series as $value) {
                 $bookSeries[] = $value['name'];
                 if (!in_array($value['name'], $series)) {
                     $series[] = $value['name'];
+                }
+                
+                if ($seriesSeg == "") {
+                    $seriesSeg = $value['name'] . str_pad(($value['number'] == null) ? "zz" : $value['number'], 2, "0", STR_PAD_LEFT);
                 }
             }
                 
@@ -173,12 +178,16 @@ class DefaultController extends Controller
             if ($this->checkFilters($item, $bookSeries, $eqFilters, $noFilters)) {
                 $segs = array();
                 foreach ($item->authors as $author) {
-                    $segs[] = (strpos($author, " ") === false) ? $author : 
+                    $seg = (strpos($author, " ") === false) ? $author : 
                         (substr($author, strrpos($author, " ") + 1) . ", " . substr($author, 0, strrpos($author, " ")));
+                    
+                    $segs[] = $seg;
                 }
                 sort($segs);
 
-                $firstAuthor = (count($item->authors) > 0) ? $segs[0] : "";
+                $firstAuthor = ((count($item->authors) > 0) ? $segs[0] : "zzz") . $seriesSeg;
+                
+                $this->get('logger')->info($firstAuthor);
                 $order[$item->id] = $firstAuthor;
                 $books[$item->id] = array(
                     'id' => $item->id,
@@ -187,8 +196,9 @@ class DefaultController extends Controller
                     'authors' => implode(", ", $item->authors),
                     'order' => $firstAuthor,
                     'genres' => implode(", ", $item->genres),
-                    'owners' => isset($owned[$item->id]) ? implode(", ", $owned[$item->id]) : array(),
-                    'read' => isset($read[$item->id]) ? implode(", ", $read[$item->id]) : array(),
+                    'ownerids' => isset($owned[$item->id]) ? array_keys($owned[$item->id]) : array(),
+                    'owners' => isset($owned[$item->id]) ? implode(", ", $owned[$item->id]) : "",
+                    'read' => isset($read[$item->id]) ? implode(", ", $read[$item->id]) : "",
                     'series' => implode(", ", $bookSeries)
                 );
             }

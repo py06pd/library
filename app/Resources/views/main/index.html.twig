@@ -7,7 +7,7 @@
     </head>
     <body>
         <div id="app">
-            <span data="{{ data }}"/>
+            <span id="data" data="{{ data }}"/>
             <div id="content">
                 <div class="MenuContent">
                     <cic-menu v-if="$root.user.id > 0" v-model="page"></cic-menu>

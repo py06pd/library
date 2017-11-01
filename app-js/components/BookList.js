@@ -11,7 +11,7 @@ module.exports = {
             series: [],
             types: [],
             books: [],
-            editing: {},
+            editing: { id: 0, ownerids: [] },
             formOpen: false,
             menuOpen: false,
             newSeries: { name: '', number: '' },
@@ -119,6 +119,7 @@ module.exports = {
                 owners: [],
                 read: [],
                 series: [],
+                ownerids: [],
             }));
             this.formOpen = true;
         },
@@ -131,9 +132,9 @@ module.exports = {
             });
         },
         
-        openMenu: function(id) {
+        openMenu: function(book) {
+            this.editing = book;
             this.menuOpen = true;
-            this.editing = { id: id };
         },
         
         removeFilter: function(filterIndex) {
@@ -168,6 +169,12 @@ module.exports = {
                 this.editing.series.push({ name: val, number: '' });
                 this.newSeries = { name: '', number: '' };
             }
+        },
+        
+        wishlist: function() {
+            this.save('wishlist/add', { id: this.editing.id }).then(function() {
+                this.menuOpen = false;
+            });
         },
     },
 };
