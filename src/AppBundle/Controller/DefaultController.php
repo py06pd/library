@@ -151,6 +151,7 @@ class DefaultController extends Controller
         $series = array();
         $types = array();
         $books = array();
+        $order = array();
         foreach ($data as $item) {
             $this->addToDataArray($item, 'authors', $authors);
             $this->addToDataArray($item, 'genres', $genres);
@@ -170,11 +171,21 @@ class DefaultController extends Controller
             sort($series);
             
             if ($this->checkFilters($item, $bookSeries, $eqFilters, $noFilters)) {
-                $books[] = array(
+                $segs = array();
+                foreach ($item->authors as $author) {
+                    $segs[] = (strpos($author, " ") === false) ? $author : 
+                        (substr($author, strrpos($author, " ") + 1) . ", " . substr($author, 0, strrpos($author, " ")));
+                }
+                sort($segs);
+
+                $firstAuthor = (count($item->authors) > 0) ? $segs[0] : "";
+                $order[$item->id] = $firstAuthor;
+                $books[$item->id] = array(
                     'id' => $item->id,
                     'name' => $item->name,
                     'type' => $item->type,
                     'authors' => implode(", ", $item->authors),
+                    'order' => $firstAuthor,
                     'genres' => implode(", ", $item->genres),
                     'owners' => isset($owned[$item->id]) ? implode(", ", $owned[$item->id]) : array(),
                     'read' => isset($read[$item->id]) ? implode(", ", $read[$item->id]) : array(),
@@ -182,6 +193,8 @@ class DefaultController extends Controller
                 );
             }
         }
+        
+        array_multisort($order, SORT_ASC, $books);
         
         return $this->json(array(
             'status' => "OK",
