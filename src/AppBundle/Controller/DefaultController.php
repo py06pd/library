@@ -263,6 +263,24 @@ class DefaultController extends Controller
         return $this->json(array('status' => "OK"));
     }
     
+    /**
+     * @Route("/notes/save")
+     */
+    public function notesSaveAction(Request $request)
+    {
+        $em = $this->getDoctrine();
+        $data = $em->getRepository(BookHistory::class)->findOneBy(array(
+            'id' => $request->request->get('id'),
+            'userid' => $request->request->get('userid'),
+            'latest' => true
+        ));
+        $text = trim($request->request->get('text'));
+        $data->notes = $text == '' ? null : $text;
+        $em->getManager()->flush();
+        
+        return $this->json(array('status' => "OK"));
+    }
+    
     private function addToDataArray($item, $key, &$items)
     {
         if (isset($item->$key) && is_array($item->$key)) {

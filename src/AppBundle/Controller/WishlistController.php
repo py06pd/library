@@ -94,6 +94,7 @@ class WishlistController extends Controller
                     'id' => $detail->id,
                     'name' => $detail->name,
                     'authors' => implode(",", $detail->authors),
+                    'notes' => $detail->notes,
                     'datetime' => date("Y-m-d H:i:s", $rows[$detail->id]->timestamp),
                     'gifted' => (
                         $this->getUser() &&

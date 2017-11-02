@@ -3,6 +3,12 @@
         <el-table-column prop="name" label="Title"></el-table-column>
         <el-table-column prop="authors" label="Authors"></el-table-column>
         <el-table-column prop="datetime" label="Date"></el-table-column>
+        <el-table-column label="Notes">
+            <template scope="scope">
+                <span class="listNotes">{{ scope.row.notes }}</span>
+                <el-button size="small" icon="edit" @click="openNotes(scope.row)"></el-button>
+            </template>
+        </el-table-column>
         <el-table-column v-if="$root.user.id != userid" prop="gift" label="Gift From"></el-table-column>
         <el-table-column label="Got" width="100">
             <template scope="scope">
@@ -15,4 +21,10 @@
             </template>
         </el-table-column>
     </el-table>
+    
+    <el-dialog id="notes" :visible.sync="notesOpen">
+        <el-input type="textarea" :rows="2" v-model="notes.text"></el-input> 
+        <el-button @click="saveNotes">Save</el-button>
+        <el-button @click="closeNotes">Close</el-button>
+    </el-dialog>
 </div>
