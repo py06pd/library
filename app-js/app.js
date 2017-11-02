@@ -83,7 +83,7 @@ new Vue({
         };
     },
     created: function() {
-        var data = JSON.parse(document.getElementById('data').attr('data'));
+        var data = JSON.parse(document.getElementById('data').getAttribute('data'));
 
         this.params = (data.params) ? data.params : {};
         this.page = (data.page) ? data.page : 'books';
