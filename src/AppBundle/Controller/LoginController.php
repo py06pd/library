@@ -45,7 +45,7 @@ class LoginController extends Controller
                 $time,
                 hash("sha256", $user->id . $time . $sessionid)
             )),
-            0,
+            $time + (3600 * 24 * 365),
             '/',
             $this->getParameter('cookieDomain'),
             $this->getParameter('cookieSecure')

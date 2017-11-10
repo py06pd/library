@@ -58,9 +58,9 @@ class DefaultController extends Controller
         ))));
     }
     
-    private function checkFilters($item, $bookSeries, $eqFilters, $noFilters)
+    private function checkFilters($item, $owned, $read, $bookSeries, $eqFilters, $noFilters)
     {
-        $fields = array('author' => 'authors', 'genre' => 'genres', 'owner' => 'owners', 'read' => 'read');
+        $fields = array('author' => 'authors', 'genre' => 'genres');
         foreach ($fields as $filter => $field) {
             if (isset($eqFilters[$filter]) && count(array_intersect($item->$field, $eqFilters[$filter])) == 0) {
                 return false;
@@ -68,6 +68,38 @@ class DefaultController extends Controller
 
             if (isset($noFilters[$filter]) && count(array_intersect($item->$field, $noFilters[$filter])) > 0) {
                 return false;
+            }
+        }
+        
+        if (isset($eqFilters['owner'])) {
+            foreach ($eqFilters['owner'] as $id) {
+                if (!isset($owned[$item->id]) || !isset($owned[$item->id][$id])) {
+                    return false; 
+                }
+            }
+        }
+        
+        if (isset($noFilters['owner'])) {
+            foreach ($noFilters['owner'] as $id) {
+                if (isset($owned[$item->id]) && isset($owned[$item->id][$id])) {
+                    return false; 
+                }
+            }
+        }
+        
+        if (isset($eqFilters['read'])) {
+            foreach ($eqFilters['read'] as $id) {
+                if (!isset($read[$item->id]) || !isset($read[$item->id][$id])) {
+                    return false; 
+                }
+            }
+        }
+        
+        if (isset($noFilters['read'])) {
+            foreach ($noFilters['read'] as $id) {
+                if (isset($read[$item->id]) && isset($read[$item->id][$id])) {
+                    return false; 
+                }
             }
         }
         
@@ -138,7 +170,7 @@ class DefaultController extends Controller
             }
             
             if ($row->isRead()) {
-                $read[$row->id][] = $users[$row->userid]->name;
+                $read[$row->id][$row->userid] = $users[$row->userid]->name;
             }
             
             if ($row->isRequested() && $user && $row->otheruserid == $user->id) {
@@ -175,7 +207,7 @@ class DefaultController extends Controller
                 
             sort($series);
             
-            if ($this->checkFilters($item, $bookSeries, $eqFilters, $noFilters)) {
+            if ($this->checkFilters($item, $owned, $read, $bookSeries, $eqFilters, $noFilters)) {
                 $segs = array();
                 foreach ($item->authors as $author) {
                     $seg = (strpos($author, " ") === false) ? $author : 
@@ -187,7 +219,6 @@ class DefaultController extends Controller
 
                 $firstAuthor = ((count($item->authors) > 0) ? $segs[0] : "zzz") . $seriesSeg;
                 
-                $this->get('logger')->info($firstAuthor);
                 $order[$item->id] = $firstAuthor;
                 $books[$item->id] = array(
                     'id' => $item->id,
@@ -196,8 +227,8 @@ class DefaultController extends Controller
                     'authors' => implode(", ", $item->authors),
                     'order' => $firstAuthor,
                     'genres' => implode(", ", $item->genres),
-                    'ownerids' => isset($owned[$item->id]) ? array_keys($owned[$item->id]) : array(),
-                    'owners' => isset($owned[$item->id]) ? implode(", ", $owned[$item->id]) : "",
+                    'owners' => isset($owned[$item->id]) ? array_keys($owned[$item->id]) : array(),
+                    'ownerNames' => isset($owned[$item->id]) ? implode(", ", $owned[$item->id]) : "",
                     'read' => isset($read[$item->id]) ? implode(", ", $read[$item->id]) : "",
                     'series' => implode(", ", $bookSeries)
                 );

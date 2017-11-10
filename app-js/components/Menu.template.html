@@ -9,5 +9,6 @@
         <template v-if="$root.user.role === 'admin'">
             <li class="el-menu-item" :class="{ 'is-active': activeIndex == 3 }" index="3" @click="onOptionSelected('users', 3)">Users</li>
         </template>
+        <li class="el-menu-item" :class="{ 'is-active': activeIndex == 4 }" index="4" @click="onOptionSelected('wishlist', 4)">Wishlist</li>
     </ul>
 </div>

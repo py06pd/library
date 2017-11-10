@@ -53,9 +53,15 @@ class WishlistController extends Controller
             return $this->json(array('status' => "error", 'errorMessage' => "You own this"));
         }
 
-        $userbook->latest = false;
+        if ($userbook) {
+            $userbook->latest = false;
+            $newRecord = $userbook->double();        
+        } else {
+            $newRecord = new BookHistory();
+            $newRecord->init($request->request->get('id'), $user->id);
+        }
         
-        $newRecord = $userbook->double()->wish();
+        $newRecord = $newRecord->wish();
         
         $em->persist($newRecord);
         $em->flush();
@@ -94,12 +100,15 @@ class WishlistController extends Controller
                     'id' => $detail->id,
                     'name' => $detail->name,
                     'authors' => implode(",", $detail->authors),
-                    'notes' => $detail->notes,
+                    'notes' => $rows[$detail->id]->notes,
                     'datetime' => date("Y-m-d H:i:s", $rows[$detail->id]->timestamp),
                     'gifted' => (
                         $this->getUser() &&
                         $this->getUser()->id !== $userid && $rows[$detail->id]->isGifted()
-                    ) ? $users[$rows[$detail->id]->otheruserid]->name : ''
+                    ) ? (
+                        isset($users[$rows[$detail->id]->otheruserid]->name) ? 
+                            $users[$rows[$detail->id]->otheruserid]->name : 'Unknown'
+                    ) : ''
                 );
             }
         }
@@ -112,11 +121,55 @@ class WishlistController extends Controller
      */
     public function getAction(Request $request)
     {
-        $userid = $request->request->get('id');
+        $userid = $request->request->get('userid');
         
         $wishlist = $this->getList($userid);
         
-        return $this->json(array('books' => $wishlist));
+        return $this->json(array('status' => "OK", 'books' => $wishlist));
+    }
+    
+    /**
+     * @Route("/wishlist/gift")
+     */
+    public function giftAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $item = $em->getRepository(Book::class)
+                   ->findOneBy(array('id' => $request->request->get('id')));
+        if (!$item) {
+            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
+        }
+        
+        $userbook = $em->getRepository(BookHistory::class)
+                        ->findOneBy(array(
+                            'id' => $request->request->get('id'),
+                            'userid' => $request->request->get('userid'),
+                            'latest' => true
+                        ));
+        if (!$userbook || !$userbook->isOnWishlist()) {
+            return $this->json(array(
+                'status' => "error",
+                'errorMessage' => "This book is not on the wishlist"
+            ));
+        }
+        
+        if ($userbook->isGifted()) {
+            return $this->json(array(
+                'status' => "error",
+                'errorMessage' => "This has already been gifted"
+            ));
+        }
+
+        $userbook->latest = false;
+        
+        $user = $this->getUser();
+        
+        $newRecord = $userbook->double()->gift($user ? $user->id : null);
+        
+        $em->persist($newRecord);
+        $em->flush();
+        
+        return $this->json(array('status' => "OK"));
     }
     
     /**

@@ -21,7 +21,7 @@
             v-model="filter.value"
             filterable
             placeholder="Please select a value">
-            <el-option v-for="value in values" :label="value" :value="value"></el-option>
+            <el-option v-for="(label, value) in values" :label="label" :value="value"></el-option>
         </el-select>
     </div>
     <div style="margin-bottom:10px">
@@ -31,7 +31,12 @@
             type="primary"
             :close-transition="false"
             @close="removeFilter(filterIndex)">
-            {{ filter.field }} {{ filter.operator }} '{{ filter.value }}'
+            <template v-if="['owner','read'].indexOf(filter.field) != -1">
+                {{ filter.field }} {{ filter.operator }} '{{ $root.users[filter.value].name }}'
+            </template>
+            <template v-else>
+                {{ filter.field }} {{ filter.operator }} '{{ filter.value }}'
+            </template>
         </el-tag>
     </div>
     
@@ -70,7 +75,7 @@
             label="Series">
         </el-table-column>
         <el-table-column
-            prop="owners"
+            prop="ownerNames"
             label="Owner"
             width="100">
         </el-table-column>
@@ -83,15 +88,15 @@
     
     <el-dialog id="bookMenu" :visible.sync="menuOpen">
         <el-button @click="openEdit">Edit</el-button>
-        <template v-if="$root.user.id > 0 && editing.id > 0 && editing.ownerids.indexOf($root.user.id) == -1">
-            <template v-if="editing.ownerids.length > 0">
+        <template v-if="$root.user.id > 0 && editing.id > 0 && editing.owners.indexOf($root.user.id) == -1">
+            <template v-if="editing.owners.length > 0">
                 <br><el-button @click="borrowRequest">Borrow Request</el-button>
             </template>
             <br><el-button @click="wishlist">Add to Wishlist</el-button>
         </template>
     </el-dialog>
     
-    <el-dialog id="frmBook" title="Edit Book" :visible.sync="formOpen">
+    <el-dialog id="frmBook" title="Edit Book" v-if="formOpen" :visible.sync="formOpen">
         <el-form :model="editing">
             <el-form-item label="Title">
                 <el-input class="name" v-model="editing.name"></el-input>

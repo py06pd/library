@@ -46,6 +46,11 @@ class BookHistory
     public $latest;
     
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    public $notes;
+    
+    /**
      * @ORM\Column(type="integer", nullable=true)
      */
     public $stock;
@@ -80,6 +85,7 @@ class BookHistory
         $item->status = $this->status;
         $item->timestamp = time();
         $item->latest = true;
+        $item->notes = $this->notes;
         $item->stock = $this->stock;
         $item->otheruserid = $this->otheruserid;
         

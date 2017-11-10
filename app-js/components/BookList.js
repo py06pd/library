@@ -64,24 +64,34 @@ module.exports = {
         },
 
         filterFieldChange: function(val) {
+            this.values = {};
+            
             switch (val) {
                 case 'author':
-                    this.values = JSON.parse(JSON.stringify(this.authors));
+                    for (var a in this.authors) {
+                        this.values[this.authors[a]] = this.authors[a];
+                    }
                     break;
                 case 'genre':
-                    this.values = JSON.parse(JSON.stringify(this.genres));
+                    for (var g in this.genres) {
+                        this.values[this.genres[g]] = this.genres[g];
+                    }
                     break;
                 case 'owner':
-                    this.values = JSON.parse(JSON.stringify(this.people));
-                    break;
                 case 'read':
-                    this.values = JSON.parse(JSON.stringify(this.people));
+                    for (var u in this.$root.users) {
+                        this.values[u] = this.$root.users[u].name;
+                    }
                     break;
                 case 'series':
-                    this.values = JSON.parse(JSON.stringify(this.series));
+                    for (var s in this.series) {
+                        this.values[this.series[s]] = this.series[s];
+                    }
                     break;
                 case 'type':
-                    this.values = JSON.parse(JSON.stringify(this.types));
+                    for (var t in this.types) {
+                        this.values[this.types[t]] = this.types[t];
+                    }
                     break;
             }
         },
@@ -119,7 +129,7 @@ module.exports = {
                 owners: [],
                 read: [],
                 series: [],
-                ownerids: [],
+                ownerNames: [],
             }));
             this.formOpen = true;
         },
