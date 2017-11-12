@@ -108,7 +108,6 @@ module.exports = {
                     this.$root.user = response.body.user;
                 }
                 this.$root.requests = response.body.requests;
-                this.$root.users = response.body.users;
             });
         },
         

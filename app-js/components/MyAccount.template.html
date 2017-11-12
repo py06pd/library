@@ -1,0 +1,14 @@
+<div>  
+    <el-form id="myAccountForm">
+        <el-form-item label="Display Name">
+            <el-input v-model="user.name" width="200"/>
+        </el-form-item>
+        <el-form-item label="Username">
+            <el-input v-model="user.username" width="200"/>
+        </el-form-item>
+        <el-form-item label="Password">
+            <el-input type="password" v-model="user.password" width="200"/>
+        </el-form-item>
+        <el-button @click="updateAccount">Save</el-button>
+    </el-form>
+</div>

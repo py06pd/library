@@ -78,13 +78,17 @@ img { border: 0; vertical-align: middle; }
 #menuSection .el-submenu__title { height: auto; line-height: 20px; padding: 10px; }
 #menuSection .el-badge__content.is-fixed { right: 0px; }
 
-#loginForm {
+#loginForm, #registerForm {
     position: absolute;
     z-index: 2;
     background: #fff;
     box-shadow: 0px 0px 9px rgba(0,0,0,0.5);
     padding: 10px;
     margin-left: 3px;
+}
+
+#myAccountForm input {
+    width: 200px;
 }
 
 #userName {

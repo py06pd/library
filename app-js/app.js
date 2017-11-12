@@ -13,6 +13,7 @@ import LogsList from './components/LogsList';
 import AppMenu from './components/Menu';
 import UserList from './components/UserList';
 import Wishlist from './components/Wishlist';
+import MyAccount from './components/MyAccount';
 
 import {
     Badge,
@@ -45,6 +46,7 @@ Vue.component(LogsList.name, LogsList);
 Vue.component(AppMenu.name, AppMenu);
 Vue.component(UserList.name, UserList);
 Vue.component(Wishlist.name, Wishlist);
+Vue.component(MyAccount.name, MyAccount);
 
 // Register the Element UI components we're using
 Vue.use(Badge);
@@ -88,5 +90,6 @@ new Vue({
         this.params = (data.params) ? data.params : {};
         this.page = (data.page) ? data.page : 'books';
         this.user = (data.user && data.user.id > 0) ? data.user : { id: 0, name: '', role: 'anon' };
+        this.users = data.users;
     },
 });

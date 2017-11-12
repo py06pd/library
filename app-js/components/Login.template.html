@@ -1,5 +1,8 @@
 <div id="userSection">
-    <el-button v-if="$root.user.id == 0" @click="onLoginClicked">Login</el-button>
+    <template v-if="$root.user.id == 0">
+        <el-button @click="onRegisterClicked">Register</el-button>
+        <el-button @click="onLoginClicked">Login</el-button>
+    </template>
     <span v-if="$root.user.id > 0">
         <span id="userName">{{ $root.user.name }}</span>
         <el-button  @click="onLogoutClicked">Logout</el-button>
@@ -11,10 +14,10 @@
             </el-select>
             <div v-if="selectedUser.role != 'anon'">
                 <el-form-item label="Username">
-                    <el-input v-model="username"/>
+                    <el-input v-model="selectedUser.username"/>
                 </el-form-item>
                 <el-form-item label="Password">
-                    <el-input type="password" v-model="password"/>
+                    <el-input type="password" v-model="selectedUser.password"/>
                 </el-form-item>
                 <el-button @click="login">Login</el-button>
                 <el-button @click="cancelLogin">Cancel</el-button>
@@ -22,6 +25,21 @@
             <div v-else>
                 <el-button @click="cancelLogin">Cancel</el-button>
             </div>
+        </el-form>
+    </div>
+    <div id="registerForm" v-if="registerOpen">
+        <el-form>
+            <el-form-item label="Display Name">
+                <el-input v-model="selectedUser.name"/>
+            </el-form-item>
+            <el-form-item label="Username">
+                <el-input v-model="selectedUser.username"/>
+            </el-form-item>
+            <el-form-item label="Password">
+                <el-input type="password" v-model="selectedUser.password"/>
+            </el-form-item>
+            <el-button @click="register">Register</el-button>
+            <el-button @click="cancelRegister">Cancel</el-button>
         </el-form>
     </div>
 </div>

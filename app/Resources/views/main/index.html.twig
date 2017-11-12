@@ -10,10 +10,13 @@
             <span id="data" data="{{ data }}"/>
             <div id="content">
                 <div class="MenuContent">
-                    <cic-menu v-if="$root.user.id > 0" v-model="page"></cic-menu>
+                    <cic-menu></cic-menu>
                     <cic-login></cic-login>
                 </div>
                 <div class="PageContent">
+                    <div v-if="page === 'myaccount'">
+                        <cic-myaccount></cic-myaccount>
+                    </div>
                     <div v-if="page === 'books'">
                         <cic-book-list></cic-book-list>
                     </div>

@@ -15,6 +15,37 @@ use AppBundle\Entity\User;
 class UserController extends Controller
 {
     /**
+     * @Route("/myaccount/save")
+     */
+    public function myAccountSaveAction(Request $request)
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
+        }
+        
+        $em = $this->getDoctrine()->getManager();
+        
+        $user->name = $request->request->get('name');
+        $user->username = $request->request->get('username');
+        
+        $password = trim($request->request->get('password'));
+        
+        if ($user->name == '' || $user->username == '' || $password == '') {
+            return $this->json(array('status' => "warn", 'errorMessage' => "Invalid form data"));
+        }
+        
+        if ($password !== "********") {
+            $salt = substr(hash("sha256", mt_rand(0, 100)), 0, 16);
+            $user->password = $salt . hash_hmac("sha256", $salt . $password, $this->getParameter('secret'));
+        }
+        
+        $em->flush();
+        
+        return $this->json(array('status' => "OK"));
+    }
+    
+    /**
      * @Route("/users/delete")
      */
     public function deleteAction(Request $request)

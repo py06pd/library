@@ -126,5 +126,10 @@ module.exports = {
         showSucessMessage: function(text) {
             this.$notify({ title: 'Success', message: text, type: 'success', offset: 85 });
         },
+        // show warning message
+        showWarningMessage: function (text) {
+            this.$notify({ title: 'Warning', message: text, type: 'warning', offset: 85 });
+        },
+        
     },
 };

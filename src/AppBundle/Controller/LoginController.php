@@ -18,10 +18,8 @@ class LoginController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         
-        $user = null;
-        if ($this->getUser()) {
-            $user = $em->getRepository(User::class)->findOneBy(array('id' => $this->getUser()->id));
-        } elseif ($request->request->has('id')) {
+        $user = $this->getUser();
+        if (!$user && $request->request->has('id')) {
             $user = $em->getRepository(User::class)->findOneBy(array(
                 'id' => $request->request->get('id'),
                 'role' => "anon"
@@ -37,22 +35,40 @@ class LoginController extends Controller
         $user->sessionid = $sessionid;
         $em->flush();
         
-        $time = time();
-        $auth = new Cookie(
-            'library',
-            implode("|", array(
-                $user->id,
-                $time,
-                hash("sha256", $user->id . $time . $sessionid)
-            )),
-            $time + (3600 * 24 * 365),
-            '/',
-            $this->getParameter('cookieDomain'),
-            $this->getParameter('cookieSecure')
-        );
+        $bag = new ResponseHeaderBag();
+        $bag->setCookie($this->createCookie($user));
+        
+        return $this->json(array('status' => "OK", 'user' => $user), 200, $bag->all());
+    }
+    
+    /**
+     * @Route("/login/register")
+     */
+    public function loginRegisterAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        $user = new User();
+        $user->name = trim($request->request->get('name'));
+        $user->username = trim($request->request->get('username'));
+        $password = trim($request->request->get('password'));
+        $user->role = "user";
+        
+        if ($user->name == '' || $user->username == '' || $password == '') {
+            return $this->json(array('status' => "warn", 'errorMessage' => "Invalid form data"));
+        }
+        
+        $salt = substr(hash("sha256", mt_rand(0, 100)), 0, 16);
+        $user->password = $salt . hash_hmac("sha256", $salt . $password, $this->getParameter('secret'));
+        
+        $sessionid = hash("sha256", mt_rand(1, 32));
+        $user->sessionid = $sessionid;
+        
+        $em->persist($user);
+        $em->flush();
         
         $bag = new ResponseHeaderBag();
-        $bag->setCookie($auth);
+        $bag->setCookie($this->createCookie($user));
         
         return $this->json(array('status' => "OK", 'user' => $user), 200, $bag->all());
     }
@@ -66,5 +82,24 @@ class LoginController extends Controller
         $bag->clearCookie('library', '/', $this->getParameter('cookieDomain'), $this->getParameter('cookieSecure'));
                
         return $this->json(array('status' => "OK"), 200, $bag->all());
+    }
+    
+    private function createCookie($user)
+    {
+        $time = time();
+        $auth = new Cookie(
+            'library',
+            implode("|", array(
+                $user->id,
+                $time,
+                hash("sha256", $user->id . $time . $user->sessionid)
+            )),
+            $time + (3600 * 24 * 365),
+            '/',
+            $this->getParameter('cookieDomain'),
+            $this->getParameter('cookieSecure')
+        );
+        
+        return $auth;
     }
 }

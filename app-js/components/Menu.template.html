@@ -1,14 +1,19 @@
 <div id="menuSection">
     <el-button type="primary" icon="menu" @click="toggleMenu"></el-button>
     <ul class="el-menu" v-show="showMenu">
-        <li class="el-menu-item" :class="{ 'is-active': activeIndex == 1 }" index="1" @click="onOptionSelected('books', 1)">Books</li>
-        <li class="el-menu-item" :class="{ 'is-active': activeIndex == 2 }" index="2" @click="onOptionSelected('lending', 2)">
-            <el-badge v-if="$root.requests > 0" :value="$root.requests">Lending</el-badge>
-            <span v-else>Lending</span>
-        </li>
-        <template v-if="$root.user.role === 'admin'">
-            <li class="el-menu-item" :class="{ 'is-active': activeIndex == 3 }" index="3" @click="onOptionSelected('users', 3)">Users</li>
+        <template v-if="$root.user.id > 0">
+            <li class="el-menu-item" :class="{ 'is-active': $root.page == 'myaccount' }" index="5" @click="onOptionSelected('myaccount')">Me</li>
         </template>
-        <li class="el-menu-item" :class="{ 'is-active': activeIndex == 4 }" index="4" @click="onOptionSelected('wishlist', 4)">Wishlist</li>
+        <li class="el-menu-item" :class="{ 'is-active': $root.page == 'books' }" index="1" @click="onOptionSelected('books')">Books</li>
+        <template v-if="$root.user.id > 0">
+            <li class="el-menu-item" :class="{ 'is-active': $root.page == 'lending' }" index="2" @click="onOptionSelected('lending')">
+                <el-badge v-if="$root.requests > 0" :value="$root.requests">Lending</el-badge>
+                <span v-else>Lending</span>
+            </li>
+            <template v-if="$root.user.role === 'admin'">
+                <li class="el-menu-item" :class="{ 'is-active': $root.page == 'users' }" index="3" @click="onOptionSelected('users')">Users</li>
+            </template>
+            <li class="el-menu-item" :class="{ 'is-active': $root.page == 'wishlist' }" index="4" @click="onOptionSelected('wishlist')">Wishlist</li>
+        </template>
     </ul>
 </div>

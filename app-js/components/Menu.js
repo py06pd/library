@@ -6,14 +6,13 @@ module.exports = {
     mixins: [ Http ],
     data: function () {
         return {
-            activeIndex: 1,
             showMenu: false,
         };
     },
     methods: {
-        onOptionSelected: function(option, index) {
+        onOptionSelected: function(option) {
             if (option === 'wishlist') {
-                this.load('wishlist/get', { userid: this.$root.user.id}).then(function(response) {
+                this.load('wishlist/get', { userid: this.$root.user.id }).then(function(response) {
                     this.$root.params = {
                         userid: this.$root.user.id,
                         books: response.body.books,
@@ -21,8 +20,7 @@ module.exports = {
                 });
             }
             
-            this.$emit('input', option);
-            this.activeIndex = index;
+            this.$root.page = option;
             this.showMenu = false;
         },
         toggleMenu: function() {

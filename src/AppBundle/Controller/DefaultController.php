@@ -51,10 +51,17 @@ class DefaultController extends Controller
      */
     public function indexAction($page = null, $params = array())
     {
+        $dbUsers = $this->getDoctrine()->getRepository(User::class)->findAll();
+        $users = array();
+        foreach ($dbUsers as $dbUser) {
+            $users[$dbUser->id] = $dbUser;
+        }
+        
         return $this->render('main/index.html.twig', array('data' => json_encode(array(
             'page' => $page,
             'params' => $params,
-            'user' => $this->getUser()
+            'user' => $this->getUser(),
+            'users' => $users
         ))));
     }
     
@@ -127,6 +134,11 @@ class DefaultController extends Controller
      */
     public function deleteItemsAction(Request $request)
     {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
+        }
+        
         $result = $this->get('app.book')->delete($request->request->get('ids'));
         if ($result === false) {
             return $this->json(array('status' => "error", 'errorMessage' => "Invalid form data"));
@@ -245,8 +257,7 @@ class DefaultController extends Controller
             'types' => $types,
             'requests' => $requests,
             'series' => $series,
-            'user' => $user,
-            'users' => $users
+            'user' => $user
         ));
     }
     
@@ -266,6 +277,11 @@ class DefaultController extends Controller
      */
     public function saveItemAction(Request $request)
     {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
+        }
+        
         $dataItem = json_decode($request->request->get('data'), true);
         
         $book = $this->get('app.book');
