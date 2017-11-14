@@ -5,9 +5,10 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\Audit;
 use AppBundle\Entity\Book;
-use AppBundle\Entity\BookHistory;
 use AppBundle\Entity\User;
+use AppBundle\Entity\UserBook;
 
 class WishlistController extends Controller
 {
@@ -26,6 +27,11 @@ class WishlistController extends Controller
         ));
     }
     
+    private function formatError($message)
+    {
+        return $this->json(array('status' => "error", 'errorMessage' => $message));
+    }
+    
     /**
      * @Route("/wishlist/add")
      */
@@ -33,38 +39,30 @@ class WishlistController extends Controller
     {
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
+            return $this->formatError("You must be logged in to make request");
         }
         
         $em = $this->getDoctrine()->getManager();
         $item = $em->getRepository(Book::class)
                    ->findOneBy(array('id' => $request->request->get('id')));
         if (!$item) {
-            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
+            return $this->formatError("Invalid request");
         }
         
-        $userbook = $em->getRepository(BookHistory::class)
-                        ->findOneBy(array(
-                            'id' => $request->request->get('id'),
-                            'userid' => $user->id,
-                            'latest' => true
-                        ));
-        if ($userbook && $userbook->isOwned()) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You own this"));
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        if ($userbook) {
+            if ($userbook->owned) {
+                return $this->formatError("You own this");
+            } elseif ($userbook->wishlist) {
+                return $this->formatError("You have already added this to your wishlist");
+            }
         }
 
-        if ($userbook) {
-            $userbook->latest = false;
-            $newRecord = $userbook->double();        
-        } else {
-            $newRecord = new BookHistory();
-            $newRecord->init($request->request->get('id'), $user->id);
-        }
+        $userbook->wishlist = true;
         
-        $newRecord = $newRecord->wish();
-        
-        $em->persist($newRecord);
         $em->flush();
+        
+        $this->get('auditor')->userBookLog($item, $user, array('wishlist' => array(0, 1)));
         
         return $this->json(array('status' => "OK"));
     }
@@ -80,17 +78,17 @@ class WishlistController extends Controller
         }
         
         if (!isset($users[$userid])) {
-            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
+            return $this->formatError("Invalid request");
         }
         
-        $history = $em->getRepository(BookHistory::class)->findBy(array('userid' => $userid, 'latest' => true));
+        $books = $em->getRepository(UserBook::class)->findBy(array('userid' => $userid, 'wishlist' => true));
         
         $rows = $wishlist = array();
-        foreach ($history as $row) {
-            if ($row->isOnWishlist()) {
-                $rows[$row->id] = $row;
-            }
+        foreach ($rows as $row) {
+            $rows[$row->id] = $row;
         }
+        
+        $user = $this->getUser();
         
         if (count($rows) > 0) {
             $details = $em->getRepository(Book::class)->findBy(array('id' => array_keys($rows)));
@@ -101,13 +99,12 @@ class WishlistController extends Controller
                     'name' => $detail->name,
                     'authors' => implode(",", $detail->authors),
                     'notes' => $rows[$detail->id]->notes,
-                    'datetime' => date("Y-m-d H:i:s", $rows[$detail->id]->timestamp),
                     'gifted' => (
-                        $this->getUser() &&
-                        $this->getUser()->id !== $userid && $rows[$detail->id]->isGifted()
+                        $user &&
+                        $user->id !== $userid && $rows[$detail->id]->giftfromid != 0
                     ) ? (
-                        isset($users[$rows[$detail->id]->otheruserid]->name) ? 
-                            $users[$rows[$detail->id]->otheruserid]->name : 'Unknown'
+                        isset($users[$rows[$detail->id]->giftfromid]) ?
+                            $users[$rows[$detail->id]->giftfromid]->name : 'Unknown'
                     ) : ''
                 );
             }
@@ -134,40 +131,31 @@ class WishlistController extends Controller
     public function giftAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(Book::class)
-                   ->findOneBy(array('id' => $request->request->get('id')));
+        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
         if (!$item) {
-            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
+            return $this->formatError("Invalid request");
         }
         
-        $userbook = $em->getRepository(BookHistory::class)
-                        ->findOneBy(array(
-                            'id' => $request->request->get('id'),
-                            'userid' => $request->request->get('userid'),
-                            'latest' => true
-                        ));
-        if (!$userbook || !$userbook->isOnWishlist()) {
-            return $this->json(array(
-                'status' => "error",
-                'errorMessage' => "This book is not on the wishlist"
-            ));
+        $bookuser = $em->getRepository(User::class)->findOneBy(array('id' => $request->request->get('userid')));
+        if (!$bookuser) {
+            return $this->formatError("Invalid request");
+        }
+               
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $bookuser->id));
+        if (!$userbook || !$userbook->wishlist) {
+            return $this->formatError("This book is not on the wishlist");
         }
         
-        if ($userbook->isGifted()) {
-            return $this->json(array(
-                'status' => "error",
-                'errorMessage' => "This has already been gifted"
-            ));
+        if ($userbook->giftfromid != 0) {
+            return $this->formatError("This has already been gifted");
         }
 
-        $userbook->latest = false;
-        
         $user = $this->getUser();
+        $userbook->giftfromid = $user->id;
         
-        $newRecord = $userbook->double()->gift($user ? $user->id : null);
-        
-        $em->persist($newRecord);
         $em->flush();
+        
+        $this->get('auditor')->userBookLog($item, $bookuser, array('giftfromid' => array(0, $user->id)));
         
         return $this->json(array('status' => "OK"));
     }
@@ -179,35 +167,26 @@ class WishlistController extends Controller
     {
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
+            return $this->formatError("You must be logged in to make request");
         }
         
         $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(Book::class)
-                   ->findOneBy(array('id' => $request->request->get('id')));
+        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
         if (!$item) {
-            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
+            return $this->formatError("Invalid request");
         }
         
-        $userbook = $em->getRepository(BookHistory::class)
-                        ->findOneBy(array(
-                            'id' => $request->request->get('id'),
-                            'userid' => $user->id,
-                            'latest' => true
-                        ));
-        if (!$userbook || !$userbook->isOnWishlist()) {
-            return $this->json(array(
-                'status' => "error",
-                'errorMessage' => "You have not added this to your wishlist"
-            ));
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        if (!$userbook || !$userbook->wishlist) {
+            return $this->formatError("You have not added this to your wishlist");
         }
 
-        $userbook->latest = false;
+        $userbook->wishlist = false;
+        $userbook->owned = true;
         
-        $newRecord = $userbook->double()->own();
-        
-        $em->persist($newRecord);
         $em->flush();
+        
+        $this->get('auditor')->userBookLog($item, $user, array('owned' => array(0, 1), 'wishlist' => array(1, 0)));
         
         return $this->json(array('status' => "OK"));
     }
@@ -219,35 +198,25 @@ class WishlistController extends Controller
     {
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
+            return $this->formatError("You must be logged in to make request");
         }
         
         $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(Book::class)
-                   ->findOneBy(array('id' => $request->request->get('id')));
+        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
         if (!$item) {
-            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
+            return $this->formatError("Invalid request");
         }
         
-        $userbook = $em->getRepository(BookHistory::class)
-                        ->findOneBy(array(
-                            'id' => $request->request->get('id'),
-                            'userid' => $user->id,
-                            'latest' => true
-                        ));
-        if (!$userbook || !$userbook->isOnWishlist()) {
-            return $this->json(array(
-                'status' => "error",
-                'errorMessage' => "You have not added this to your wishlist"
-            ));
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        if (!$userbook || !$userbook->wishlist) {
+            return $this->formatError("You have not added this to your wishlist");
         }
 
-        $userbook->latest = false;
+        $userbook->wishlist = false;
         
-        $newRecord = $userbook->double()->unwish();
-        
-        $em->persist($newRecord);
         $em->flush();
+        
+        $this->get('auditor')->userBookLog($item, $user, array('wishlist' => array(1, 0)));
         
         return $this->json(array('status' => "OK"));
     }

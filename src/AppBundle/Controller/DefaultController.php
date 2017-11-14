@@ -5,9 +5,10 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\Audit;
 use AppBundle\Entity\Book;
-use AppBundle\Entity\BookHistory;
 use AppBundle\Entity\User;
+use AppBundle\Entity\UserBook;
 
 class DefaultController extends Controller
 {
@@ -81,7 +82,7 @@ class DefaultController extends Controller
         if (isset($eqFilters['owner'])) {
             foreach ($eqFilters['owner'] as $id) {
                 if (!isset($owned[$item->id]) || !isset($owned[$item->id][$id])) {
-                    return false; 
+                    return false;
                 }
             }
         }
@@ -89,7 +90,7 @@ class DefaultController extends Controller
         if (isset($noFilters['owner'])) {
             foreach ($noFilters['owner'] as $id) {
                 if (isset($owned[$item->id]) && isset($owned[$item->id][$id])) {
-                    return false; 
+                    return false;
                 }
             }
         }
@@ -97,7 +98,7 @@ class DefaultController extends Controller
         if (isset($eqFilters['read'])) {
             foreach ($eqFilters['read'] as $id) {
                 if (!isset($read[$item->id]) || !isset($read[$item->id][$id])) {
-                    return false; 
+                    return false;
                 }
             }
         }
@@ -105,7 +106,7 @@ class DefaultController extends Controller
         if (isset($noFilters['read'])) {
             foreach ($noFilters['read'] as $id) {
                 if (isset($read[$item->id]) && isset($read[$item->id][$id])) {
-                    return false; 
+                    return false;
                 }
             }
         }
@@ -175,17 +176,17 @@ class DefaultController extends Controller
         
         $owned = $read = array();
         $requests = 0;
-        $history = $em->getRepository(BookHistory::class)->findBy(array('latest' => true));
-        foreach ($history as $row) {
-            if ($row->isOwned()) {
+        $userbook = $em->getRepository(UserBook::class)->findAll();
+        foreach ($userbook as $row) {
+            if ($row->owned) {
                 $owned[$row->id][$row->userid] = $users[$row->userid]->name;
             }
             
-            if ($row->isRead()) {
+            if ($row->read) {
                 $read[$row->id][$row->userid] = $users[$row->userid]->name;
             }
             
-            if ($row->isRequested() && $user && $row->otheruserid == $user->id) {
+            if ($user && $row->requestedfromid == $user->id) {
                 $requests++;
             }
         }
@@ -213,7 +214,8 @@ class DefaultController extends Controller
                 }
                 
                 if ($seriesSeg == "") {
-                    $seriesSeg = $value['name'] . str_pad(($value['number'] == null) ? "zz" : $value['number'], 2, "0", STR_PAD_LEFT);
+                    $seriesSeg = $value['name'] . str_pad(($value['number'] == null) ?
+                        "zz" : $value['number'], 2, "0", STR_PAD_LEFT);
                 }
             }
                 
@@ -222,7 +224,7 @@ class DefaultController extends Controller
             if ($this->checkFilters($item, $owned, $read, $bookSeries, $eqFilters, $noFilters)) {
                 $segs = array();
                 foreach ($item->authors as $author) {
-                    $seg = (strpos($author, " ") === false) ? $author : 
+                    $seg = (strpos($author, " ") === false) ? $author :
                         (substr($author, strrpos($author, " ") + 1) . ", " . substr($author, 0, strrpos($author, " ")));
                     
                     $segs[] = $seg;
@@ -326,14 +328,25 @@ class DefaultController extends Controller
     public function notesSaveAction(Request $request)
     {
         $em = $this->getDoctrine();
-        $data = $em->getRepository(BookHistory::class)->findOneBy(array(
-            'id' => $request->request->get('id'),
-            'userid' => $request->request->get('userid'),
-            'latest' => true
-        ));
+        
+        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
+        if (!$item) {
+            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
+        }
+        
+        $user = $em->getRepository(User::class)->findOneBy(array('id' => $request->request->get('userid')));
+        if (!$user) {
+            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
+        }
+        
+        $data = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        $oldnotes = $data->notes;
         $text = trim($request->request->get('text'));
         $data->notes = $text == '' ? null : $text;
+        
         $em->getManager()->flush();
+        
+        $this->get('auditor')->userBookLog($item, $user, array('notes' => array($oldnotes, $text)));
         
         return $this->json(array('status' => "OK"));
     }
