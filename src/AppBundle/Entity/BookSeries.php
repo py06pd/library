@@ -6,22 +6,24 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="read")
+ * @ORM\Table(name="bookseries")
  */
-class Read
+class BookSeries
 {
     /**
+     * @ORM\Id
      * @ORM\Column(type="integer")
      */
-    public $bookId;
+    public $id;
 
     /**
+     * @ORM\Id
      * @ORM\Column(type="integer")
      */
-    public $userId;
+    public $seriesid;
     
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="integer")
      */
-    public $dateTime;
+    public $number;
 }

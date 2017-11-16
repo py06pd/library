@@ -85,7 +85,7 @@
             width="100">
         </el-table-column>
         <el-table-column
-            prop="read"
+            prop="readNames"
             label="Read"
             width="100">
         </el-table-column>  
@@ -93,11 +93,15 @@
     
     <el-dialog id="bookMenu" :visible.sync="menuOpen">
         <el-button @click="openEdit">Edit</el-button>
-        <template v-if="$root.user.id > 0 && editing.id > 0 && editing.owners.indexOf($root.user.id) == -1">
-            <template v-if="editing.owners.length > 0">
+        <template v-if="$root.user.id > 0 && menu.id > 0 && menu.owners.indexOf($root.user.id) == -1">
+            <template v-if="menu.owners.length > 0">
                 <br><el-button @click="borrowRequest">Borrow Request</el-button>
             </template>
             <br><el-button @click="wishlist">Add to Wishlist</el-button>
+            <br><el-button @click="ownBook">I own this</el-button>
+        </template>
+        <template v-if="$root.user.id > 0 && menu.id > 0 && menu.read.indexOf($root.user.id) == -1">
+            <br><el-button @click="readBook">I've read this</el-button>
         </template>
     </el-dialog>
     
@@ -142,10 +146,10 @@
                             allow-create
                             clearable
                             filterable
-                            v-model="current.name"
+                            v-model="current.id"
                             placeholder="Please select a series"
                             @change="seriesChange">
-                            <el-option v-for="serie in series" :label="serie" :value="serie"></el-option>
+                            <el-option v-for="sitem in series" :label="sitem.name" :value="sitem.id"></el-option>
                         </el-select>
                         <el-input class="series-number" v-model="current.number"></el-input>
                     </li>
@@ -154,30 +158,14 @@
                             allow-create
                             clearable
                             filterable
-                            v-model="newSeries.name"
+                            v-model="newSeries.id"
                             placeholder="Please select a series"
                             @change="seriesChange">
-                            <el-option v-for="serie in series" :label="serie" :value="serie"></el-option>
+                            <el-option v-for="sitem in series" :label="sitem.name" :value="sitem.id"></el-option>
                         </el-select>
                         <el-input class="series-number" v-model="newSeries.number"></el-input>
                     </li>
                 </ul>
-            </el-form-item>
-            <el-form-item label="Owners">
-                <el-select
-                    multiple
-                    v-model="editing.owners"
-                    placeholder="Please select a person">
-                    <el-option v-for="user in $root.users" :label="user.name" :value="user.id"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="Read">
-                <el-select
-                    multiple
-                    v-model="editing.read"
-                    placeholder="Please select a person">
-                    <el-option v-for="user in $root.users" :label="user.name" :value="user.id"></el-option>
-                </el-select>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">

@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Audit;
 use AppBundle\Entity\Book;
+use AppBundle\Entity\Series;
 use AppBundle\Entity\User;
 use AppBundle\Entity\UserBook;
 
@@ -153,10 +154,13 @@ class DefaultController extends Controller
      */
     public function getDataAction(Request $request)
     {
-        $em = $this->getDoctrine();
-        $data = $em->getRepository(Book::class)->findAll();
+        $em = $this->getDoctrine()->getManager();
+        
+        $data = $this->get('app.book')->getAll();
         $user = $this->getUser();
         
+        $series = $em->getRepository(Series::class)->findBy(array(), array('name' => "ASC"));
+                
         $filters = json_decode($request->request->get('filters', json_encode(array())));
         
         $eqFilters = $noFilters = array();
@@ -193,7 +197,6 @@ class DefaultController extends Controller
         
         $authors = array();
         $genres = array();
-        $series = array();
         $types = array();
         $books = array();
         $order = array();
@@ -208,19 +211,14 @@ class DefaultController extends Controller
             $bookSeries = array();
             $seriesSeg = "";
             foreach ($item->series as $value) {
-                $bookSeries[] = $value['name'];
-                if (!in_array($value['name'], $series)) {
-                    $series[] = $value['name'];
-                }
+                $bookSeries[] = $value->name;
                 
                 if ($seriesSeg == "") {
-                    $seriesSeg = $value['name'] . str_pad(($value['number'] == null) ?
-                        "zz" : $value['number'], 2, "0", STR_PAD_LEFT);
+                    $seriesSeg = $value->name . str_pad(($value->number == null) ?
+                        "zz" : $value->number, 2, "0", STR_PAD_LEFT);
                 }
             }
                 
-            sort($series);
-            
             if ($this->checkFilters($item, $owned, $read, $bookSeries, $eqFilters, $noFilters)) {
                 $segs = array();
                 foreach ($item->authors as $author) {
@@ -243,7 +241,8 @@ class DefaultController extends Controller
                     'genres' => implode(", ", $item->genres),
                     'owners' => isset($owned[$item->id]) ? array_keys($owned[$item->id]) : array(),
                     'ownerNames' => isset($owned[$item->id]) ? implode(", ", $owned[$item->id]) : "",
-                    'read' => isset($read[$item->id]) ? implode(", ", $read[$item->id]) : "",
+                    'read' => isset($read[$item->id]) ? array_keys($read[$item->id]) : array(),
+                    'readNames' => isset($read[$item->id]) ? implode(", ", $read[$item->id]) : "",
                     'series' => implode(", ", $bookSeries)
                 );
             }
@@ -261,44 +260,6 @@ class DefaultController extends Controller
             'series' => $series,
             'user' => $user
         ));
-    }
-    
-    /**
-     * @Route("/getItem")
-     */
-    public function getItemAction(Request $request)
-    {
-        $book = $this->get('app.book');
-        $book->get($request->request->get('id'));
-        
-        return $this->json(array('status' => "OK", 'data' => $book));
-    }
-    
-    /**
-     * @Route("/saveItem")
-     */
-    public function saveItemAction(Request $request)
-    {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
-        }
-        
-        $dataItem = json_decode($request->request->get('data'), true);
-        
-        $book = $this->get('app.book');
-        $book->id = $dataItem['id'];
-        $book->name = $dataItem['name'];
-        $book->type = $dataItem['type'];
-        $book->authors = $dataItem['authors'];
-        $book->genres = $dataItem['genres'];
-        $book->series = $dataItem['series'];
-        $book->owners = $dataItem['owners'];
-        $book->read = $dataItem['read'];
-        
-        $book->save();
-        
-        return $this->json(array('status' => "OK"));
     }
     
     /**

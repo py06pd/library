@@ -11,10 +11,11 @@ module.exports = {
             series: [],
             types: [],
             books: [],
-            editing: { id: 0, ownerids: [] },
+            editing: { id: 0 },
             formOpen: false,
+            menu: { id: 0 },
             menuOpen: false,
-            newSeries: { name: '', number: '' },
+            newSeries: { id: '', name: '', number: '' },
             // filters
             fields: ['author', 'genre', 'owner', 'read', 'series', 'type'],
             operators: ['equals', 'does not equal'],
@@ -85,7 +86,7 @@ module.exports = {
                     break;
                 case 'series':
                     for (var s in this.series) {
-                        this.values[this.series[s]] = this.series[s];
+                        this.values[this.series[s].id] = this.series[s].name;
                     }
                     break;
                 case 'type':
@@ -125,25 +126,38 @@ module.exports = {
                 type: '',
                 genres: [],
                 authors: [],
-                owners: [],
-                read: [],
                 series: [],
-                ownerNames: [],
             }));
             this.formOpen = true;
         },
         
         openEdit: function() {
-            this.load('getItem', { id: this.editing.id }).then(function(response) {
+            this.load('book/get', { id: this.menu.id }).then(function(response) {
                 this.editing = JSON.parse(JSON.stringify(response.body.data));
                 this.menuOpen = false;
                 this.formOpen = true;
             });
         },
         
+        ownBook: function() {
+            this.save('book/own', { id: this.menu.id }).then(function() {
+                this.menuOpen = false;
+                this.loadBooks();
+                this.showSucessMessage('Update successful');
+            });
+        },
+        
         openMenu: function(book) {
-            this.editing = book;
+            this.menu = book;
             this.menuOpen = true;
+        },
+        
+        readBook: function() {
+            this.save('book/read', { id: this.menu.id }).then(function() {
+                this.menuOpen = false;
+                this.loadBooks();
+                this.showSucessMessage('Update successful');
+            });
         },
         
         removeFilter: function(filterIndex) {
@@ -153,7 +167,7 @@ module.exports = {
         
         saveItem: function(close) {
             var data = JSON.stringify(this.editing);
-            this.save('saveItem', { data: data }).then(function() {
+            this.save('book/save', { data: data }).then(function() {
                 this.loadBooks();
                 this.showSucessMessage('Update successful');
                 if (close) {
@@ -165,7 +179,7 @@ module.exports = {
         seriesChange: function(val) {
             if (val === '') {
                 for (var i in this.editing.series) {
-                    if (this.editing.series[i].name === '') {
+                    if (this.editing.series[i].id === '') {
                         if (this.editing.series.length === 1) {
                             this.editing.series = [];
                         } else {
@@ -175,13 +189,13 @@ module.exports = {
                     }
                 }
             } else {
-                this.editing.series.push({ name: val, number: '' });
-                this.newSeries = { name: '', number: '' };
+                this.editing.series.push({ id: val, name: this.series[val].name, number: '' });
+                this.newSeries = { id: '', number: '' };
             }
         },
         
         wishlist: function() {
-            this.save('wishlist/add', { id: this.editing.id }).then(function() {
+            this.save('wishlist/add', { id: this.menu.id }).then(function() {
                 this.menuOpen = false;
             });
         },

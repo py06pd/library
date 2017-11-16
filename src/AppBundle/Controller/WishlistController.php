@@ -56,6 +56,11 @@ class WishlistController extends Controller
             } elseif ($userbook->wishlist) {
                 return $this->formatError("You have already added this to your wishlist");
             }
+        } else {
+            $userbook = new UserBook();
+            $userbook->id = $item->id;
+            $userbook->userid = $user->id;
+            $em->persist($userbook);
         }
 
         $userbook->wishlist = true;

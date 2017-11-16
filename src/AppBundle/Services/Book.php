@@ -3,6 +3,8 @@
 namespace AppBundle\Services;
 
 use AppBundle\Entity\Book as BookEntity;
+use AppBundle\Entity\BookSeries;
+use AppBundle\Entity\Series;
 use AppBundle\Entity\UserBook;
 use AppBundle\Entity\User;
 
@@ -204,9 +206,39 @@ class Book
         $this->type = $item->type;
         $this->authors = $item->authors;
         $this->genres = $item->genres;
-        $this->series = $item->series;
+        $this->series = $this->getSeries($id);
         $this->owners = $owned;
         $this->read = $read;
+    }
+    
+    public function getAll()
+    {
+        $data = $this->em->getRepository(BookEntity::class)->findAll();
+        
+        $qb = $this->em->createQueryBuilder();
+        $series = $qb->select('q')->from(Series::class, 'q', 'q.id')->getQuery()->getResult();
+        
+        $smap = $this->em->getRepository(BookSeries::class)->findAll();
+        $map = array();
+        foreach ($smap as $s) {
+            $map[$s->id][] = $s;
+        }
+        
+        foreach ($data as $item) {
+            if (isset($map[$item->id])) {
+                foreach ($map[$item->id] as $m) {
+                    if (isset($series[$m->seriesid])) {
+                        $item->series[] = (object)array(
+                            'id' => $m->seriesid,
+                            'name' => $series[$m->seriesid]->name,
+                            'number' => $m->number
+                        );
+                    }
+                }
+            }
+        }
+        
+        return $data;
     }
     
     public function getLending($userid)
@@ -242,6 +274,26 @@ class Book
         ->getQuery();
 
         return $q->getResult();
+    }
+    
+    public function getSeries($id)
+    {
+        $map = array();
+        $smap = $this->em->getRepository(BookSeries::class)->findBy(array('id' => $id));
+        foreach ($smap as $s) {
+            $map[$s->seriesid] = $s->number;
+        }
+        
+        $result = array();
+        if (count($map) > 0) {
+            $series = $this->em->getRepository(Series::class)->findBy(array('id' => array_keys($map)));
+            
+            foreach ($series as $s) {
+                $result[$s->id] = (object)array('id' => $s->id, 'name' => $s->name, 'number' => $map[$s->id]);
+            }
+        }
+        
+        return $result;
     }
     
     public function request($id, $userId)
@@ -327,26 +379,59 @@ class Book
     
     public function save()
     {
+        $oldseries = array();
+        
         if ($this->id == -1) {
-            $item = new BookEntity();
+            $item = new BookEntity();    
         } else {
             $item = $this->em->getRepository(BookEntity::class)->findOneBy(array('id' => $this->id));
+            $oldseries = $this->getSeries($this->id);
         }
         
         $oldname = $item->name;
         $oldtype = $item->type;
         $oldauthors = $item->authors;
         $oldgenres = $item->genres;
-        $oldseries = $item->series;
         
         $item->name = $this->name;
         $item->type = $this->type;
         $item->authors = $this->authors;
         $item->genres = $this->genres;
-        $item->series = $this->series;
         
         if ($this->id == -1) {
             $this->em->persist($item);
+        }
+        
+        $this->em->flush();
+        
+        foreach ($oldseries as $sid => $sitem) {
+            if (!isset($this->series[$sid])) {
+                $s = $this->em->getRepository(BookSeries::class)->findOneBy(array(
+                    'id' => $item->id,
+                    'seriesid' => $sid
+                ));
+                if ($s) {
+                    $this->em->remove($s);
+                }
+            }
+        }
+        
+        foreach ($this->series as $sid => $sitem) {
+            if (isset($oldseries[$sid])) {
+                $s = $this->em->getRepository(BookSeries::class)->findOneBy(array(
+                    'id' => $item->id,
+                    'seriesid' => $sid
+                ));
+                if ($s) {
+                    $s->number = $sitem->number;
+                }
+            } else {
+                $s = new BookSeries();
+                $s->id = $item->id;
+                $s->seriesid = $sid;
+                $s->number = $sitem->number;
+                $this->em->persist($s);
+            }
         }
         
         $this->em->flush();

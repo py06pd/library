@@ -37,8 +37,5 @@ class Book
      */
     public $genres;
     
-    /**
-     * @ORM\Column(type="json_array", length=1024)
-     */
-    public $series;
+    public $series = array();
 }
