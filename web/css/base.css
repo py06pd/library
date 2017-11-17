@@ -106,3 +106,19 @@ img { border: 0; vertical-align: middle; }
 #lending-list .returned-column { width:100px; }
 #lending-list .cancel-column,
 #lending-list .reject-column { width:85px; }
+
+.series-link { cursor:pointer; text-decoration:underline; padding-right:5px; }
+.series-link:hover { color: #3981AC; }
+.el-table tr.series-own { 
+    background-color: #DFFFFF;
+    color: blue;
+    font-weight: bold;
+}
+.el-table tr.series-read { 
+    background-color: #CCFFCC;
+    color: green;
+    font-weight: bold;
+}
+tr.changereq {  }
+//tr.warning { background-color: #FEF5CA; }
+//.datagrid tr.overdue { background-color: #FFE8E8; color: #904040; font-weight: bold; }

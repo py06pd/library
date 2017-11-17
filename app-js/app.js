@@ -27,6 +27,7 @@ import {
     MessageBox,
     Notification,
     Option,
+    Progress,
     Select,
     Table,
     TableColumn,
@@ -58,6 +59,7 @@ Vue.use(Input);
 Vue.use(Menu);
 Vue.use(MenuItem);
 Vue.use(Option);
+Vue.use(Progress);
 Vue.use(Select);
 Vue.use(Table);
 Vue.use(TableColumn);

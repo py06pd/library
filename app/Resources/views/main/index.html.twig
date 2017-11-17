@@ -17,8 +17,8 @@
                     <div v-if="page === 'myaccount'">
                         <cic-myaccount></cic-myaccount>
                     </div>
-                    <div v-if="page === 'books'">
-                        <cic-book-list></cic-book-list>
+                    <div v-if="page === 'books' || page === 'series'">
+                        <router-view></router-view>
                     </div>
                     <div v-if="page === 'lending'">
                         <cic-lending-list></cic-lending-list>
@@ -29,6 +29,7 @@
                     <div v-if="page === 'wishlist'">
                         <cic-wishlist :ibooks="params.books" :iuserid="params.userid"></cic-wishlist>
                     </div>
+                    
                 </div>
             </div>
         </div>

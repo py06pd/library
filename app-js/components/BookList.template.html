@@ -75,9 +75,10 @@
             prop="genres"
             label="Genre">
         </el-table-column>
-        <el-table-column
-            prop="series"
-            label="Series">
+        <el-table-column label="Series">
+            <template scope="scope">
+                <span class="series-link" v-for="s in scope.row.series" @click="selectSeries(s.id)">{{ s.name }}</span>
+            </template>
         </el-table-column>
         <el-table-column
             prop="ownerNames"
@@ -91,19 +92,7 @@
         </el-table-column>  
     </el-table>
     
-    <el-dialog id="bookMenu" :visible.sync="menuOpen">
-        <el-button @click="openEdit">Edit</el-button>
-        <template v-if="$root.user.id > 0 && menu.id > 0 && menu.owners.indexOf($root.user.id) == -1">
-            <template v-if="menu.owners.length > 0">
-                <br><el-button @click="borrowRequest">Borrow Request</el-button>
-            </template>
-            <br><el-button @click="wishlist">Add to Wishlist</el-button>
-            <br><el-button @click="ownBook">I own this</el-button>
-        </template>
-        <template v-if="$root.user.id > 0 && menu.id > 0 && menu.read.indexOf($root.user.id) == -1">
-            <br><el-button @click="readBook">I've read this</el-button>
-        </template>
-    </el-dialog>
+    <book-menu :book="menu" :menuOpen="menuOpen" @blur="closeBookMenu" @change="openEdit"></book-menu>
     
     <el-dialog id="frmBook" title="Edit Book" v-if="formOpen" :visible.sync="formOpen">
         <el-form :model="editing">

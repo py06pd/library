@@ -43,12 +43,12 @@ class Book
     /**
      * @var array
      */
-    public $owners;
+    public $owners = array();
     
     /**
      * @var array
      */
-    public $read;
+    public $read = array();
     
     /**
      * @var \AppBundle\Services\Auditor
@@ -382,7 +382,7 @@ class Book
         $oldseries = array();
         
         if ($this->id == -1) {
-            $item = new BookEntity();    
+            $item = new BookEntity();
         } else {
             $item = $this->em->getRepository(BookEntity::class)->findOneBy(array('id' => $this->id));
             $oldseries = $this->getSeries($this->id);

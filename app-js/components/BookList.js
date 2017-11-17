@@ -1,9 +1,13 @@
+import BookMenu from './BookMenu';
 var Http = require('../mixins/Http');
 
-module.exports = {
+export default {
     name: 'cic-book-list',
     template: require('./BookList.template.html'),
     mixins: [ Http ],
+    components: {
+        'book-menu': BookMenu,
+    },
     data: function () {
         return {
             authors: [],
@@ -52,10 +56,12 @@ module.exports = {
             }
         },
         
-        borrowRequest: function() {
-            this.save('request', { id: this.editing.id }).then(function() {
-                this.menuOpen = false;
-            });
+        closeBookMenu: function (val) {
+            this.menuOpen = false;
+            
+            if (val === 1) {
+                this.loadBooks();
+            }
         },
         
         deleteItems: function() {
@@ -131,33 +137,17 @@ module.exports = {
             this.formOpen = true;
         },
         
-        openEdit: function() {
-            this.load('book/get', { id: this.menu.id }).then(function(response) {
+        openEdit: function(val) {
+            this.menuOpen = false;
+            this.load('book/get', { id: val }).then(function(response) {
                 this.editing = JSON.parse(JSON.stringify(response.body.data));
-                this.menuOpen = false;
                 this.formOpen = true;
-            });
-        },
-        
-        ownBook: function() {
-            this.save('book/own', { id: this.menu.id }).then(function() {
-                this.menuOpen = false;
-                this.loadBooks();
-                this.showSucessMessage('Update successful');
             });
         },
         
         openMenu: function(book) {
             this.menu = book;
             this.menuOpen = true;
-        },
-        
-        readBook: function() {
-            this.save('book/read', { id: this.menu.id }).then(function() {
-                this.menuOpen = false;
-                this.loadBooks();
-                this.showSucessMessage('Update successful');
-            });
         },
         
         removeFilter: function(filterIndex) {
@@ -176,6 +166,10 @@ module.exports = {
             });
         },
         
+        selectSeries: function (id) {
+            this.$router.push('/series/' + id);
+        },
+        
         seriesChange: function(val) {
             if (val === '') {
                 for (var i in this.editing.series) {
@@ -192,12 +186,6 @@ module.exports = {
                 this.editing.series.push({ id: val, name: this.series[val].name, number: '' });
                 this.newSeries = { id: '', number: '' };
             }
-        },
-        
-        wishlist: function() {
-            this.save('wishlist/add', { id: this.menu.id }).then(function() {
-                this.menuOpen = false;
-            });
         },
     },
 };

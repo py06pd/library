@@ -18,6 +18,10 @@ module.exports = {
                         books: response.body.books,
                     };
                 });
+            } else if (option === 'books') {
+                this.$router.push('/');
+            } else if (option === 'series') {
+                this.$router.push('/series');
             }
             
             this.$root.page = option;

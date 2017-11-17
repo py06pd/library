@@ -6,6 +6,7 @@
         </template>
         <li class="el-menu-item" :class="{ 'is-active': $root.page == 'books' }" index="1" @click="onOptionSelected('books')">Books</li>
         <template v-if="$root.user.id > 0">
+            <li class="el-menu-item" :class="{ 'is-active': $root.page == 'series' }" index="1" @click="onOptionSelected('series')">Series</li>
             <li class="el-menu-item" :class="{ 'is-active': $root.page == 'lending' }" index="2" @click="onOptionSelected('lending')">
                 <el-badge v-if="$root.requests > 0" :value="$root.requests">Lending</el-badge>
                 <span v-else>Lending</span>

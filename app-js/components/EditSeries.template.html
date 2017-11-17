@@ -1,0 +1,98 @@
+<div>
+    <h1 style="display:inline-block; padding-right:20px">{{ series.name }}</h1>
+    <template v-if="$root.user.id > 0">
+        <el-button :type="tracking?'primary':'default'" icon="view" @click="track"></el-button>
+        <el-progress
+            style="width:400px"
+            :text-inside="true"
+            :stroke-width="18"
+            :percentage="percentage"
+            status="success">
+        </el-progress>
+    </template>
+    <template v-if="Object.keys(main).length > 0">
+        <template v-if="other.length > 0">
+            <h2>Main Sequence</h2>
+        </template>
+            
+        <table class="cic-table el-table">
+            <thead>
+                <tr>
+                    <th class="is-leaf" style="width:50px"><div class="cell">#</div></th>
+                    <th class="is-leaf" v-if="$root.user.id > 0"></th>
+                    <th class="is-leaf"><div class="cell">Title</div></th>
+                    <th class="is-leaf"><div class="cell">Type</div></th>
+                    <th class="is-leaf"><div class="cell">Authors</div></th>
+                    <th class="is-leaf"><div class="cell">Genres</div></th>            
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(book, number) in main" :class="bookClass(book.id)">
+                    <td><div class="cell">{{ number }}</div></td>
+                    <td v-if="$root.user.id > 0">
+                        <div class="cell"><el-button size="small" icon="menu" @click="openMenu(book)"></el-button></div>
+                    </td>
+                    <td><div class="cell">{{ book.name }}</div></td>
+                    <td><div class="cell">{{ book.type }}</div></td>
+                    <td>
+                        <div class="cell">
+                            <template v-if="book.authors.length > 0">
+                                {{ book.authors.join(", ") }}
+                            </template>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="cell">
+                            <template v-if="book.genres.length > 0">
+                                {{ book.genres.join(", ") }}
+                            </template>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+    
+    <template v-if="other.length > 0">
+        <template v-if="Object.keys(main).length > 0">
+            <h2>Other</h2>
+        </template>
+            
+        <table class="cic-table el-table">
+            <thead>
+                <tr>
+                    <th class="is-leaf" v-if="$root.user.id > 0"></th>
+                    <th class="is-leaf"><div class="cell">Title</div></th>
+                    <th class="is-leaf"><div class="cell">Type</div></th>
+                    <th class="is-leaf"><div class="cell">Authors</div></th>
+                    <th class="is-leaf"><div class="cell">Genres</div></th>            
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="book in other" :class="bookClass(book.id)">
+                    <td v-if="$root.user.id > 0">
+                        <div class="cell"><el-button size="small" icon="menu" @click="openMenu(book)"></el-button></div>
+                    </td>
+                    <td><div class="cell">{{ book.name }}</div></td>
+                    <td><div class="cell">{{ book.type }}</div></td>
+                    <td>
+                        <div class="cell">
+                            <template v-if="book.authors.length > 0">
+                                {{ book.authors.join(",") }}
+                            </template>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="cell">
+                            <template v-if="book.genres.length > 0">
+                                {{ book.genres.join(",") }}
+                            </template>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+    
+    <book-menu :book="menu" :menuOpen="menuOpen" @blur="closeBookMenu" @change="openEdit"></book-menu>
+</div>

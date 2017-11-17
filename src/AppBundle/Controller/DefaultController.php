@@ -243,7 +243,7 @@ class DefaultController extends Controller
                     'ownerNames' => isset($owned[$item->id]) ? implode(", ", $owned[$item->id]) : "",
                     'read' => isset($read[$item->id]) ? array_keys($read[$item->id]) : array(),
                     'readNames' => isset($read[$item->id]) ? implode(", ", $read[$item->id]) : "",
-                    'series' => implode(", ", $bookSeries)
+                    'series' => $item->series
                 );
             }
         }

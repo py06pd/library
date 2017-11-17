@@ -31,4 +31,6 @@ class Series
      * @ORM\Column(type="integer", nullable=true)
      */
     public $series;
+    
+    public $books = array();
 }
