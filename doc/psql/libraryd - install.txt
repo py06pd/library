@@ -1,0 +1,82 @@
+CREATE TABLE audit
+(
+    logid serial NOT NULL,
+    "timestamp" integer NOT NULL,
+    userid integer NOT NULL,
+    itemid integer,
+    itemname character varying(256),
+    description character varying(256) NOT NULL,
+    details character varying,
+    CONSTRAINT audit_pkey PRIMARY KEY (logid)
+);
+
+CREATE TABLE books
+(
+    id serial NOT NULL,
+    name character varying(256) NOT NULL,
+    type character varying(256),
+    authors character varying(1024),
+    genres character varying(1024),
+    series character varying(1024),
+    owners character varying(1024),
+    read character varying(1024),
+    CONSTRAINT books_pkey PRIMARY KEY (id)
+);
+
+
+CREATE TABLE bookseries
+(
+    id integer NOT NULL,
+    seriesid integer NOT NULL,
+    "number" integer,
+    CONSTRAINT bookseries_pkey PRIMARY KEY (id, seriesid)
+);
+
+
+CREATE TABLE series
+(
+    id serial NOT NULL,
+    name character varying(256) NOT NULL,
+    type character varying(16) NOT NULL,
+    series integer,
+    CONSTRAINT series_pkey PRIMARY KEY (id)
+);
+
+
+CREATE TABLE userbook
+(
+    id integer NOT NULL,
+    userid integer NOT NULL,
+    stock integer,
+    owned boolean NOT NULL DEFAULT false,
+    read boolean NOT NULL DEFAULT false,
+    requestedfromid integer NOT NULL DEFAULT 0,
+    borrowedfromid integer NOT NULL DEFAULT 0,
+    wishlist boolean NOT NULL DEFAULT false,
+    giftfromid integer NOT NULL DEFAULT 0,
+    notes character varying(1024),
+    requestedtime integer,
+    borrowedtime integer,
+    CONSTRAINT userbook_pkey PRIMARY KEY (id, userid)
+);
+
+
+CREATE TABLE users
+(
+    id serial NOT NULL,
+    name character varying(256) NOT NULL,
+    facebook_token character varying(256),
+    username character varying(32),
+    password character varying(256),
+    role character varying(16) NOT NULL DEFAULT 'anon',
+    sessionid character varying(256),
+    CONSTRAINT users_pkey PRIMARY KEY (id)
+);
+
+
+CREATE TABLE userseries
+(
+    id integer NOT NULL,
+    userid integer NOT NULL,
+    CONSTRAINT userseries_pkey PRIMARY KEY (id, userid)
+);
