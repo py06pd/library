@@ -58,7 +58,11 @@ img { border: 0; vertical-align: middle; }
 .PageContent { margin:10px; }
 
 .el-form-item { margin-bottom: 10px !important; }
-.cic-table.el-table .cell { word-break: normal; }
+.cic-table.el-table .cell {
+    padding-left: 10px;
+    padding-right: 10px;
+    word-break: normal;
+}
 
 .cic-table table { width:100%; }
 #controls { margin:10px 0px; }
@@ -107,8 +111,32 @@ img { border: 0; vertical-align: middle; }
 #lending-list .cancel-column,
 #lending-list .reject-column { width:85px; }
 
+.series-head { position:relative; }
+.series-head button { position:absolute; right:10px; top:10px; }
 .series-link { cursor:pointer; text-decoration:underline; padding-right:5px; }
 .series-link:hover { color: #3981AC; }
+.series-progress { width:400px; margin-bottom: 10px; }
+.series-selected {
+    display:inline-block;
+    width:70%;
+    box-shadow: 0 0 3px #000;
+    padding: 5px;
+    margin: 5px;
+    vertical-align: top;
+}
+.series-title { display:inline-block; padding-right:20px; }
+.series-tracked { min-width:200px; width:20%; display:inline-block; }
+.series-tracked > div { box-shadow: 0 0 3px #000; padding: 5px; margin: 5px; }
+.series-tracked .selected { box-shadow: 0 0 3px red; background-color:#FFCCCC; }
+.series-tracked .series-head button { padding: 5px; right: 0px; position: absolute; top:0px; }
+.series-tracked .cic-table { display:none; }
+.series-tracked .series-progress { width:100%; margin-bottom: 0px; }
+.series-tracked .series-title {
+    font-size: 1.17em;
+    -webkit-margin-before: 0em;
+    -webkit-margin-after: 0.5em;
+}
+
 .el-table tr.series-own { 
     background-color: #DFFFFF;
     color: blue;
@@ -119,6 +147,5 @@ img { border: 0; vertical-align: middle; }
     color: green;
     font-weight: bold;
 }
-tr.changereq {  }
 //tr.warning { background-color: #FEF5CA; }
 //.datagrid tr.overdue { background-color: #FFE8E8; color: #904040; font-weight: bold; }

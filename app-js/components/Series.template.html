@@ -1,5 +1,10 @@
 <div>
-    <div v-for="id in series" style="width:48%; display:inline-block">
-        <edit-series :id="id"></edit-series>
+    <div class="series-tracked">
+        <div v-for="id in series" v-on:click="select(id)" :class="{ 'selected':(selected === id) }">
+            <edit-series :id="id"></edit-series>
+        </div>
+    </div>
+    <div class="series-selected" v-if="selected > 0">
+        <edit-series :id="selected"></edit-series>
     </div>
 </div>

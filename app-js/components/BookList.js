@@ -15,11 +15,8 @@ export default {
             series: [],
             types: [],
             books: [],
-            editing: { id: 0 },
-            formOpen: false,
             menu: { id: 0 },
-            menuOpen: false,
-            newSeries: { id: '', name: '', number: '' },
+            menuMode: 0,
             // filters
             fields: ['author', 'genre', 'owner', 'read', 'series', 'type'],
             operators: ['equals', 'does not equal'],
@@ -56,10 +53,10 @@ export default {
             }
         },
         
-        closeBookMenu: function (val) {
-            this.menuOpen = false;
+        bookMenuChange: function (val) {
+            this.menuMode = val;
             
-            if (val === 1) {
+            if (val === 0) {
                 this.loadBooks();
             }
         },
@@ -126,28 +123,13 @@ export default {
         },
         
         openAdd: function() {
-            this.editing = JSON.parse(JSON.stringify({
-                id: -1,
-                name: '',
-                type: '',
-                genres: [],
-                authors: [],
-                series: [],
-            }));
-            this.formOpen = true;
-        },
-        
-        openEdit: function(val) {
-            this.menuOpen = false;
-            this.load('book/get', { id: val }).then(function(response) {
-                this.editing = JSON.parse(JSON.stringify(response.body.data));
-                this.formOpen = true;
-            });
+            this.menu = { id: -1 };
+            this.menuMode = 2;
         },
         
         openMenu: function(book) {
             this.menu = book;
-            this.menuOpen = true;
+            this.menuMode = 1;
         },
         
         removeFilter: function(filterIndex) {
@@ -155,37 +137,8 @@ export default {
             this.loadBooks();
         },
         
-        saveItem: function(close) {
-            var data = JSON.stringify(this.editing);
-            this.save('book/save', { data: data }).then(function() {
-                this.loadBooks();
-                this.showSucessMessage('Update successful');
-                if (close) {
-                    this.formOpen = false;
-                }
-            });
-        },
-        
         selectSeries: function (id) {
             this.$router.push('/series/' + id);
-        },
-        
-        seriesChange: function(val) {
-            if (val === '') {
-                for (var i in this.editing.series) {
-                    if (this.editing.series[i].id === '') {
-                        if (this.editing.series.length === 1) {
-                            this.editing.series = [];
-                        } else {
-                            this.editing.series.splice(i, 1);
-                        }
-                        return;
-                    }
-                }
-            } else {
-                this.editing.series.push({ id: val, name: this.series[val].name, number: '' });
-                this.newSeries = { id: '', number: '' };
-            }
         },
     },
 };

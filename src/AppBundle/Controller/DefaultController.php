@@ -211,7 +211,7 @@ class DefaultController extends Controller
             $bookSeries = array();
             $seriesSeg = "";
             foreach ($item->series as $value) {
-                $bookSeries[] = $value->name;
+                $bookSeries[] = $value->id;
                 
                 if ($seriesSeg == "") {
                     $seriesSeg = $value->name . str_pad(($value->number == null) ?

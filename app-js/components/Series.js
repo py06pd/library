@@ -11,6 +11,7 @@ export default {
     data: function () {
         return {
             series: [],
+            selected: 0,
         };
     },
     created: function () {
@@ -21,6 +22,10 @@ export default {
             this.load('series', {}).then(function(response) {
                 this.series = response.body.series;
             });
+        },
+        
+        select: function(id) {
+            this.selected = id;
         },
     },
 };

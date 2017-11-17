@@ -16,14 +16,21 @@ export default {
             other: [],
             tracking: false,
             userbooks: {},
+            menuMode: 0,
             menu: { id: 0 },
-            menuOpen: false,
-            editing: { id: 0 },
         };
     },
+    
     created: function () {
         this.loadBooks();
     },
+    
+    watch: {
+        id: function() {
+            this.loadBooks();
+        },
+    },
+    
     computed: {
         percentage: function() {
             if (Object.keys(this.main).length + this.other.length == 0) {
@@ -47,10 +54,10 @@ export default {
             return;
         },
 
-        closeBookMenu: function (val) {
-            this.menuOpen = false;
+        bookMenuChange: function (val) {
+            this.menuMode = val;
             
-            if (val === 1) {
+            if (val === 0) {
                 this.loadBooks();
             }
         },
@@ -65,17 +72,9 @@ export default {
             });
         },
         
-        openEdit: function(val) {
-            this.menuOpen = false;
-            this.load('book/get', { id: val }).then(function(response) {
-                this.editing = JSON.parse(JSON.stringify(response.body.data));
-                this.formOpen = true;
-            });
-        },
-        
         openMenu: function(book) {
             this.menu = book;
-            this.menuOpen = true;
+            this.menuMode = 1;
         },
         
         track: function() {

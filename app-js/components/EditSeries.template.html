@@ -1,15 +1,17 @@
 <div>
-    <h1 style="display:inline-block; padding-right:20px">{{ series.name }}</h1>
-    <template v-if="$root.user.id > 0">
-        <el-button :type="tracking?'primary':'default'" icon="view" @click="track"></el-button>
-        <el-progress
-            style="width:400px"
-            :text-inside="true"
-            :stroke-width="18"
-            :percentage="percentage"
-            status="success">
-        </el-progress>
-    </template>
+    <div class="series-head">
+        <h1 class="series-title">{{ series.name }}</h1>
+        <template v-if="$root.user.id > 0">
+            <el-button :type="tracking?'primary':'default'" icon="share" @click="track"></el-button>
+            <el-progress
+                class="series-progress"
+                :text-inside="true"
+                :stroke-width="18"
+                :percentage="percentage"
+                status="success">
+            </el-progress>
+        </template>
+    </div>
     <template v-if="Object.keys(main).length > 0">
         <template v-if="other.length > 0">
             <h2>Main Sequence</h2>
@@ -18,7 +20,7 @@
         <table class="cic-table el-table">
             <thead>
                 <tr>
-                    <th class="is-leaf" style="width:50px"><div class="cell">#</div></th>
+                    <th class="is-leaf" style="width:30px"><div class="cell">#</div></th>
                     <th class="is-leaf" v-if="$root.user.id > 0"></th>
                     <th class="is-leaf"><div class="cell">Title</div></th>
                     <th class="is-leaf"><div class="cell">Type</div></th>
@@ -94,5 +96,5 @@
         </table>
     </template>
     
-    <book-menu :book="menu" :menuOpen="menuOpen" @blur="closeBookMenu" @change="openEdit"></book-menu>
+    <book-menu :book="menu" :mode="menuMode" @change="bookMenuChange"></book-menu>
 </div>

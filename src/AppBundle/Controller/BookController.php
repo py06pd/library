@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Book;
+use AppBundle\Entity\Series;
 use AppBundle\Entity\UserBook;
 
 class BookController extends Controller
@@ -16,14 +17,62 @@ class BookController extends Controller
     public function getAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
-        if (!$item) {
-            return $this->formatError("Invalid request");
+        
+        if ($request->request->get('id') > 0) {     
+            $book = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
+            if (!$book) {
+                return $this->formatError("Invalid request");
+            }
+
+            $book->series = array_values($this->get('app.book')->getSeries($book->id));
+            $book = json_decode(json_encode($book));
+        } else {
+            $book = new Book();
         }
         
-        $item->series = array_values($this->get('app.book')->getSeries($item->id));
+        $data = $this->get('app.book')->getAll();
         
-        return $this->json(array('status' => "OK", 'data' => $item));
+        $series = $em->getRepository(Series::class)->findBy(array(), array('name' => "ASC"));
+        
+        $authors = array();
+        $genres = array();
+        $types = array();
+        foreach ($data as $item) {
+            if (isset($item->authors) && is_array($item->authors)) {
+                foreach ($item->authors as $value) {
+                    if (!in_array($value, $authors)) {
+                        $authors[] = $value;
+                    }
+                }
+
+                sort($authors);
+            }
+        
+            if (isset($item->genres) && is_array($item->genres)) {
+                foreach ($item->genres as $value) {
+                    if (!in_array($value, $genres)) {
+                        $genres[] = $value;
+                    }
+                }
+
+                sort($genres);
+            }
+            
+            if ($item->type != '' && !in_array($item->type, $types)) {
+                $types[] = $item->type;
+            }
+            
+            sort($types);
+        }
+        
+        return $this->json(array(
+            'status' => "OK",
+            'data' => $book,
+            'authors' => $authors,
+            'genres' => $genres,
+            'types' => $types,
+            'series' => $series
+        ));
     }
     
     /**
@@ -62,7 +111,7 @@ class BookController extends Controller
         $em->flush();
         
         $this->get('auditor')->userBookLog($item, $user, array(
-            'wishlist' => array(($old && $old->wishlist ? 1 : 0), 0),
+            'wishlist' => array((isset($$old) && $old->wishlist ? 1 : 0), 0),
             'owned' => array(0, 1),
             'stock' => array(0, 1)
         ));
@@ -125,9 +174,84 @@ class BookController extends Controller
         $book->type = $dataItem['type'];
         $book->authors = $dataItem['authors'];
         $book->genres = $dataItem['genres'];
-        $book->series = $final_array = array_combine(array_column($dataItem['series'], 'id'), $dataItem['series']);
+        
+        $em = $this->getDoctrine()->getManager();
+        
+        foreach ($dataItem['series'] as $s) {
+            if (!is_integer($s['id'])) {
+                $series = new Series();
+                $series->name = $s['name'];
+                $series->type = "sequence";
+                $em->persist($series);
+                $em->flush();
+                $s['id'] = $series->id;
+            }
+            
+            $book->series[$s['id']] = (object)$s;
+        }
         
         $book->save();
+        
+        return $this->json(array('status' => "OK"));
+    }
+    
+    /**
+     * @Route("/book/unown")
+     */
+    public function unownAction(Request $request)
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->formatError("You must be logged in to make request");
+        }
+        
+        $em = $this->getDoctrine()->getManager();
+        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
+        if (!$item) {
+            return $this->formatError("Invalid request");
+        }
+        
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        if (!$userbook || !$userbook->owned) {
+            return $this->formatError("You don't own this");
+        }
+        
+        $userbook->owned = false;
+        $userbook->stock = 0;
+        
+        $em->flush();
+        
+        $this->get('auditor')->userBookLog($item, $user, array('owned' => array(1, 0), 'stock' => array(1, 0)));
+        
+        return $this->json(array('status' => "OK"));
+    }
+    
+    /**
+     * @Route("/book/unread")
+     */
+    public function unreadAction(Request $request)
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->formatError("You must be logged in to make request");
+        }
+        
+        $em = $this->getDoctrine()->getManager();
+        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
+        if (!$item) {
+            return $this->formatError("Invalid request");
+        }
+        
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        if (!$userbook || !$userbook->read) {
+            return $this->formatError("You haven't read this");
+        }
+
+        $userbook->read = false;
+        
+        $em->flush();
+        
+        $this->get('auditor')->userBookLog($item, $user, array('read' => array(1, 0)));
         
         return $this->json(array('status' => "OK"));
     }

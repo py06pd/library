@@ -89,7 +89,7 @@ class WishlistController extends Controller
         $books = $em->getRepository(UserBook::class)->findBy(array('userid' => $userid, 'wishlist' => true));
         
         $rows = $wishlist = array();
-        foreach ($rows as $row) {
+        foreach ($books as $row) {
             $rows[$row->id] = $row;
         }
         
@@ -156,11 +156,11 @@ class WishlistController extends Controller
         }
 
         $user = $this->getUser();
-        $userbook->giftfromid = $user->id;
+        $userbook->giftfromid = $user ? $user->id : -1;
         
         $em->flush();
         
-        $this->get('auditor')->userBookLog($item, $bookuser, array('giftfromid' => array(0, $user->id)));
+        $this->get('auditor')->userBookLog($item, $bookuser, array('giftfromid' => array(0, $userbook->giftfromid)));
         
         return $this->json(array('status' => "OK"));
     }

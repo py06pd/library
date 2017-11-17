@@ -1,15 +1,25 @@
 <div>
-    <el-dialog id="bookMenu" :visible.sync="menuOpen">
+    <el-dialog id="bookMenu" :visible="mode === 1" :before-close="close">
         <el-button @click="openEdit">Edit</el-button>
-        <template v-if="$root.user.id > 0 && book.id > 0 && book.owners.indexOf($root.user.id) == -1">
-            <template v-if="book.owners.length > 0">
-                <br><el-button @click="borrowRequest">Borrow Request</el-button>
+        <template v-if="$root.user.id > 0 && book.id > 0">
+            <template v-if="book.owners.indexOf($root.user.id) == -1">
+                <template v-if="book.owners.length > 0">
+                    <br><el-button @click="borrowRequest">Borrow Request</el-button>
+                </template>
+                <br><el-button @click="wishlist">Add to Wishlist</el-button>
+                <br><el-button @click="ownBook">I own this</el-button>
             </template>
-            <br><el-button @click="wishlist">Add to Wishlist</el-button>
-            <br><el-button @click="ownBook">I own this</el-button>
-        </template>
-        <template v-if="$root.user.id > 0 && book.id > 0 && book.read.indexOf($root.user.id) == -1">
-            <br><el-button @click="readBook">I've read this</el-button>
+            <template v-if="book.owners.indexOf($root.user.id) != -1">
+                <br><el-button @click="unownBook">I don't own this</el-button>
+            </template>
+            <template v-if="book.read.indexOf($root.user.id) == -1">
+                <br><el-button @click="readBook">I've read this</el-button>
+            </template>
+            <template v-if="book.read.indexOf($root.user.id) != -1">
+                <br><el-button @click="unreadBook">I haven't read this</el-button>
+            </template>
         </template>
     </el-dialog>
+    
+    <book-form :id="book.id" :formOpen="mode === 2" @change="close"></book-form>
 </div>

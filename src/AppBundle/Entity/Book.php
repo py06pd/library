@@ -15,27 +15,27 @@ class Book
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      */
-    public $id;
+    public $id = -1;
 
     /**
      * @ORM\Column(type="string", length=256)
      */
-    public $name;
+    public $name = '';
     
     /**
      * @ORM\Column(type="string", length=256)
      */
-    public $type;
+    public $type = '';
     
     /**
      * @ORM\Column(type="json_array", length=1024)
      */
-    public $authors;
+    public $authors = array();
     
     /**
      * @ORM\Column(type="json_array", length=1024)
      */
-    public $genres;
+    public $genres = array();
     
     public $series = array();
 }
