@@ -1,0 +1,40 @@
+CREATE TABLE authors
+(
+    id serial NOT NULL,
+    name character varying(256) NOT NULL,
+    forename character varying(256) NOT NULL,
+    surname character varying(256) NULL,
+    alias integer NULL,
+    CONSTRAINT authors_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE bookauthor
+(
+    id integer NOT NULL,
+    authorid integer NOT NULL,
+    CONSTRAINT bookauthor_pkey PRIMARY KEY (id, authorid)
+);
+
+CREATE TABLE userauthor
+(
+    id integer NOT NULL,
+    userid integer NOT NULL,
+    CONSTRAINT userauthor_pkey PRIMARY KEY (id, userid)
+);
+
+insert into authors (name, forename, surname)
+select case when a.surname = '' then a.forename else a.surname end, a.forename, CASE WHEn a.surname = '' then null else a.surname end from
+(SELECT distinct
+substring(array_to_json(array[j.items])->>0, 0, length(array_to_json(array[j.items])->>0) - position(' ' in reverse(array_to_json(array[j.items])->>0)) + 1) as forename,
+substring(array_to_json(array[j.items])->>0, length(array_to_json(array[j.items])->>0) - position(' ' in reverse(array_to_json(array[j.items])->>0)) + 2) as surname
+from books,
+json_array_elements(CAST(authors AS json)) j(items)) as a;
+
+insert into bookauthor (id, authorid)
+select a.id, b.id from
+(SELECT id,
+substring(array_to_json(array[j.items])->>0, 0, length(array_to_json(array[j.items])->>0) - position(' ' in reverse(array_to_json(array[j.items])->>0)) + 1) as forename,
+substring(array_to_json(array[j.items])->>0, length(array_to_json(array[j.items])->>0) - position(' ' in reverse(array_to_json(array[j.items])->>0)) + 2) as surname
+from books,
+json_array_elements(CAST(authors AS json)) j(items)) as a
+join authors b on a.forename = b.forename and a.surname = case when b.surname is null then '' else b.surname end;

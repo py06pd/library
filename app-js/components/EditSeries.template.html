@@ -2,7 +2,9 @@
     <div class="series-head">
         <h1 class="series-title">{{ series.name }}</h1>
         <template v-if="$root.user.id > 0">
-            <el-button :type="tracking?'primary':'default'" icon="share" @click="track"></el-button>
+            <template v-if="series.id > 0">
+                <el-button :type="tracking?'primary':'default'" icon="share" @click="track"></el-button>
+            </template>
             <el-progress
                 class="series-progress"
                 :text-inside="true"
@@ -38,9 +40,12 @@
                     <td><div class="cell">{{ book.type }}</div></td>
                     <td>
                         <div class="cell">
-                            <template v-if="book.authors.length > 0">
-                                {{ book.authors.join(", ") }}
-                            </template>
+                            <span class="author-link" v-for="a in book.authors" @click="selectAuthor(a.id)">
+                                {{ a.forename }}
+                                <template v-if="a.surname !== null">
+                                    {{ a.surname }}
+                                </template>
+                            </span>
                         </div>
                     </td>
                     <td>
@@ -79,9 +84,12 @@
                     <td><div class="cell">{{ book.type }}</div></td>
                     <td>
                         <div class="cell">
-                            <template v-if="book.authors.length > 0">
-                                {{ book.authors.join(",") }}
-                            </template>
+                            <span class="author-link" v-for="a in book.authors" @click="selectAuthor(a.id)">
+                                {{ a.forename }}
+                                <template v-if="a.surname !== null">
+                                    {{ a.surname }}
+                                </template>
+                            </span>
                         </div>
                     </td>
                     <td>

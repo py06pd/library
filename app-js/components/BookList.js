@@ -137,6 +137,11 @@ export default {
             this.loadBooks();
         },
         
+        
+        selectAuthor: function (id) {
+            this.$router.push('/author/' + id);
+        },
+        
         selectSeries: function (id) {
             this.$router.push('/series/' + id);
         },

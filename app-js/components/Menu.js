@@ -20,6 +20,8 @@ module.exports = {
                 });
             } else if (option === 'books') {
                 this.$router.push('/');
+            } else if (option === 'authors') {
+                this.$router.push('/authors');
             } else if (option === 'series') {
                 this.$router.push('/series');
             }

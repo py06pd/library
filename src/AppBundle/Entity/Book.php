@@ -30,12 +30,8 @@ class Book
     /**
      * @ORM\Column(type="json_array", length=1024)
      */
-    public $authors = array();
-    
-    /**
-     * @ORM\Column(type="json_array", length=1024)
-     */
     public $genres = array();
     
+    public $authors = array();
     public $series = array();
 }

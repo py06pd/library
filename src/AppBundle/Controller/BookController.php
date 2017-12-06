@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\Author;
 use AppBundle\Entity\Book;
 use AppBundle\Entity\Series;
 use AppBundle\Entity\UserBook;
@@ -18,12 +19,13 @@ class BookController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         
-        if ($request->request->get('id') > 0) {     
+        if ($request->request->get('id') > 0) {
             $book = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
             if (!$book) {
                 return $this->formatError("Invalid request");
             }
 
+            $book->authors = array_keys($this->get('app.book')->getAuthors($book->id));
             $book->series = array_values($this->get('app.book')->getSeries($book->id));
             $book = json_decode(json_encode($book));
         } else {
@@ -32,22 +34,12 @@ class BookController extends Controller
         
         $data = $this->get('app.book')->getAll();
         
+        $authors = $em->getRepository(Author::class)->findBy(array(), array('name' => "ASC", 'forename' => "ASC"));
         $series = $em->getRepository(Series::class)->findBy(array(), array('name' => "ASC"));
         
-        $authors = array();
         $genres = array();
         $types = array();
         foreach ($data as $item) {
-            if (isset($item->authors) && is_array($item->authors)) {
-                foreach ($item->authors as $value) {
-                    if (!in_array($value, $authors)) {
-                        $authors[] = $value;
-                    }
-                }
-
-                sort($authors);
-            }
-        
             if (isset($item->genres) && is_array($item->genres)) {
                 foreach ($item->genres as $value) {
                     if (!in_array($value, $genres)) {
@@ -172,11 +164,33 @@ class BookController extends Controller
         $book->id = $dataItem['id'];
         $book->name = $dataItem['name'];
         $book->type = $dataItem['type'];
-        $book->authors = $dataItem['authors'];
         $book->genres = $dataItem['genres'];
         
         $em = $this->getDoctrine()->getManager();
         
+        $newAuthors = array();
+        foreach ($dataItem['authors'] as $a) {
+            if (!is_integer($a)) {
+                $author = new Author();
+                $name = trim($a);
+                if (stripos($name, " ") !== false) {
+                    $author->forename = substr($name, 0, strripos($name, " "));
+                    $author->surname = substr($name, strripos($name, " ") + 1);
+                    $author->name = substr($name, strripos($name, " ") + 1);
+                } else {
+                    $author->forename = $name;
+                    $author->name = $name;
+                }
+                $em->persist($author);
+                $em->flush();
+                $a = $author->id;
+                $newAuthors[] = $author;
+            }
+            
+            $book->authors[$a] = (object)array('id' => $a);
+        }
+        
+        $newSeries = array();
         foreach ($dataItem['series'] as $s) {
             if (!is_integer($s['id'])) {
                 $series = new Series();
@@ -185,6 +199,7 @@ class BookController extends Controller
                 $em->persist($series);
                 $em->flush();
                 $s['id'] = $series->id;
+                $newSeries[] = $series;
             }
             
             $book->series[$s['id']] = (object)$s;
@@ -192,7 +207,11 @@ class BookController extends Controller
         
         $book->save();
         
-        return $this->json(array('status' => "OK"));
+        return $this->json(array(
+            'status' => "OK",
+            'newAuthors' => $newAuthors,
+            'newSeries' => $newSeries
+        ));
     }
     
     /**

@@ -98,11 +98,26 @@ class WishlistController extends Controller
         if (count($rows) > 0) {
             $details = $em->getRepository(Book::class)->findBy(array('id' => array_keys($rows)));
             
+            $bookauthors = $em->getRepository(BookAuthor::class)->findBy(array('id' => array_keys($rows)));
+        
+            $authorids = $bookauthorids = array();
+            foreach ($bookauthors as $ba) {
+                $authorids[] = $ba->authorid;
+                $bookauthorids[$ba->id][] = $ba->authorid;
+            }
+
+            $authors = array();
+            if (count($authorids) > 0) {
+                $dbauthors = $em->getRepository(Author::class)->findBy(array('id' => $authorids));
+                foreach ($dbauthors as $a) {
+                    $authors[$a->id] = json_decode(json_encode($a));
+                }
+            }
+        
             foreach ($details as $detail) {
-                $wishlist[] = array(
+                $w = array(
                     'id' => $detail->id,
                     'name' => $detail->name,
-                    'authors' => implode(",", $detail->authors),
                     'notes' => $rows[$detail->id]->notes,
                     'gifted' => (
                         $user &&
@@ -112,6 +127,14 @@ class WishlistController extends Controller
                             $users[$rows[$detail->id]->giftfromid]->name : 'Unknown'
                     ) : ''
                 );
+                
+                if (isset($bookauthorids[$detail->id])) {
+                    foreach ($bookauthorids[$detail->id] as $id) {
+                        $w['authors'][] = $authors[$id];
+                    }
+                }
+            
+                $wishlist[] = $w;
             }
         }
         

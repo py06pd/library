@@ -20,7 +20,7 @@
                     multiple
                     v-model="book.authors"
                     placeholder="Please select a author">
-                    <el-option v-for="author in authors" :label="author" :value="author"></el-option>
+                    <el-option v-for="author in authors" :label="((author.surname === null)?author.forename:author.forename + ' ' + author.surname)" :value="author.id"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="Genres">

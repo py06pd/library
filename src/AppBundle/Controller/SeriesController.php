@@ -5,7 +5,9 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\Author;
 use AppBundle\Entity\Book;
+use AppBundle\Entity\BookAuthor;
 use AppBundle\Entity\BookSeries;
 use AppBundle\Entity\Series;
 use AppBundle\Entity\UserBook;
@@ -40,21 +42,72 @@ class SeriesController extends Controller
     public function getAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $authorid = $request->request->get('authorid');
         
-        $series = $em->getRepository(Series::class)->findOneBy(array('id' => $request->request->get('id')));
-        if (!$series) {
+        if ($request->request->get('id') > 0) {
+            $series = $em->getRepository(Series::class)->findOneBy(array('id' => $request->request->get('id')));
+            if (!$series) {
+                return $this->formatError("Invalid request");
+            }
+        } elseif ($authorid > 0) {
+            $series = (object)array('id' => 0, 'name' => "Standalone");
+        } else {
             return $this->formatError("Invalid request");
         }
         
-        $bookseries = $em->getRepository(BookSeries::class)->findBy(array('seriesid' => $series->id));
-        
-        $numbers = array();
-        foreach ($bookseries as $bs) {
-            $numbers[$bs->id] = $bs->number;
+        if ($authorid > 0) {
+            $authorbooks = $em->getRepository(BookAuthor::class)->findBy(array(
+                'authorid' => $authorid
+            ));
+            $bookids = array();
+            foreach ($authorbooks as $map) {
+                $bookids[$map->id] = $map->id;
+            }
         }
             
-        $books = $em->getRepository(Book::class)->findBy(array('id' => array_keys($numbers)));
-            
+        if ($series->id > 0 && $authorid > 0) {
+            $bookseries = $em->getRepository(BookSeries::class)->findBy(array(
+                'seriesid' => $series->id,
+                'id' => $bookids
+            ));
+        } elseif ($series->id > 0) {
+            $bookseries = $em->getRepository(BookSeries::class)->findBy(array('seriesid' => $series->id));
+        } else {
+            $bookseries = $em->getRepository(BookSeries::class)->findBy(array('id' => $bookids));
+        }
+        
+        if ($series->id > 0) {
+            $numbers = array();
+            foreach ($bookseries as $bs) {
+                $numbers[$bs->id] = $bs->number;
+            }
+
+            $bookids = array_keys($numbers);
+        } else {
+            foreach ($bookseries as $map) {
+                if (isset($bookids[$map->id])) {
+                    unset($bookids[$map->id]);
+                }
+            }
+        }
+        
+        $books = $em->getRepository(Book::class)->findBy(array('id' => $bookids));
+        $bookauthors = $em->getRepository(BookAuthor::class)->findBy(array('id' => $bookids));
+              
+        $authorids = $bookauthorids = array();
+        foreach ($bookauthors as $ba) {
+            $authorids[] = $ba->authorid;
+            $bookauthorids[$ba->id][] = $ba->authorid;
+        }
+        
+        $authors = array();
+        if (count($authorids) > 0) {
+            $dbauthors = $em->getRepository(Author::class)->findBy(array('id' => $authorids));
+            foreach ($dbauthors as $a) {
+                $authors[$a->id] = json_decode(json_encode($a));
+            }
+        }
+        
         $user = $this->getUser();
         
         $tracking = false;
@@ -62,14 +115,16 @@ class SeriesController extends Controller
         
         if ($user) {
             $userbooks = $em->getRepository(UserBook::class)->findBy(array(
-                'id' => array_keys($numbers),
+                'id' => $bookids,
                 'userid' => $user->id
             ));
             foreach ($userbooks as $ub) {
                 $userbook[$ub->id] = $ub;
             }
             
-            if ($em->getRepository(UserSeries::class)->findOneBy(array('id' => $series->id, 'userid' => $user->id))) {
+            if ($series->id > 0 &&
+                $em->getRepository(UserSeries::class)->findOneBy(array('id' => $series->id, 'userid' => $user->id))
+            ) {
                 $tracking = true;
             }
         }
@@ -80,18 +135,23 @@ class SeriesController extends Controller
                 'id' => $book->id,
                 'name' => $book->name,
                 'type' => $book->type,
-                'authors' => $book->authors,
+                'authors' => array(),
                 'genres' => $book->genres,
                 'owners' => array(),
                 'read' => array()
             );
+            if (isset($bookauthorids[$book->id])) {
+                foreach ($bookauthorids[$book->id] as $id) {
+                    $b['authors'][] = $authors[$id];
+                }
+            }
             if (isset($userbook[$book->id]) && $userbook[$book->id]->owned) {
                 $b['owners'][] = $user->id;
             }
             if (isset($userbook[$book->id]) && $userbook[$book->id]->read) {
                 $b['read'][] = $user->id;
             }
-            if ((string)$numbers[$book->id] != "") {
+            if ($series->id > 0 && (string)$numbers[$book->id] != "") {
                 $main[$numbers[$book->id]] = $b;
             } else {
                 $other[$book->name] = $b;
@@ -167,5 +227,10 @@ class SeriesController extends Controller
         }
                 
         return $this->json(array('status' => "OK"));
+    }
+    
+    private function formatError($message)
+    {
+        return $this->json(array('status' => "error", 'errorMessage' => $message));
     }
 }

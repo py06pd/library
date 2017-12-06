@@ -2,7 +2,9 @@
 
 namespace AppBundle\Services;
 
+use AppBundle\Entity\Author;
 use AppBundle\Entity\Book as BookEntity;
+use AppBundle\Entity\BookAuthor;
 use AppBundle\Entity\BookSeries;
 use AppBundle\Entity\Series;
 use AppBundle\Entity\UserBook;
@@ -28,7 +30,7 @@ class Book
     /**
      * @var array
      */
-    public $authors;
+    public $authors = array();
     
     /**
      * @var array
@@ -38,7 +40,7 @@ class Book
     /**
      * @var array
      */
-    public $series;
+    public $series = array();
     
     /**
      * @var array
@@ -204,7 +206,7 @@ class Book
         $this->id = $item->id;
         $this->name = $item->name;
         $this->type = $item->type;
-        $this->authors = $item->authors;
+        $this->authors = $this->getAuthors($id);
         $this->genres = $item->genres;
         $this->series = $this->getSeries($id);
         $this->owners = $owned;
@@ -214,6 +216,15 @@ class Book
     public function getAll()
     {
         $data = $this->em->getRepository(BookEntity::class)->findAll();
+        
+        $qb = $this->em->createQueryBuilder();
+        $authors = $qb->select('q')->from(Author::class, 'q', 'q.id')->getQuery()->getResult();
+        
+        $bamap = $this->em->getRepository(BookAuthor::class)->findAll();
+        $amap = array();
+        foreach ($bamap as $s) {
+            $amap[$s->id][] = $s->authorid;
+        }
         
         $qb = $this->em->createQueryBuilder();
         $series = $qb->select('q')->from(Series::class, 'q', 'q.id')->getQuery()->getResult();
@@ -232,6 +243,18 @@ class Book
                             'id' => $m->seriesid,
                             'name' => $series[$m->seriesid]->name,
                             'number' => $m->number
+                        );
+                    }
+                }
+            }
+            
+            if (isset($amap[$item->id])) {
+                foreach ($amap[$item->id] as $m) {
+                    if (isset($authors[$m])) {
+                        $item->authors[] = (object)array(
+                            'id' => $m,
+                            'forename' => $authors[$m]->forename,
+                            'surname' => $authors[$m]->surname
                         );
                     }
                 }
@@ -274,6 +297,30 @@ class Book
         ->getQuery();
 
         return $q->getResult();
+    }
+    
+    public function getAuthors($id)
+    {
+        $map = array();
+        $smap = $this->em->getRepository(BookAuthor::class)->findBy(array('id' => $id));
+        foreach ($smap as $s) {
+            $map[] = $s->authorid;
+        }
+        
+        $result = array();
+        if (count($map) > 0) {
+            $authors = $this->em->getRepository(Author::class)->findBy(array('id' => $map));
+            
+            foreach ($authors as $a) {
+                $result[$a->id] = (object)array(
+                    'id' => $a->id,
+                    'forename' => $a->forename,
+                    'surname' => $a->surname
+                );
+            }
+        }
+        
+        return $result;
     }
     
     public function getSeries($id)
@@ -379,23 +426,22 @@ class Book
     
     public function save()
     {
-        $oldseries = array();
+        $oldauthors = $oldseries = array();
         
         if ($this->id == -1) {
             $item = new BookEntity();
         } else {
             $item = $this->em->getRepository(BookEntity::class)->findOneBy(array('id' => $this->id));
+            $oldauthors = $this->getAuthors($this->id);
             $oldseries = $this->getSeries($this->id);
         }
         
         $oldname = $item->name;
         $oldtype = $item->type;
-        $oldauthors = $item->authors;
         $oldgenres = $item->genres;
         
         $item->name = $this->name;
         $item->type = $this->type;
-        $item->authors = $this->authors;
         $item->genres = $this->genres;
         
         if ($this->id == -1) {
@@ -403,6 +449,27 @@ class Book
         }
         
         $this->em->flush();
+        
+        foreach ($oldauthors as $sid => $sitem) {
+            if (!isset($this->authors[$sid])) {
+                $s = $this->em->getRepository(BookAuthor::class)->findOneBy(array(
+                    'id' => $item->id,
+                    'authorid' => $sid
+                ));
+                if ($s) {
+                    $this->em->remove($s);
+                }
+            }
+        }
+        
+        foreach ($this->authors as $sid => $sitem) {
+            if (!isset($oldauthors[$sid])) {
+                $s = new BookAuthor();
+                $s->id = $item->id;
+                $s->authorid = $sid;
+                $this->em->persist($s);
+            }
+        }
         
         foreach ($oldseries as $sid => $sitem) {
             if (!isset($this->series[$sid])) {

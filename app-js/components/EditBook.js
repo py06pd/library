@@ -32,7 +32,33 @@ export default {
         
         saveItem: function(close) {
             var data = JSON.stringify(this.book);
-            this.save('book/save', { data: data }).then(function() {
+            this.save('book/save', { data: data }).then(function(response) {
+                for (var i in response.body.newAuthors) {
+                    var a = response.body.newAuthors[i];
+                    this.authors.push(a);
+                    
+                    var name = a.forename + ((a.surname == null) ? '' : ' ' + a.surname);
+                    
+                    for (var j in this.book.authors) {
+                        if (this.book.authors[j].toString().trim() == name) {
+                            this.book.authors[j] = a.id;
+                            break;
+                        }
+                    }
+                }
+                
+                for (var k in response.body.newSeries) {
+                    var s = response.body.newSeries[k];
+                    this.series.push(s);
+                    
+                    for (var l in this.book.series) {
+                        if (this.book.series[l].name == s.name) {
+                            this.book.series[l].id = s.id;
+                            break;
+                        }
+                    }
+                }
+                
                 if (close) {
                     this.close();
                 }

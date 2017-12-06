@@ -8,7 +8,10 @@ export default {
     components: {
         'book-menu': BookMenu,
     },
-    props: ['id'],
+    props: {
+        id: Number,
+        authorid: { Default:0 },
+    },
     data: function () {
         return {
             series: { name: '' },
@@ -63,7 +66,7 @@ export default {
         },
         
         loadBooks: function() {
-            this.load('series/get', { id: this.id }).then(function(response) {
+            this.load('series/get', { id: this.id, authorid: this.authorid }).then(function(response) {
                 this.main = response.body.main;
                 this.other = response.body.other;
                 this.series = response.body.series;
@@ -75,6 +78,10 @@ export default {
         openMenu: function(book) {
             this.menu = book;
             this.menuMode = 1;
+        },
+        
+        selectAuthor: function (id) {
+            this.$router.push('/author/' + id);
         },
         
         track: function() {

@@ -1,11 +1,19 @@
 <?php
+/**
+ * @todo fix adding second book after adding new author/series
+ * @todo add series from series page
+ * @todo add books to series in series page
+ * @todo subseries in series page
+ * @todo nicer book menu visuals
+ * @todo mobile styling
+ */
 // src/AppBundle/Controller/DefaultController
 namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Entity\Audit;
+use AppBundle\Entity\Author;
 use AppBundle\Entity\Book;
 use AppBundle\Entity\Series;
 use AppBundle\Entity\User;
@@ -67,17 +75,14 @@ class DefaultController extends Controller
         ))));
     }
     
-    private function checkFilters($item, $owned, $read, $bookSeries, $eqFilters, $noFilters)
+    private function checkFilters($item, $owned, $read, $bookAuthors, $bookSeries, $eqFilters, $noFilters)
     {
-        $fields = array('author' => 'authors', 'genre' => 'genres');
-        foreach ($fields as $filter => $field) {
-            if (isset($eqFilters[$filter]) && count(array_intersect($item->$field, $eqFilters[$filter])) == 0) {
-                return false;
-            }
+        if (isset($eqFilters['genre']) && count(array_intersect($item->genres, $eqFilters['genre'])) == 0) {
+            return false;
+        }
 
-            if (isset($noFilters[$filter]) && count(array_intersect($item->$field, $noFilters[$filter])) > 0) {
-                return false;
-            }
+        if (isset($noFilters['genre']) && count(array_intersect($item->genres, $noFilters['genre'])) > 0) {
+            return false;
         }
         
         if (isset($eqFilters['owner'])) {
@@ -120,12 +125,14 @@ class DefaultController extends Controller
             return false;
         }
 
-        if (isset($eqFilters['series']) && count(array_intersect($bookSeries, $eqFilters['series'])) == 0) {
-            return false;
-        }
+        foreach (array('author' => $bookAuthors, 'series' => $bookSeries) as $filter => $values) {
+            if (isset($eqFilters[$filter]) && count(array_intersect($values, $eqFilters[$filter])) == 0) {
+                return false;
+            }
 
-        if (isset($noFilters['series']) && count(array_intersect($bookSeries, $noFilters['series'])) > 0) {
-            return false;
+            if (isset($noFilters[$filter]) && count(array_intersect($values, $noFilters[$filter])) > 0) {
+                return false;
+            }
         }
         
         return true;
@@ -159,6 +166,7 @@ class DefaultController extends Controller
         $data = $this->get('app.book')->getAll();
         $user = $this->getUser();
         
+        $authors = $em->getRepository(Author::class)->findBy(array(), array('name' => "ASC"));
         $series = $em->getRepository(Series::class)->findBy(array(), array('name' => "ASC"));
                 
         $filters = json_decode($request->request->get('filters', json_encode(array())));
@@ -195,18 +203,29 @@ class DefaultController extends Controller
             }
         }
         
-        $authors = array();
         $genres = array();
         $types = array();
         $books = array();
         $order = array();
         foreach ($data as $item) {
-            $this->addToDataArray($item, 'authors', $authors);
-            $this->addToDataArray($item, 'genres', $genres);
+            if (isset($item->genres) && is_array($item->genres)) {
+                foreach ($item->genres as $value) {
+                    if (!in_array($value, $genres)) {
+                        $genres[] = $value;
+                    }
+                }
+
+                sort($genres);
+            }
+        
             if ($item->type != '' && !in_array($item->type, $types)) {
                 $types[] = $item->type;
             }
             sort($types);
+            
+            foreach ($item->authors as $value) {
+                $bookAuthors[] = $value->id;
+            }
             
             $bookSeries = array();
             $seriesSeg = "";
@@ -219,24 +238,18 @@ class DefaultController extends Controller
                 }
             }
                 
-            if ($this->checkFilters($item, $owned, $read, $bookSeries, $eqFilters, $noFilters)) {
-                $segs = array();
-                foreach ($item->authors as $author) {
-                    $seg = (strpos($author, " ") === false) ? $author :
-                        (substr($author, strrpos($author, " ") + 1) . ", " . substr($author, 0, strrpos($author, " ")));
-                    
-                    $segs[] = $seg;
+            if ($this->checkFilters($item, $owned, $read, $bookAuthors, $bookSeries, $eqFilters, $noFilters)) {
+                $firstAuthor = "zzz" . $seriesSeg;
+                if (isset($item->authors[0])) {
+                    $firstAuthor = $item->authors[0]->surname . ", " . $item->authors[0]->forename . $seriesSeg;
                 }
-                sort($segs);
-
-                $firstAuthor = ((count($item->authors) > 0) ? $segs[0] : "zzz") . $seriesSeg;
                 
                 $order[$item->id] = $firstAuthor;
                 $books[$item->id] = array(
                     'id' => $item->id,
                     'name' => $item->name,
                     'type' => $item->type,
-                    'authors' => implode(", ", $item->authors),
+                    'authors' => $item->authors,
                     'order' => $firstAuthor,
                     'genres' => implode(", ", $item->genres),
                     'owners' => isset($owned[$item->id]) ? array_keys($owned[$item->id]) : array(),
@@ -310,18 +323,5 @@ class DefaultController extends Controller
         $this->get('auditor')->userBookLog($item, $user, array('notes' => array($oldnotes, $text)));
         
         return $this->json(array('status' => "OK"));
-    }
-    
-    private function addToDataArray($item, $key, &$items)
-    {
-        if (isset($item->$key) && is_array($item->$key)) {
-            foreach ($item->$key as $value) {
-                if (!in_array($value, $items)) {
-                    $items[] = $value;
-                }
-            }
-            
-            sort($items);
-        }
     }
 }

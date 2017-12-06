@@ -67,9 +67,15 @@
             prop="type"
             label="Type">
         </el-table-column>
-        <el-table-column
-            prop="authors"
-            label="Author">
+        <el-table-column label="Author">
+            <template scope="scope">
+                <span class="author-link" v-for="a in scope.row.authors" @click="selectAuthor(a.id)">
+                    {{ a.forename }}
+                    <template v-if="a.surname !== null">
+                        {{ a.surname }}
+                    </template>
+                </span>
+            </template>
         </el-table-column>
         <el-table-column
             prop="genres"
