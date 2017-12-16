@@ -16,7 +16,16 @@
         <tbody>
             <tr v-for="book in $root.params.books">
                 <td><div class="cell">{{ book.name }}</div></td>
-                <td><div class="cell">{{ book.authors }}</div></td>
+                <td>
+					<div class="cell">
+						<span v-for="a in book.authors" style="padding-right: 5px">
+							{{ a.forename }}
+							<template v-if="a.surname !== null">
+								{{ a.surname }}
+							</template>
+						</span>
+					</div>
+			    </td>
                 <td>
                     <div class="cell">
                         <el-button size="small" icon="edit" @click="openNotes(book)"></el-button>

@@ -131,6 +131,7 @@ img { border: 0; vertical-align: middle; }
 .author-tracked .selected, .series-tracked .selected { box-shadow: 0 0 3px red; background-color:#FFCCCC; }
 .author-tracked .author-head button, .series-tracked .series-head button { padding: 5px; right: 0px; position: absolute; top:0px; }
 .author-tracked .cic-table, .series-tracked .cic-table { display:none; }
+.author-tracked h2, .series-tracked h2 { display:none; }
 .author-tracked .author-progress, .series-tracked .series-progress { width:100%; margin-bottom: 0px; }
 .author-tracked .author-title, .series-tracked .series-title {
     font-size: 1.17em;

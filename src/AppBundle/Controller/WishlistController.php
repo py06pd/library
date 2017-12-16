@@ -6,7 +6,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Audit;
+use AppBundle\Entity\Author;
 use AppBundle\Entity\Book;
+use AppBundle\Entity\BookAuthor;
 use AppBundle\Entity\User;
 use AppBundle\Entity\UserBook;
 
