@@ -18,7 +18,7 @@ module.exports = {
     methods: {
         addAccount: function() {
             if (this.editing.id !== -1 && this.editing.facebookToken === null) {
-                this.post('users/auth', { id: this.editing.id }).then(function(response) {
+                this.load('users/auth', { id: this.editing.id }, 'Loading...', false).then(function(response) {
                     window.location = response.body.url;
                 });
             }

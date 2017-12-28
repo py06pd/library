@@ -51,13 +51,19 @@ module.exports = {
             return promise;
         },
         // post with loading indicator
-        load: function(target, params, text) {
-            this.clearNotifications();
+        load: function(target, params, text, clearMessages) {
+            if (typeof(clearMessages) === 'undefined' || clearMessages !== false) {
+                this.clearNotifications();
+            }
+            
             this.showStatus(text);
             var promise = this.post(target, params);
             promise.then(function(response) {
                 if (typeof(response.body.status) !== 'undefined') {
                     this.clearStatus();
+                    if (response.body.status === 'error') {
+                        this.showErrorMessage(response.body.errorMessage);
+                    }
                 }
             });
             
