@@ -53,7 +53,9 @@ class LendingController extends Controller
             return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
         }
         
-        $result = $this->get('app.book')->borrow($request->request->get('id'), $user->id);
+        $userIds = $this->get('app.group')->getLinkedUsers($user->id);
+        
+        $result = $this->get('app.book')->borrow($request->request->get('id'), $user->id, $userIds);
         if ($result !== true) {
             return $this->json(array('status' => "error", 'errorMessage' => $result));
         }

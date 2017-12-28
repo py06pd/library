@@ -32,6 +32,12 @@ CREATE TABLE bookseries
     CONSTRAINT bookseries_pkey PRIMARY KEY (id, seriesid)
 );
 
+CREATE TABLE groupuser
+(
+    id integer NOT NULL,
+    userid integer NOT NULL,
+    CONSTRAINT groupuser_pkey PRIMARY KEY (id, userid)
+);
 
 CREATE TABLE series
 (

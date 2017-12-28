@@ -55,6 +55,11 @@ services:
         arguments: ['@doctrine.orm.entity_manager', '@auditor']
         public: true
         
+    app.group:
+        class: AppBundle\Services\Group
+        arguments: ['@doctrine.orm.entity_manager', '@auditor']
+        public: true
+        
     auditor:
         class: AppBundle\Services\Auditor
         arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']

@@ -72,8 +72,12 @@ class Book
         $this->em = $em;
     }
     
-    public function borrow($id, $userId)
+    public function borrow($id, $userId, $userIds)
     {
+        if (!in_array($userId, $userIds)) {
+            return "Invalid request";
+        }
+        
         $item = $this->em->getRepository(BookEntity::class)->findOneBy(array('id' => $id));
         if (!$item) {
             return "Invalid request";
@@ -103,7 +107,10 @@ class Book
         if ($userbook->requestedfromid != 0) {
             $userbook->borrowedfromid = $userbook->requestedfromid;
         } else {
-            $history = $this->em->getRepository(UserBook::class)->findBy(array('id' => $item->id));
+            $history = $this->em->getRepository(UserBook::class)->findBy(array(
+                'id' => $item->id,
+                'userid' => $userIds
+            ));
 
             $total = array();
             foreach ($history as $record) {
@@ -183,34 +190,6 @@ class Book
         $this->em->flush();
         
         return true;
-    }
-    
-    public function get($id)
-    {
-        $item = $this->em->getRepository(BookEntity::class)->findOneBy(array('id' => $id));
-        
-        $owned = $read = array();
-        
-        $history = $this->em->getRepository(UserBook::class)->findBy(array('id' => $id));
-        
-        foreach ($history as $row) {
-            if ($row->owned) {
-                $owned[] = $row->userid;
-            }
-            
-            if ($row->read) {
-                $read[] = $row->userid;
-            }
-        }
-        
-        $this->id = $item->id;
-        $this->name = $item->name;
-        $this->type = $item->type;
-        $this->authors = $this->getAuthors($id);
-        $this->genres = $item->genres;
-        $this->series = $this->getSeries($id);
-        $this->owners = $owned;
-        $this->read = $read;
     }
     
     public function getAll()
@@ -343,8 +322,12 @@ class Book
         return $result;
     }
     
-    public function request($id, $userId)
+    public function request($id, $userId, $userIds)
     {
+        if (!in_array($userId, $userIds)) {
+            return "Invalid request";
+        }
+        
         $item = $this->em->getRepository(BookEntity::class)->findOneBy(array('id' => $id));
         if (!$item) {
             return "Invalid request";
@@ -376,7 +359,7 @@ class Book
             $this->em->persist($userbook);
         }
         
-        $history = $this->em->getRepository(UserBook::class)->findBy(array('id' => $id));
+        $history = $this->em->getRepository(UserBook::class)->findBy(array('id' => $id, 'userid' => $userIds));
         
         $total = array();
         foreach ($history as $record) {

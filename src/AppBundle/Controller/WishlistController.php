@@ -14,21 +14,6 @@ use AppBundle\Entity\UserBook;
 
 class WishlistController extends Controller
 {
-    /**
-     * @Route("/wishlist")
-     */
-    public function indexAction(Request $request)
-    {
-        $userid = $request->query->get('userid');
-        
-        $wishlist = $this->getList($userid);
-        
-        return $this->forward('AppBundle:Default:index', array(
-            'page' => 'wishlist',
-            'params' => array('books' => $wishlist, 'userid' => $userid)
-        ));
-    }
-    
     private function formatError($message)
     {
         return $this->json(array('status' => "error", 'errorMessage' => $message));
@@ -74,18 +59,30 @@ class WishlistController extends Controller
         return $this->json(array('status' => "OK"));
     }
     
-    private function getList($userid)
+    /**
+     * @Route("/wishlist/get")
+     */
+    public function getAction(Request $request)
     {
+        $userid = $request->request->get('userid');
+        
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->formatError("You must be logged in to make request");
+        }
+        
         $em = $this->getDoctrine()->getManager();
         
         $users = array();
-        $data = $em->getRepository(User::class)->findAll();
-        foreach ($data as $user) {
-            $users[$user->id] = $user;
+        $userIds = $this->get('app.group')->getLinkedUsers($user->id);
+        
+        if (!in_array($userid, $userIds)) {
+            return $this->formatError("Invalid request");
         }
         
-        if (!isset($users[$userid])) {
-            return $this->formatError("Invalid request");
+        $data = $em->getRepository(User::class)->findBy(array('id' => $userIds));
+        foreach ($data as $user) {
+            $users[$user->id] = $user;
         }
         
         $books = $em->getRepository(UserBook::class)->findBy(array('userid' => $userid, 'wishlist' => true));
@@ -94,8 +91,6 @@ class WishlistController extends Controller
         foreach ($books as $row) {
             $rows[$row->id] = $row;
         }
-        
-        $user = $this->getUser();
         
         if (count($rows) > 0) {
             $details = $em->getRepository(Book::class)->findBy(array('id' => array_keys($rows)));
@@ -140,18 +135,6 @@ class WishlistController extends Controller
             }
         }
         
-        return $wishlist;
-    }
-    
-    /**
-     * @Route("/wishlist/get")
-     */
-    public function getAction(Request $request)
-    {
-        $userid = $request->request->get('userid');
-        
-        $wishlist = $this->getList($userid);
-        
         return $this->json(array('status' => "OK", 'books' => $wishlist));
     }
     
@@ -160,9 +143,20 @@ class WishlistController extends Controller
      */
     public function giftAction(Request $request)
     {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->formatError("You must be logged in to make request");
+        }
+        
         $em = $this->getDoctrine()->getManager();
         $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
         if (!$item) {
+            return $this->formatError("Invalid request");
+        }
+        
+        $userIds = $this->get('app.group')->getLinkedUsers($user->id);
+        
+        if (!in_array($request->request->get('userid'), $userIds)) {
             return $this->formatError("Invalid request");
         }
         

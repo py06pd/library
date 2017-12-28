@@ -18,6 +18,7 @@ use AppBundle\Entity\Book;
 use AppBundle\Entity\Series;
 use AppBundle\Entity\User;
 use AppBundle\Entity\UserBook;
+use AppBundle\Services\Group;
 
 class DefaultController extends Controller
 {
@@ -61,16 +62,21 @@ class DefaultController extends Controller
      */
     public function indexAction($page = null, $params = array())
     {
-        $dbUsers = $this->getDoctrine()->getRepository(User::class)->findAll();
         $users = array();
-        foreach ($dbUsers as $dbUser) {
-            $users[$dbUser->id] = $dbUser;
+        $user = $this->getUser();
+        
+        if ($user) {
+            $userIds = $this->get('app.group')->getLinkedUsers($user->id);
+            $dbUsers = $this->getDoctrine()->getRepository(User::class)->findBy(array('id' => $userIds));
+            foreach ($dbUsers as $dbUser) {
+                $users[$dbUser->id] = $dbUser;
+            }
         }
         
         return $this->render('main/index.html.twig', array('data' => json_encode(array(
             'page' => $page,
             'params' => $params,
-            'user' => $this->getUser(),
+            'user' => $user,
             'users' => $users
         ))));
     }
@@ -179,27 +185,32 @@ class DefaultController extends Controller
                 $noFilters[$filter->field][] = $filter->value;
             }
         }
-        
-        $dbUsers = $this->getDoctrine()->getRepository(User::class)->findAll();
-        $users = array();
-        foreach ($dbUsers as $dbUser) {
-            $users[$dbUser->id] = $dbUser;
-        }
-        
+         
         $owned = $read = array();
         $requests = 0;
-        $userbook = $em->getRepository(UserBook::class)->findAll();
-        foreach ($userbook as $row) {
-            if ($row->owned) {
-                $owned[$row->id][$row->userid] = $users[$row->userid]->name;
-            }
+        
+        if ($user) {
+            $userIds = $this->get('app.group')->getLinkedUsers($user->id);
+            $userbook = $em->getRepository(UserBook::class)->findBy(array('userid' => $userIds));
             
-            if ($row->read) {
-                $read[$row->id][$row->userid] = $users[$row->userid]->name;
+            $dbUsers = $this->getDoctrine()->getRepository(User::class)->findBy(array('id' => $userIds));
+            $users = array();
+            foreach ($dbUsers as $dbUser) {
+                $users[$dbUser->id] = $dbUser;
             }
-            
-            if ($user && $row->requestedfromid == $user->id) {
-                $requests++;
+        
+            foreach ($userbook as $row) {
+                if ($row->owned) {
+                    $owned[$row->id][$row->userid] = $users[$row->userid]->name;
+                }
+
+                if ($row->read) {
+                    $read[$row->id][$row->userid] = $users[$row->userid]->name;
+                }
+
+                if ($user && $row->requestedfromid == $user->id) {
+                    $requests++;
+                }
             }
         }
         
@@ -285,9 +296,12 @@ class DefaultController extends Controller
             return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
         }
         
+        $userIds = $this->get('app.group')->getLinkedUsers($user->id);
+        
         $result = $this->get('app.book')->request(
             $request->request->get('id'),
-            $user->id
+            $user->id,
+            $userIds
         );
         if ($result !== true) {
             return $this->json(array('status' => "error", 'errorMessage' => $result));
@@ -301,6 +315,17 @@ class DefaultController extends Controller
      */
     public function notesSaveAction(Request $request)
     {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
+        }
+        
+        $userIds = $this->get('app.group')->getLinkedUsers($user->id);
+        
+        if (!in_array($request->request->get('userid'), $userIds)) {
+            return $this->formatError("Invalid request");
+        }
+        
         $em = $this->getDoctrine();
         
         $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
@@ -308,19 +333,19 @@ class DefaultController extends Controller
             return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
         }
         
-        $user = $em->getRepository(User::class)->findOneBy(array('id' => $request->request->get('userid')));
-        if (!$user) {
+        $noteUser = $em->getRepository(User::class)->findOneBy(array('id' => $request->request->get('userid')));
+        if (!$noteUser) {
             return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
         }
         
-        $data = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        $data = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $noteUser->id));
         $oldnotes = $data->notes;
         $text = trim($request->request->get('text'));
         $data->notes = $text == '' ? null : $text;
         
         $em->getManager()->flush();
         
-        $this->get('auditor')->userBookLog($item, $user, array('notes' => array($oldnotes, $text)));
+        $this->get('auditor')->userBookLog($item, $noteUser, array('notes' => array($oldnotes, $text)));
         
         return $this->json(array('status' => "OK"));
     }
