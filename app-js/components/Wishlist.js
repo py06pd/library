@@ -4,11 +4,18 @@ module.exports = {
     name: 'cic-wishlist',
     template: require('./Wishlist.template.html'),
     mixins: [ Http ],
+    props: {
+        id: Number,
+    },
     data: function () {
         return {
+            books: [],
             notes: { id: 0, text: '' },
             notesOpen: false,
         };
+    },
+    created: function () {
+        this.loadBooks();
     },
     methods: {
         closeNotes: function() {
@@ -17,12 +24,16 @@ module.exports = {
         },
         
         gift: function(id) {
-            this.save('wishlist/gift', { id: id, userid: this.$root.params.userid }).then(function() {
-                this.showStatus();
-                this.post('wishlist/get', { userid: this.$root.params.userid }).then(function(response) {
-                    this.clearStatus();
-                    this.$root.params.books = response.body.books;
-                });
+            this.save('wishlist/gift', { id: id, userid: this.id }).then(function() {
+                this.loadBooks();
+            });
+        },
+        
+        loadBooks: function() {
+            this.showStatus();
+            this.load('wishlist/get', { userid: this.id }, 'Loading...', false).then(function(response) {
+                this.clearStatus();
+                this.books = response.body.books;
             });
         },
         
@@ -34,32 +45,21 @@ module.exports = {
 
         own: function(id) {
             this.save('wishlist/own', { id: id }).then(function() {
-                this.showStatus();
-                this.post('wishlist/get', { userid: this.$root.params.userid }).then(function(response) {
-                    this.clearStatus();
-                    this.$root.params.books = response.body.books;
-                });
+                this.loadBooks();
             });
         },
         
         remove: function(id) {
             this.save('wishlist/remove', { id: id }).then(function() {
-                this.showStatus();
-                this.post('wishlist/get', { userid: this.$root.params.userid }).then(function(response) {
-                    this.clearStatus();
-                    this.$root.params.books = response.body.books;
-                });
+                this.loadBooks();
             });
         },
         
         saveNotes: function() {
-            this.save('notes/save', { id: this.notes.id, userid: this.$root.params.userid, text: this.notes.text }).then(function() {
+            this.save('notes/save', { id: this.notes.id, userid: this.id, text: this.notes.text }).then(function() {
                 this.notes = { id: 0, text: '' };
                 this.notesOpen = false;
-                this.post('wishlist/get', { userid: this.$root.params.userid }).then(function(response) {
-                    this.clearStatus();
-                    this.$root.params.books = response.body.books;
-                });
+                this.loadBooks();
             });
         },
     },
