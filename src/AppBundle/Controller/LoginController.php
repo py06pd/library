@@ -19,13 +19,6 @@ class LoginController extends Controller
         $em = $this->getDoctrine()->getManager();
         
         $user = $this->getUser();
-        if (!$user && $request->request->has('id')) {
-            $user = $em->getRepository(User::class)->findOneBy(array(
-                'id' => $request->request->get('id'),
-                'role' => "anon"
-            ));
-        }
-        
         if (!$user) {
             return $this->json(array('status' => "forceLogin"));
         }

@@ -9,22 +9,14 @@
     </span>
     <div id="loginForm" v-if="forceLogin">
         <el-form>
-            <el-select @change="selectUser" v-model="selectedUser.id" placeholder="Please select...">
-                <el-option v-for="user in $root.users" :value="user.id" :label="user.name"></el-option>
-            </el-select>
-            <div v-if="selectedUser.role != 'anon'">
-                <el-form-item label="Username">
-                    <el-input v-model="selectedUser.username"/>
-                </el-form-item>
-                <el-form-item label="Password">
-                    <el-input type="password" v-model="selectedUser.password"/>
-                </el-form-item>
-                <el-button @click="login">Login</el-button>
-                <el-button @click="cancelLogin">Cancel</el-button>
-            </div>
-            <div v-else>
-                <el-button @click="cancelLogin">Cancel</el-button>
-            </div>
+            <el-form-item label="Username">
+                <el-input v-model="selectedUser.username"/>
+            </el-form-item>
+            <el-form-item label="Password">
+                <el-input type="password" v-model="selectedUser.password"/>
+            </el-form-item>
+            <el-button @click="login">Login</el-button>
+            <el-button @click="cancelLogin">Cancel</el-button>
         </el-form>
     </div>
     <div id="registerForm" v-if="registerOpen">

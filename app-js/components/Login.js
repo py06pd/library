@@ -58,9 +58,8 @@ module.exports = {
             this.forceLogin = false;
             this.load('logout');
             
-            this.$root.params = {};
-            this.$root.page = 'books';
             this.$root.user = { id: 0, name: '', role: 'anon' };
+            this.$router.push('/');
         },
         
         onRegisterClicked: function() {
