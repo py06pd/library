@@ -40,6 +40,7 @@ module.exports = {
                 if (response.body.status === 'OK') {
                     this.$root.user = response.body.user;
                     this.forceLogin = false;
+                    window.location.href = '';
                 } else if (response.body.status === 'forceLogin') {
                     this.username = '';
                     this.password = '';
@@ -56,10 +57,9 @@ module.exports = {
         
         onLogoutClicked: function() {
             this.forceLogin = false;
-            this.load('logout');
-            
-            this.$root.user = { id: 0, name: '', role: 'anon' };
-            this.$router.push('/');
+            this.load('logout').then(function() {
+                window.location.href = '';
+            });
         },
         
         onRegisterClicked: function() {
@@ -106,14 +106,6 @@ module.exports = {
                 password: '',
                 role: 'anon',
             };
-        },
-
-        selectUser: function(value) {
-            this.selectedUser.id = this.$root.users[value].id;
-            this.selectedUser.role = this.$root.users[value].role;
-            if (this.selectedUser.role == 'anon') {
-                this.login();
-            }
         },
     },
 };
