@@ -274,9 +274,16 @@ class DefaultController extends Controller
         
         array_multisort($order, SORT_ASC, $books);
         
+        $tableBooks = [];
+        $start = $request->request->get('start');
+        $bookValues = array_values($books);
+        for ($i = $start; $i < $start + 15; $i++) {
+            $tableBooks[] = $bookValues[$i];
+        }
+        
         return $this->json(array(
             'status' => "OK",
-            'data' => $books,
+            'data' => $tableBooks,
             'authors' => $authors,
             'genres' => $genres,
             'types' => $types,

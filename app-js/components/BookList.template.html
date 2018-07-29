@@ -92,6 +92,7 @@
             width="100">
         </el-table-column>  
     </el-table>
-    
+    <el-button type="primary" style="width:100%" @click="loadMore">Load More</el-button>
+
     <book-menu :book="menu" :mode="menuMode" @change="bookMenuChange"></book-menu>
 </div>

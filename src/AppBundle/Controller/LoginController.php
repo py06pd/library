@@ -15,7 +15,7 @@ class LoginController extends Controller
      * @Route("/login")
      */
     public function loginAction(Request $request)
-    {     
+    {
         return $this->render("login.html.twig");
     }
     

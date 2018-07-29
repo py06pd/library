@@ -24,6 +24,7 @@ export default {
             filter: { field: '', operator: '', value: '' },
             filters: [],
             selected: [],
+            start: 0,
         };
     },
     created: function () {
@@ -101,8 +102,12 @@ export default {
         },
 
         loadBooks: function() {
-            this.load('getData', { filters: JSON.stringify(this.filters) }).then(function(response) {
-                this.books = response.body.data;
+            this.load('getData', { filters: JSON.stringify(this.filters), start: this.start }).then(function(response) {
+                if (this.start === 0) {
+                    this.books = response.body.data;
+                } else {
+                    this.books.push.apply(this.books, response.body.data);
+                }
                 this.authors = response.body.authors;
                 this.genres = response.body.genres;
                 this.series = response.body.series;
@@ -113,6 +118,11 @@ export default {
                 }
                 this.$root.requests = response.body.requests;
             });
+        },
+        
+        loadMore: function() {
+            this.start += 15;
+            this.loadBooks();
         },
         
         onRowSelected: function(val) {

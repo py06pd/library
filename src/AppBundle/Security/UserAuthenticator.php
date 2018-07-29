@@ -19,7 +19,7 @@ use AppBundle\Entity\User;
 class UserAuthenticator extends AbstractGuardAuthenticator
 {
     /**
-     * @var array 
+     * @var array
      */
     private $cookieParams;
     
