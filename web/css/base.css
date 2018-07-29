@@ -82,13 +82,25 @@ img { border: 0; vertical-align: middle; }
 #menuSection .el-submenu__title { height: auto; line-height: 20px; padding: 10px; }
 #menuSection .el-badge__content.is-fixed { right: 0px; }
 
-#loginForm, #registerForm {
+#loginForm {
     position: absolute;
-    z-index: 2;
     background: #fff;
     box-shadow: 0px 0px 9px rgba(0,0,0,0.5);
     padding: 10px;
-    margin-left: 3px;
+    margin: 150px 0px 0px -150px;
+    left: 50%;
+    width: 300px;   
+}
+
+#loginForm input {
+    margin: 10px;
+    width: 265px;
+    line-height: 25px;
+    padding: 5px;
+}
+
+#loginForm .login-button {
+    width: 280px;
 }
 
 #myAccountForm input {

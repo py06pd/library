@@ -5,7 +5,7 @@
                 <th class="is-leaf"><div class="cell">Title</div></th>
                 <th class="is-leaf"><div class="cell">Authors</div></th>
                 <th class="is-leaf"><div class="cell">Notes</div></th>
-                <th v-if="$root.user.id > 0 && $root.user.id != id" class="is-leaf" style="width:110px">
+                <th v-if="$root.user.id != id" class="is-leaf" style="width:110px">
                     <div class="cell">Gift From</div>
                 </th>
                 <th v-if="$root.user.id === id" class="is-leaf"><div class="cell">Got</div></th>
@@ -39,7 +39,7 @@
                         </span>
                     </div>
                 </td>
-                <td v-if="$root.user.id > 0 && $root.user.id != id">
+                <td v-if="$root.user.id != id">
                     <div class="cell">{{ book.gifted }}</div>
                 </td>
                 <td v-if="$root.user.id === id">

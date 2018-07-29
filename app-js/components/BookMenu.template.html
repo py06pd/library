@@ -1,7 +1,7 @@
 <div>
     <el-dialog id="bookMenu" :visible="mode === 1" :before-close="close">
         <el-button @click="openEdit">Edit</el-button>
-        <template v-if="$root.user.id > 0 && book.id > 0">
+        <template v-if="book.id > 0">
             <template v-if="book.owners.indexOf($root.user.id) == -1">
                 <template v-if="book.owners.length > 0">
                     <br><el-button @click="borrowRequest">Borrow Request</el-button>

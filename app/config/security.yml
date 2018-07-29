@@ -1,7 +1,8 @@
 # To get started with security, check out the documentation:
 # https://symfony.com/doc/current/security.html
 security:
-
+    access_denied_url: /login
+        
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
         app:
@@ -15,8 +16,13 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        main:
+        login:
+            pattern: ^/login$
             anonymous: ~
+            stateless: true
+            security: false
+            
+        main:
             stateless: true
             guard:
                 authenticators:
@@ -30,3 +36,7 @@ security:
 
             # https://symfony.com/doc/current/security/form_login_setup.html
             #form_login: ~
+            
+    access_control:
+        - { path: ^/login, roles: [ROLE_ANONYMOUS,ROLE_USER]  } 
+        - { path: ^/, roles: [ROLE_USER] }

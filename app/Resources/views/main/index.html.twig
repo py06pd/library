@@ -11,7 +11,12 @@
             <div id="content">
                 <div class="MenuContent">
                     <cic-menu></cic-menu>
-                    <cic-login></cic-login>
+                    <div id="userSection">
+                        <span id="userName">{{ app.user.name }}</span>
+                        <button type="button" class="el-button el-button--default">
+                            <a href="{{ app.request.getBaseUrl() }}/login/logout">Logout</a>
+                        </button>
+                    </div>
                 </div>
                 <div class="PageContent">
                     <router-view></router-view>               

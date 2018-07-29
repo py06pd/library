@@ -44,7 +44,7 @@ services:
         
     app.userauthenticator:
         class: AppBundle\Security\UserAuthenticator
-        arguments: ['@doctrine.orm.entity_manager', '%secret%', '@logger']
+        arguments: ['@doctrine.orm.entity_manager', '%secret%', {'domain': '%cookieDomain%', 'secure': '%cookieSecure%'}, '@logger']
         
     app.cookieauthenticator:
         class: AppBundle\Security\CookieAuthenticator

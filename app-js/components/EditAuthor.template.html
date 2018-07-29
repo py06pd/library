@@ -1,16 +1,14 @@
 <div>
     <div class="author-head">
         <h1 class="author-title">{{ author.forename }}<template v-if="author.surname !== null"> {{ author.surname }}</template></h1>
-        <template v-if="$root.user.id > 0">
-            <el-button :type="tracking?'primary':'default'" icon="share" @click="track"></el-button>
-            <el-progress
-                class="author-progress"
-                :text-inside="true"
-                :stroke-width="18"
-                :percentage="percentage"
-                status="success">
-            </el-progress>
-        </template>
+        <el-button :type="tracking?'primary':'default'" icon="share" @click="track"></el-button>
+        <el-progress
+            class="author-progress"
+            :text-inside="true"
+            :stroke-width="18"
+            :percentage="percentage"
+            status="success">
+        </el-progress>
     </div>
     <template v-if="total > 0">
         <div v-if="showSeries">

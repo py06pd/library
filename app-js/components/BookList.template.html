@@ -1,10 +1,7 @@
 <div>
     <div id="controls">
-        <template v-if="$root.user.id > 0">
-            <el-button type="primary" icon="plus" @click="openAdd">Add Entry</el-button>
-            <el-button type="primary" icon="delete" @click="deleteItems">Delete Selected</el-button>
-        </template>
-            
+        <el-button type="primary" icon="plus" @click="openAdd">Add Entry</el-button>
+        <el-button type="primary" icon="delete" @click="deleteItems">Delete Selected</el-button>           
         <el-button type="primary" icon="plus" @click="addFilter">Add Filter</el-button>
 
         <el-select
@@ -48,17 +45,15 @@
         highlight-current-row
         @selection-change="onRowSelected"
         height="600">
-        <template v-if="$root.user.id > 0">
-            <el-table-column
-                type="selection">
-            </el-table-column>
-            <el-table-column
-                width="50">
-                <template scope="scope">
-                    <el-button size="small" icon="menu" @click="openMenu(scope.row)"></el-button>
-                </template>
-            </el-table-column>
-        </template>
+        <el-table-column
+            type="selection">
+        </el-table-column>
+        <el-table-column
+            width="50">
+            <template scope="scope">
+                <el-button size="small" icon="menu" @click="openMenu(scope.row)"></el-button>
+            </template>
+        </el-table-column>
         <el-table-column
             prop="name"
             label="Title">

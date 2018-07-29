@@ -6,7 +6,6 @@ import VueResource from 'vue-resource';
 // Import the router config, this will load the file ./router/index.js
 import router from './router';
 
-import Login from './components/Login';
 import LogsList from './components/LogsList';
 import AppMenu from './components/Menu';
 
@@ -35,7 +34,6 @@ import locale from 'element-ui/lib/locale';
 Vue.use(VueResource);
 //Vue.use(new Navigator(), { 'router' : router, 'messageBox' : MessageBox });
 
-Vue.component(Login.name, Login);
 Vue.component(LogsList.name, LogsList);
 Vue.component(AppMenu.name, AppMenu);
 

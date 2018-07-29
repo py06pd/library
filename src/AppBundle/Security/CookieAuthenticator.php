@@ -81,7 +81,7 @@ class CookieAuthenticator extends AbstractGuardAuthenticator
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $response = new RedirectResponse($request->getBasePath() . "/");
+        $response = new RedirectResponse($request->getBasePath() . "/login");
         
         // clear cookie
         $response->headers->clearCookie('library', '/', $this->cookieParams['domain'], $this->cookieParams['secure']);

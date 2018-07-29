@@ -4,7 +4,7 @@ namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use AppBundle\Entity\User;
@@ -15,23 +15,72 @@ class LoginController extends Controller
      * @Route("/login")
      */
     public function loginAction(Request $request)
+    {     
+        return $this->render("login.html.twig");
+    }
+    
+    /**
+     * @Route("/login/genre")
+     */
+    public function genreAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->json(array('status' => "forceLogin"));
+        $books = $em->getRepository(\AppBundle\Entity\Book::class)->findAll();
+        $genres = array();
+        foreach ($books as $book) {
+            foreach ($book->genres as $genre) {
+                if (!in_array($genre, $genres)) {
+                    $genres[] = $genre;
+                }
+            }
         }
         
-        $sessionid = hash("sha256", mt_rand(1, 32));
+        foreach ($genres as $genre) {
+            $oGenre = new \AppBundle\Entity\Genre();
+            $oGenre->name = $genre;
+            $em->persist($oGenre);
+        }
         
-        $user->sessionid = $sessionid;
         $em->flush();
         
+        $aGenres = array();
+        $genres = $em->getRepository(\AppBundle\Entity\Genre::class)->findAll();
+        foreach ($genres as $genre) {
+            $aGenres[$genre->name] = $genre->id;
+        }
+        
+        foreach ($books as $book) {
+            foreach ($book->genres as $genre) {
+                if (isset($aGenres[$genre])) {
+                    $oGenre = new \AppBundle\Entity\BookGenre();
+                    $oGenre->id = $book->id;
+                    $oGenre->genreid = $aGenres[$genre];
+                    $em->persist($oGenre);
+                }
+            }
+        }
+        
+        $em->flush();
+        
+        return $this->render("login.html.twig");
+    }
+    
+    /**
+     * @Route("/login/verify")
+     */
+    public function verifyAction(Request $request)
+    {
+        $user = $this->getUser();
+        
+        $em = $this->getDoctrine()->getManager();
+        
+        $user->sessionid = hash("sha256", mt_rand(1, 32));
+        $em->flush();
+
         $bag = new ResponseHeaderBag();
         $bag->setCookie($this->createCookie($user));
         
-        return $this->json(array('status' => "OK", 'user' => $user), 200, $bag->all());
+        return new RedirectResponse("/", 200, $bag->all());
     }
     
     /**
@@ -67,32 +116,13 @@ class LoginController extends Controller
     }
     
     /**
-     * @Route("/logout")
+     * @Route("/login/logout")
      */
     public function logoutAction(Request $request)
     {
         $bag = new ResponseHeaderBag();
         $bag->clearCookie('library', '/', $this->getParameter('cookieDomain'), $this->getParameter('cookieSecure'));
                
-        return $this->json(array('status' => "OK"), 200, $bag->all());
-    }
-    
-    private function createCookie($user)
-    {
-        $time = time();
-        $auth = new Cookie(
-            'library',
-            implode("|", array(
-                $user->id,
-                $time,
-                hash("sha256", $user->id . $time . $user->sessionid)
-            )),
-            $time + (3600 * 24 * 365),
-            '/',
-            $this->getParameter('cookieDomain'),
-            $this->getParameter('cookieSecure')
-        );
-        
-        return $auth;
+        return new RedirectResponse($request->getBaseUrl() . "/login", 302, $bag->all());
     }
 }

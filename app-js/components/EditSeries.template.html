@@ -1,18 +1,16 @@
 <div>
     <div class="series-head">
         <h1 class="series-title">{{ series.name }}</h1>
-        <template v-if="$root.user.id > 0">
-            <template v-if="series.id > 0">
-                <el-button :type="tracking?'primary':'default'" icon="share" @click="track"></el-button>
-            </template>
-            <el-progress
-                class="series-progress"
-                :text-inside="true"
-                :stroke-width="18"
-                :percentage="percentage"
-                status="success">
-            </el-progress>
+        <template v-if="series.id > 0">
+            <el-button :type="tracking?'primary':'default'" icon="share" @click="track"></el-button>
         </template>
+        <el-progress
+            class="series-progress"
+            :text-inside="true"
+            :stroke-width="18"
+            :percentage="percentage"
+            status="success">
+        </el-progress>
     </div>
     <template v-if="Object.keys(main).length > 0">
         <template v-if="other.length > 0">
@@ -23,7 +21,7 @@
             <thead>
                 <tr>
                     <th class="is-leaf" style="width:30px"><div class="cell">#</div></th>
-                    <th class="is-leaf" v-if="$root.user.id > 0"></th>
+                    <th class="is-leaf"></th>
                     <th class="is-leaf"><div class="cell">Title</div></th>
                     <th class="is-leaf"><div class="cell">Type</div></th>
                     <th class="is-leaf"><div class="cell">Authors</div></th>
@@ -33,7 +31,7 @@
             <tbody>
                 <tr v-for="(book, number) in main" :class="bookClass(book.id)">
                     <td><div class="cell">{{ number }}</div></td>
-                    <td v-if="$root.user.id > 0">
+                    <td>
                         <div class="cell"><el-button size="small" icon="menu" @click="openMenu(book)"></el-button></div>
                     </td>
                     <td><div class="cell">{{ book.name }}</div></td>
@@ -68,7 +66,7 @@
         <table class="cic-table el-table">
             <thead>
                 <tr>
-                    <th class="is-leaf" v-if="$root.user.id > 0"></th>
+                    <th class="is-leaf"></th>
                     <th class="is-leaf"><div class="cell">Title</div></th>
                     <th class="is-leaf"><div class="cell">Type</div></th>
                     <th class="is-leaf"><div class="cell">Authors</div></th>
@@ -77,7 +75,7 @@
             </thead>
             <tbody>
                 <tr v-for="book in other" :class="bookClass(book.id)">
-                    <td v-if="$root.user.id > 0">
+                    <td>
                         <div class="cell"><el-button size="small" icon="menu" @click="openMenu(book)"></el-button></div>
                     </td>
                     <td><div class="cell">{{ book.name }}</div></td>

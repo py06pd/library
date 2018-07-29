@@ -3,9 +3,12 @@
 // src/AppBundle/Security/UserAuthenticator.php
 namespace AppBundle\Security;
 
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -15,6 +18,11 @@ use AppBundle\Entity\User;
 
 class UserAuthenticator extends AbstractGuardAuthenticator
 {
+    /**
+     * @var array 
+     */
+    private $cookieParams;
+    
     /**
      * @var Doctrine\ORM\EntityManager
      */
@@ -30,11 +38,14 @@ class UserAuthenticator extends AbstractGuardAuthenticator
     /**
      * @param Doctrine\ORM\EntityManager $entityManager
      * @param string $secret
+     * @param array $cookieParams
+     * @param LoggerInterface $logger
      */
-    public function __construct($entityManager, $secret, $logger)
+    public function __construct($entityManager, $secret, $cookieParams, $logger)
     {
         $this->entityManager = $entityManager;
         $this->secret = $secret;
+        $this->cookieParams = $cookieParams;
         $this->logger = $logger;
     }
     
@@ -70,7 +81,6 @@ class UserAuthenticator extends AbstractGuardAuthenticator
     public function checkCredentials($credentials, UserInterface $user)
     {
         $salt = substr($user->getPassword(), 0, 16);
-        $this->logger->info($salt . hash_hmac("sha256", $salt.$credentials['password'], $this->secret));
         if ($user->getPassword() == $salt . hash_hmac("sha256", $salt.$credentials['password'], $this->secret)) {
             return true;
         }
@@ -80,20 +90,20 @@ class UserAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        // on success, let the request continue
-        return null;
+        $user = $token->getUser();
+        
+        $user->sessionid = hash("sha256", mt_rand(1, 32));
+        $this->entityManager->flush();
+        
+        $bag = new ResponseHeaderBag();
+        $bag->setCookie($this->createCookie($user));
+        
+        return new RedirectResponse($request->getBaseUrl() . "/", 302, $bag->all());
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $data = array(
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
-
-            // or to translate this message
-            // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
-        );
-
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
+        return $this->start($request, $exception);
     }
 
     /**
@@ -101,16 +111,35 @@ class UserAuthenticator extends AbstractGuardAuthenticator
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $data = array(
-            // you might translate this message
-            'message' => 'Authentication Required'
-        );
-
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
+        $response = new RedirectResponse($request->getBasePath() . "/login");
+        
+        // clear cookie
+        $response->headers->clearCookie('library', '/', $this->cookieParams['domain'], $this->cookieParams['secure']);
+        
+        return $response;
     }
 
     public function supportsRememberMe()
     {
         return false;
+    }
+    
+    private function createCookie($user)
+    {
+        $time = time();
+        $auth = new Cookie(
+            'library',
+            implode("|", array(
+                $user->id,
+                $time,
+                hash("sha256", $user->id . $time . $user->sessionid)
+            )),
+            $time + (3600 * 24 * 365),
+            '/',
+            $this->cookieParams['domain'],
+            $this->cookieParams['secure']
+        );
+        
+        return $auth;
     }
 }
