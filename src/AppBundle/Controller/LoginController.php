@@ -2,12 +2,14 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Book;
+use AppBundle\Entity\Genre;
+use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use AppBundle\Entity\User;
 
 class LoginController extends Controller
 {
@@ -25,37 +27,29 @@ class LoginController extends Controller
     public function genreAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $books = $em->getRepository(\AppBundle\Entity\Book::class)->findAll();
-        $genres = array();
+        $books = $em->getRepository(Book::class)->findAll();
+        $genres = [];
         foreach ($books as $book) {
-            foreach ($book->genres as $genre) {
+            foreach ($book->getGenres() as $genre) {
                 if (!in_array($genre, $genres)) {
                     $genres[] = $genre;
+                    $em->persist(new Genre($genre));
                 }
             }
         }
         
-        foreach ($genres as $genre) {
-            $oGenre = new \AppBundle\Entity\Genre();
-            $oGenre->name = $genre;
-            $em->persist($oGenre);
-        }
-        
         $em->flush();
         
-        $aGenres = array();
-        $genres = $em->getRepository(\AppBundle\Entity\Genre::class)->findAll();
+        $aGenres = [];
+        $genres = $em->getRepository(Genre::class)->findAll();
         foreach ($genres as $genre) {
-            $aGenres[$genre->name] = $genre->id;
+            $aGenres[$genre->getName()] = $genre->getId();
         }
         
         foreach ($books as $book) {
-            foreach ($book->genres as $genre) {
+            foreach ($book->getGenres() as $genre) {
                 if (isset($aGenres[$genre])) {
-                    $oGenre = new \AppBundle\Entity\BookGenre();
-                    $oGenre->id = $book->id;
-                    $oGenre->genreid = $aGenres[$genre];
-                    $em->persist($oGenre);
+                    $book->addGenre(new BookGenre($book, $genre));
                 }
             }
         }

@@ -108,7 +108,7 @@ class Book
             $userbook->borrowedfromid = $userbook->requestedfromid;
         } else {
             $history = $this->em->getRepository(UserBook::class)->findBy(array(
-                'id' => $item->id,
+                'id' => $item->getId(),
                 'userid' => $userIds
             ));
 
@@ -180,7 +180,7 @@ class Book
         
         foreach ($books as $item) {
             $this->em->remove($item);
-            $this->auditor->log($item->id, $item->name, "book '<log.itemname>' deleted");
+            $this->auditor->log($item->getId(), $item->getName(), "book '<log.itemname>' deleted");
         }
         
         foreach ($history as $item) {
@@ -190,57 +190,6 @@ class Book
         $this->em->flush();
         
         return true;
-    }
-    
-    public function getAll()
-    {
-        $data = $this->em->getRepository(BookEntity::class)->findAll();
-        
-        $qb = $this->em->createQueryBuilder();
-        $authors = $qb->select('q')->from(Author::class, 'q', 'q.id')->getQuery()->getResult();
-        
-        $bamap = $this->em->getRepository(BookAuthor::class)->findAll();
-        $amap = array();
-        foreach ($bamap as $s) {
-            $amap[$s->id][] = $s->authorid;
-        }
-        
-        $qb = $this->em->createQueryBuilder();
-        $series = $qb->select('q')->from(Series::class, 'q', 'q.id')->getQuery()->getResult();
-        
-        $smap = $this->em->getRepository(BookSeries::class)->findAll();
-        $map = array();
-        foreach ($smap as $s) {
-            $map[$s->id][] = $s;
-        }
-        
-        foreach ($data as $item) {
-            if (isset($map[$item->id])) {
-                foreach ($map[$item->id] as $m) {
-                    if (isset($series[$m->seriesid])) {
-                        $item->series[] = (object)array(
-                            'id' => $m->seriesid,
-                            'name' => $series[$m->seriesid]->name,
-                            'number' => $m->number
-                        );
-                    }
-                }
-            }
-            
-            if (isset($amap[$item->id])) {
-                foreach ($amap[$item->id] as $m) {
-                    if (isset($authors[$m])) {
-                        $item->authors[] = (object)array(
-                            'id' => $m,
-                            'forename' => $authors[$m]->forename,
-                            'surname' => $authors[$m]->surname
-                        );
-                    }
-                }
-            }
-        }
-        
-        return $data;
     }
     
     public function getLending($userid)
@@ -276,50 +225,6 @@ class Book
         ->getQuery();
 
         return $q->getResult();
-    }
-    
-    public function getAuthors($id)
-    {
-        $map = array();
-        $smap = $this->em->getRepository(BookAuthor::class)->findBy(array('id' => $id));
-        foreach ($smap as $s) {
-            $map[] = $s->authorid;
-        }
-        
-        $result = array();
-        if (count($map) > 0) {
-            $authors = $this->em->getRepository(Author::class)->findBy(array('id' => $map));
-            
-            foreach ($authors as $a) {
-                $result[$a->id] = (object)array(
-                    'id' => $a->id,
-                    'forename' => $a->forename,
-                    'surname' => $a->surname
-                );
-            }
-        }
-        
-        return $result;
-    }
-    
-    public function getSeries($id)
-    {
-        $map = array();
-        $smap = $this->em->getRepository(BookSeries::class)->findBy(array('id' => $id));
-        foreach ($smap as $s) {
-            $map[$s->seriesid] = $s->number;
-        }
-        
-        $result = array();
-        if (count($map) > 0) {
-            $series = $this->em->getRepository(Series::class)->findBy(array('id' => array_keys($map)));
-            
-            foreach ($series as $s) {
-                $result[$s->id] = (object)array('id' => $s->id, 'name' => $s->name, 'number' => $map[$s->id]);
-            }
-        }
-        
-        return $result;
     }
     
     public function request($id, $userId, $userIds)
@@ -407,95 +312,31 @@ class Book
         return true;
     }
     
-    public function save()
+    /**
+     * Save book
+     * @param BookEntity $book
+     * @return bool
+     */
+    public function save(BookEntity $book)
     {
-        $oldauthors = $oldseries = array();
+        $id = $book->getId();
+        $this->em->persist($book);
+        $this->em->flush($book);
         
-        if ($this->id == -1) {
-            $item = new BookEntity();
+        if ($id) {
+            $existing = $this->em->getRepository(Book::class)->getBookById($id);
+            $existingArray = $existing->toArray();
+            $bookArray = $book->toArray();
+            
+            $this->auditor->log($book->getId(), $book->getName(), "book '<log.itemname>' updated", ['changes' => [
+                'name' => [$existing->getName(), $book->getName()],
+                'type' => [$existing->getType(), $book->getType()],
+                'authors' => [$existingArray['authors'], $bookArray['authors']],
+                'genres' => [$existing->getGenres(), $book->getGenres()],
+                'series' => [$existingArray['series'], $bookArray['series']]
+            ]]);
         } else {
-            $item = $this->em->getRepository(BookEntity::class)->findOneBy(array('id' => $this->id));
-            $oldauthors = $this->getAuthors($this->id);
-            $oldseries = $this->getSeries($this->id);
-        }
-        
-        $oldname = $item->name;
-        $oldtype = $item->type;
-        $oldgenres = $item->genres;
-        
-        $item->name = $this->name;
-        $item->type = $this->type;
-        $item->genres = $this->genres;
-        
-        if ($this->id == -1) {
-            $this->em->persist($item);
-        }
-        
-        $this->em->flush();
-        
-        foreach ($oldauthors as $sid => $sitem) {
-            if (!isset($this->authors[$sid])) {
-                $s = $this->em->getRepository(BookAuthor::class)->findOneBy(array(
-                    'id' => $item->id,
-                    'authorid' => $sid
-                ));
-                if ($s) {
-                    $this->em->remove($s);
-                }
-            }
-        }
-        
-        foreach ($this->authors as $sid => $sitem) {
-            if (!isset($oldauthors[$sid])) {
-                $s = new BookAuthor();
-                $s->id = $item->id;
-                $s->authorid = $sid;
-                $this->em->persist($s);
-            }
-        }
-        
-        foreach ($oldseries as $sid => $sitem) {
-            if (!isset($this->series[$sid])) {
-                $s = $this->em->getRepository(BookSeries::class)->findOneBy(array(
-                    'id' => $item->id,
-                    'seriesid' => $sid
-                ));
-                if ($s) {
-                    $this->em->remove($s);
-                }
-            }
-        }
-        
-        foreach ($this->series as $sid => $sitem) {
-            if (isset($oldseries[$sid])) {
-                $s = $this->em->getRepository(BookSeries::class)->findOneBy(array(
-                    'id' => $item->id,
-                    'seriesid' => $sid
-                ));
-                if ($s) {
-                    $s->number = $sitem->number;
-                }
-            } else {
-                $s = new BookSeries();
-                $s->id = $item->id;
-                $s->seriesid = $sid;
-                $s->number = $sitem->number;
-                $this->em->persist($s);
-            }
-        }
-        
-        $this->em->flush();
-        
-        if ($this->id == -1) {
-            $this->auditor->log($item->id, $item->name, "book '<log.itemname>' added");
-        } else {
-            $this->auditor->log($item->id, $item->name, "book '<log.itemname>' updated", array('changes' => array(
-                'name' => array($oldname, $item->name),
-                'type' => array($oldtype, $item->type),
-                'authors' => array($oldauthors, $item->authors),
-                'genres' => array($oldgenres, $item->genres),
-                'series' => array($oldseries, $item->series)
-            )));
+            $this->auditor->log($book->getId(), $book->getName(), "book '<log.itemname>' created");
         }
         
         return true;

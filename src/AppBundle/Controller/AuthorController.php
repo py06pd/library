@@ -47,18 +47,18 @@ class AuthorController extends Controller
             return $this->formatError("Invalid request");
         }
         
-        $books = $em->getRepository(BookAuthor::class)->findBy(array('authorid' => $item->id));
+        $books = $em->getRepository(BookAuthor::class)->findBy(array('authorid' => $item->getId()));
         
         $bookids = array();
         foreach ($books as $i) {
-            $bookids[] = $i->id;
+            $bookids[] = $i->getBook()->getId();
         }
             
         $collected = $seriesids = array();
         $series = $em->getRepository(BookSeries::class)->findBy(array('id' => $bookids));
         foreach ($series as $s) {
-            $seriesids[$s->seriesid] = $s->seriesid;
-            $collected[$s->id] = $s->id;
+            $seriesids[$s->getSeries()->getId()] = $s->getSeries()->getId();
+            $collected[$s->getBook()->getId()] = $s->getBook()->getId();
         }
         
         // add uncollected series id = 0
@@ -78,7 +78,7 @@ class AuthorController extends Controller
                 $userbook[$ub->id] = $ub;
             }
             
-            if ($em->getRepository(UserAuthor::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id))) {
+            if ($em->getRepository(UserAuthor::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id])) {
                 $tracking = true;
             }
         }
@@ -87,10 +87,10 @@ class AuthorController extends Controller
         foreach ($books as $book) {
             $total++;
             
-            if (isset($userbook[$book->id]) && $userbook[$book->id]->owned) {
+            if (isset($userbook[$book->getBook()->getId()]) && $userbook[$book->getBook()->getId()]->owned) {
                 $owned++;
             }
-            if (isset($userbook[$book->id]) && $userbook[$book->id]->read) {
+            if (isset($userbook[$book->getBook()->getId()]) && $userbook[$book->getBook()->getId()]->read) {
                 $read++;
             }
         }
@@ -123,10 +123,10 @@ class AuthorController extends Controller
             return $this->formatError("Invalid request");
         }
         
-        $useritem = $em->getRepository(UserAuthor::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        $useritem = $em->getRepository(UserAuthor::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
         if (!$useritem) {
             $useritem = new UserAuthor();
-            $useritem->id = $item->id;
+            $useritem->id = $item->getId();
             $useritem->userid = $user->id;
             
             $em->persist($useritem);
@@ -154,7 +154,7 @@ class AuthorController extends Controller
             return $this->formatError("Invalid request");
         }
         
-        $useritem = $em->getRepository(UserAuthor::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        $useritem = $em->getRepository(UserAuthor::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
         if ($useritem) {
             $em->remove($useritem);
             

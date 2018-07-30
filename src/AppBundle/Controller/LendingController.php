@@ -28,7 +28,7 @@ class LendingController extends Controller
             return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
         }
         
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
         if (!$userbook || $userbook->requestedfromid == 0) {
             return $this->json(array('status' => "error", 'errorMessage' => "You have not requested this"));
         }
@@ -148,7 +148,7 @@ class LendingController extends Controller
         }
         
         $userbook = $em->getRepository(UserBook::class)->findOneBy(array(
-            'id' => $item->id,
+            'id' => $item->getId(),
             'requestedfromid' => $user->id
         ));
         if (!$userbook) {

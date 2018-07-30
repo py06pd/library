@@ -52,11 +52,18 @@ class Auditor
         $this->em->flush();
     }
     
-    public function userBookLog($book, $user, $changes)
+    public function userBookLog($book, $user, $details)
     {
+        $changes = [];
+        foreach ($details as $detail) {
+            if ($detail[0] != $detail[1]) {
+                $changes[] = $detail;
+            }
+        }
+        
         $this->log(
-            $book->id,
-            $book->name,
+            $book->getId(),
+            $book->getName(),
             "book '<log.itemname>' updated for user '<log.details.user.name>'",
             array(
                 'user' => array('id' => $user->id, 'name' => $user->name),

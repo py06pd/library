@@ -36,7 +36,7 @@ class WishlistController extends Controller
             return $this->formatError("Invalid request");
         }
         
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
         if ($userbook) {
             if ($userbook->owned) {
                 return $this->formatError("You own this");
@@ -45,7 +45,7 @@ class WishlistController extends Controller
             }
         } else {
             $userbook = new UserBook();
-            $userbook->id = $item->id;
+            $userbook->id = $item->getId();
             $userbook->userid = $user->id;
             $em->persist($userbook);
         }
@@ -93,45 +93,19 @@ class WishlistController extends Controller
         }
         
         if (count($rows) > 0) {
-            $details = $em->getRepository(Book::class)->findBy(array('id' => array_keys($rows)));
-            
-            $bookauthors = $em->getRepository(BookAuthor::class)->findBy(array('id' => array_keys($rows)));
-        
-            $authorids = $bookauthorids = array();
-            foreach ($bookauthors as $ba) {
-                $authorids[] = $ba->authorid;
-                $bookauthorids[$ba->id][] = $ba->authorid;
-            }
-
-            $authors = array();
-            if (count($authorids) > 0) {
-                $dbauthors = $em->getRepository(Author::class)->findBy(array('id' => $authorids));
-                foreach ($dbauthors as $a) {
-                    $authors[$a->id] = json_decode(json_encode($a));
-                }
-            }
-        
+            $details = $em->getRepository(Book::class)->getById(array_keys($rows));
+                    
             foreach ($details as $detail) {
-                $w = array(
-                    'id' => $detail->id,
-                    'name' => $detail->name,
-                    'notes' => $rows[$detail->id]->notes,
+                $wishlist[] = array_merge($detail->toArray(), [
+                    'notes' => $rows[$detail->getId()]->notes,
                     'gifted' => (
                         $user &&
-                        $user->id !== $userid && $rows[$detail->id]->giftfromid != 0
+                        $user->id !== $userid && $rows[$detail->getId()]->giftfromid != 0
                     ) ? (
-                        isset($users[$rows[$detail->id]->giftfromid]) ?
-                            $users[$rows[$detail->id]->giftfromid]->name : 'Unknown'
+                        isset($users[$rows[$detail->getId()]->giftfromid]) ?
+                            $users[$rows[$detail->getId()]->giftfromid]->name : 'Unknown'
                     ) : ''
-                );
-                
-                if (isset($bookauthorids[$detail->id])) {
-                    foreach ($bookauthorids[$detail->id] as $id) {
-                        $w['authors'][] = $authors[$id];
-                    }
-                }
-            
-                $wishlist[] = $w;
+                ]);
             }
         }
         
@@ -165,7 +139,7 @@ class WishlistController extends Controller
             return $this->formatError("Invalid request");
         }
                
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $bookuser->id));
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $bookuser->id]);
         if (!$userbook || !$userbook->wishlist) {
             return $this->formatError("This book is not on the wishlist");
         }
@@ -200,7 +174,7 @@ class WishlistController extends Controller
             return $this->formatError("Invalid request");
         }
         
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
         if (!$userbook || !$userbook->wishlist) {
             return $this->formatError("You have not added this to your wishlist");
         }
@@ -231,7 +205,7 @@ class WishlistController extends Controller
             return $this->formatError("Invalid request");
         }
         
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
         if (!$userbook || !$userbook->wishlist) {
             return $this->formatError("You have not added this to your wishlist");
         }

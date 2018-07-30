@@ -15,22 +15,51 @@ class Series
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      */
-    public $id;
+    private $id;
 
     /**
      * @ORM\Column(type="string", length=256)
      */
-    public $name;
+    private $name;
     
     /**
      * @ORM\Column(type="string", length=16)
      */
-    public $type;
+    private $type;
     
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    public $series;
+    private $series;
     
-    public $books = array();
+    private $books = array();
+    
+    /**
+     * Series constructor.
+     * @param string $name
+     * @param string $type
+     */
+    public function __construct(string $name, string $type)
+    {
+        $this->name = $name;
+        $this->type = $type;
+    }
+    
+    /**
+     * Gets id
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+    
+    /**
+     * Gets name
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 }

@@ -83,17 +83,17 @@ class DefaultController extends Controller
     
     private function checkFilters($item, $owned, $read, $bookAuthors, $bookSeries, $eqFilters, $noFilters)
     {
-        if (isset($eqFilters['genre']) && count(array_intersect($item->genres, $eqFilters['genre'])) == 0) {
+        if (isset($eqFilters['genre']) && count(array_intersect($item->getGenres(), $eqFilters['genre'])) == 0) {
             return false;
         }
 
-        if (isset($noFilters['genre']) && count(array_intersect($item->genres, $noFilters['genre'])) > 0) {
+        if (isset($noFilters['genre']) && count(array_intersect($item->getGenres(), $noFilters['genre'])) > 0) {
             return false;
         }
         
         if (isset($eqFilters['owner'])) {
             foreach ($eqFilters['owner'] as $id) {
-                if (!isset($owned[$item->id]) || !isset($owned[$item->id][$id])) {
+                if (!isset($owned[$item->getId()]) || !isset($owned[$item->getId()][$id])) {
                     return false;
                 }
             }
@@ -101,7 +101,7 @@ class DefaultController extends Controller
         
         if (isset($noFilters['owner'])) {
             foreach ($noFilters['owner'] as $id) {
-                if (isset($owned[$item->id]) && isset($owned[$item->id][$id])) {
+                if (isset($owned[$item->getId()]) && isset($owned[$item->getId()][$id])) {
                     return false;
                 }
             }
@@ -109,7 +109,7 @@ class DefaultController extends Controller
         
         if (isset($eqFilters['read'])) {
             foreach ($eqFilters['read'] as $id) {
-                if (!isset($read[$item->id]) || !isset($read[$item->id][$id])) {
+                if (!isset($read[$item->getId()]) || !isset($read[$item->getId()][$id])) {
                     return false;
                 }
             }
@@ -117,17 +117,17 @@ class DefaultController extends Controller
         
         if (isset($noFilters['read'])) {
             foreach ($noFilters['read'] as $id) {
-                if (isset($read[$item->id]) && isset($read[$item->id][$id])) {
+                if (isset($read[$item->getId()]) && isset($read[$item->getId()][$id])) {
                     return false;
                 }
             }
         }
         
-        if (isset($eqFilters['type']) && !in_array($item->type, $eqFilters['type'])) {
+        if (isset($eqFilters['type']) && !in_array($item->getType(), $eqFilters['type'])) {
             return false;
         }
         
-        if (isset($noFilters['type']) && in_array($item->type, $noFilters['type'])) {
+        if (isset($noFilters['type']) && in_array($item->getType(), $noFilters['type'])) {
             return false;
         }
 
@@ -168,8 +168,7 @@ class DefaultController extends Controller
     public function getDataAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        
-        $data = $this->get('app.book')->getAll();
+        $data = $this->em->getRepository(BookEntity::class)->getAll();
         $user = $this->getUser();
         
         $authors = $em->getRepository(Author::class)->findBy(array(), array('name' => "ASC"));
@@ -189,28 +188,26 @@ class DefaultController extends Controller
         $owned = $read = array();
         $requests = 0;
         
-        if ($user) {
-            $userIds = $this->get('app.group')->getLinkedUsers($user->id);
-            $userbook = $em->getRepository(UserBook::class)->findBy(array('userid' => $userIds));
-            
-            $dbUsers = $this->getDoctrine()->getRepository(User::class)->findBy(array('id' => $userIds));
-            $users = array();
-            foreach ($dbUsers as $dbUser) {
-                $users[$dbUser->id] = $dbUser;
+        $userIds = $this->get('app.group')->getLinkedUsers($user->id);
+        $userbook = $em->getRepository(UserBook::class)->findBy(array('userid' => $userIds));
+
+        $dbUsers = $this->getDoctrine()->getRepository(User::class)->findBy(array('id' => $userIds));
+        $users = array();
+        foreach ($dbUsers as $dbUser) {
+            $users[$dbUser->id] = $dbUser;
+        }
+
+        foreach ($userbook as $row) {
+            if ($row->owned) {
+                $owned[$row->id][$row->userid] = $users[$row->userid]->name;
             }
-        
-            foreach ($userbook as $row) {
-                if ($row->owned) {
-                    $owned[$row->id][$row->userid] = $users[$row->userid]->name;
-                }
 
-                if ($row->read) {
-                    $read[$row->id][$row->userid] = $users[$row->userid]->name;
-                }
+            if ($row->read) {
+                $read[$row->id][$row->userid] = $users[$row->userid]->name;
+            }
 
-                if ($user && $row->requestedfromid == $user->id) {
-                    $requests++;
-                }
+            if ($user && $row->requestedfromid == $user->id) {
+                $requests++;
             }
         }
         
@@ -219,56 +216,51 @@ class DefaultController extends Controller
         $books = array();
         $order = array();
         foreach ($data as $item) {
-            if (isset($item->genres) && is_array($item->genres)) {
-                foreach ($item->genres as $value) {
-                    if (!in_array($value, $genres)) {
-                        $genres[] = $value;
-                    }
+            foreach ($item->getGenres() as $value) {
+                if (!in_array($value, $genres)) {
+                    $genres[] = $value;
                 }
-
-                sort($genres);
             }
         
-            if ($item->type != '' && !in_array($item->type, $types)) {
-                $types[] = $item->type;
+            if ($item->getType() && !in_array($item->getType(), $types)) {
+                $types[] = $item->getType();
             }
-            sort($types);
             
-            foreach ($item->authors as $value) {
-                $bookAuthors[] = $value->id;
+            foreach ($item->getAuthors() as $value) {
+                $bookAuthors[] = $value->getId();
             }
             
             $bookSeries = array();
             $seriesSeg = "";
-            foreach ($item->series as $value) {
-                $bookSeries[] = $value->id;
+            foreach ($item->getSeries() as $value) {
+                $bookSeries[] = $value->getSeries()->getId();
                 
                 if ($seriesSeg == "") {
-                    $seriesSeg = $value->name . str_pad(($value->number == null) ?
-                        "zz" : $value->number, 2, "0", STR_PAD_LEFT);
+                    $seriesSeg = $value->getSeries()->getName() .
+                        str_pad(($value->getNumber() == null) ?
+                        "zz" : $value->getNumber(), 2, "0", STR_PAD_LEFT);
                 }
             }
                 
             if ($this->checkFilters($item, $owned, $read, $bookAuthors, $bookSeries, $eqFilters, $noFilters)) {
                 $firstAuthor = "zzz" . $seriesSeg;
-                if (isset($item->authors[0])) {
-                    $firstAuthor = $item->authors[0]->surname . ", " . $item->authors[0]->forename . $seriesSeg;
+                if (count($item->getAuthors()) > 0) {
+                    $first = $item->getAuthors()->get(0);
+                    $firstAuthor = $first->getSurname() .
+                        ", " . $first->getForename() . $seriesSeg;
                 }
                 
-                $order[$item->id] = $firstAuthor;
-                $books[$item->id] = array(
-                    'id' => $item->id,
-                    'name' => $item->name,
-                    'type' => $item->type,
-                    'authors' => $item->authors,
+                $order[$item->getId()] = $firstAuthor;
+                
+                $extra = [
                     'order' => $firstAuthor,
-                    'genres' => implode(", ", $item->genres),
-                    'owners' => isset($owned[$item->id]) ? array_keys($owned[$item->id]) : array(),
-                    'ownerNames' => isset($owned[$item->id]) ? implode(", ", $owned[$item->id]) : "",
-                    'read' => isset($read[$item->id]) ? array_keys($read[$item->id]) : array(),
-                    'readNames' => isset($read[$item->id]) ? implode(", ", $read[$item->id]) : "",
-                    'series' => $item->series
-                );
+                    'owners' => isset($owned[$item->getId()]) ? array_keys($owned[$item->getId()]) : [],
+                    'ownerNames' => isset($owned[$item->getId()]) ? implode(", ", $owned[$item->getId()]) : "",
+                    'read' => isset($read[$item->getId()]) ? array_keys($read[$item->getId()]) : [],
+                    'readNames' => isset($read[$item->getId()]) ? implode(", ", $read[$item->getId()]) : ""
+                ];
+                
+                $books[$item->getId()] = array_merge($item->toArray(), $extra);
             }
         }
         
@@ -280,6 +272,9 @@ class DefaultController extends Controller
         for ($i = $start; $i < $start + 15; $i++) {
             $tableBooks[] = $bookValues[$i];
         }
+        
+        sort($genres);
+        sort($types);
         
         return $this->json(array(
             'status' => "OK",
@@ -345,7 +340,7 @@ class DefaultController extends Controller
             return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
         }
         
-        $data = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $noteUser->id));
+        $data = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $noteUser->id]);
         $oldnotes = $data->notes;
         $text = trim($request->request->get('text'));
         $data->notes = $text == '' ? null : $text;

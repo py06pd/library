@@ -20,46 +20,40 @@ class BookController extends Controller
         $em = $this->getDoctrine()->getManager();
         
         if ($request->request->get('id') > 0) {
-            $book = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
+            $book = $em->getRepository(Book::class)->getBookById($request->request->get('id'));
             if (!$book) {
                 return $this->formatError("Invalid request");
             }
-
-            $book->authors = array_keys($this->get('app.book')->getAuthors($book->id));
-            $book->series = array_values($this->get('app.book')->getSeries($book->id));
-            $book = json_decode(json_encode($book));
         } else {
             $book = new Book();
         }
         
-        $data = $this->get('app.book')->getAll();
+        $data = $em->getRepository(Book::class)->getAll();
         
-        $authors = $em->getRepository(Author::class)->findBy(array(), array('name' => "ASC", 'forename' => "ASC"));
-        $series = $em->getRepository(Series::class)->findBy(array(), array('name' => "ASC"));
+        $authors = $em->getRepository(Author::class)->findBy([], ['name' => "ASC", 'forename' => "ASC"]);
+        $series = $em->getRepository(Series::class)->findBy([], ['name' => "ASC"]);
         
-        $genres = array();
-        $types = array();
+        $genres = [];
+        $types = [];
         foreach ($data as $item) {
-            if (isset($item->genres) && is_array($item->genres)) {
-                foreach ($item->genres as $value) {
-                    if (!in_array($value, $genres)) {
-                        $genres[] = $value;
-                    }
+            foreach ($item->getGenres() as $value) {
+                if (!in_array($value, $genres)) {
+                    $genres[] = $value;
                 }
-
-                sort($genres);
             }
-            
-            if ($item->type != '' && !in_array($item->type, $types)) {
-                $types[] = $item->type;
-            }
-            
-            sort($types);
         }
+
+        sort($genres);
+            
+        if ($item->getType() && !in_array($item->getType(), $types)) {
+            $types[] = $item->getType();
+        }
+            
+        sort($types);
         
         return $this->json(array(
             'status' => "OK",
-            'data' => $book,
+            'data' => $book->toArray(),
             'authors' => $authors,
             'genres' => $genres,
             'types' => $types,
@@ -78,12 +72,12 @@ class BookController extends Controller
         }
         
         $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
+        $item = $em->getRepository(Book::class)->findOneBy(['id' => $request->request->get('id')]);
         if (!$item) {
             return $this->formatError("Invalid request");
         }
         
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
         if ($userbook) {
             $old = json_decode(json_encode($userbook));
             if ($userbook->owned) {
@@ -91,7 +85,7 @@ class BookController extends Controller
             }
         } else {
             $userbook = new UserBook();
-            $userbook->id = $item->id;
+            $userbook->id = $item->getId();
             $userbook->userid = $user->id;
             $em->persist($userbook);
         }
@@ -127,14 +121,14 @@ class BookController extends Controller
             return $this->formatError("Invalid request");
         }
         
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
         if ($userbook) {
             if ($userbook->read) {
                 return $this->formatError("You've already read this");
             }
         } else {
             $userbook = new UserBook();
-            $userbook->id = $item->id;
+            $userbook->id = $item->getId();
             $userbook->userid = $user->id;
             $em->persist($userbook);
         }
@@ -160,52 +154,50 @@ class BookController extends Controller
         
         $dataItem = json_decode($request->request->get('data'), true);
         
-        $book = $this->get('app.book');
-        $book->id = $dataItem['id'];
-        $book->name = $dataItem['name'];
-        $book->type = $dataItem['type'];
-        $book->genres = $dataItem['genres'];
+        $book = new Book($dataItem['name']);
+        if ($dataItem['id'] > 0) {
+            $book->setId($dataItem['id']);
+        }
+        
+        if ($dataItem['type']) {
+            $book->setType($dataItem['type']);
+        }
+        
+        if ($dataItem['genres']) {
+            $book->setGenres($dataItem['genres']);
+        }
         
         $em = $this->getDoctrine()->getManager();
         
         $newAuthors = array();
         foreach ($dataItem['authors'] as $a) {
             if (!is_integer($a)) {
-                $author = new Author();
-                $name = trim($a);
-                if (stripos($name, " ") !== false) {
-                    $author->forename = substr($name, 0, strripos($name, " "));
-                    $author->surname = substr($name, strripos($name, " ") + 1);
-                    $author->name = substr($name, strripos($name, " ") + 1);
-                } else {
-                    $author->forename = $name;
-                    $author->name = $name;
-                }
+                $author = new Author(trim($a));
                 $em->persist($author);
-                $em->flush();
-                $a = $author->id;
+                $em->flush($author);
                 $newAuthors[] = $author;
+            } else {
+                $author = $em->getRepository(Author::class)->findOneBy(['id' => $a]);
             }
             
-            $book->authors[$a] = (object)array('id' => $a);
+            $book->addAuthor($author);
         }
         
         $newSeries = array();
         foreach ($dataItem['series'] as $s) {
             if (!is_integer($s['id'])) {
-                $series = new Series();
-                $series->name = $s['name'];
-                $series->type = "sequence";
+                $series = new Series($s['name'], "sequence");
                 $em->persist($series);
-                $em->flush();
-                $s['id'] = $series->id;
+                $em->flush($series);
                 $newSeries[] = $series;
+            } else {
+                $series = $em->getRepository(Series::class)->findOneBy(['id' => $s['id']]);
             }
             
-            $book->series[$s['id']] = (object)$s;
+            $book->addSeries($series, $s['number']);
         }
         
-        $book->save();
+        $this->get('app.book')->save($book);
         
         return $this->json(array(
             'status' => "OK",
@@ -230,7 +222,7 @@ class BookController extends Controller
             return $this->formatError("Invalid request");
         }
         
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
         if (!$userbook || !$userbook->owned) {
             return $this->formatError("You don't own this");
         }
@@ -261,7 +253,7 @@ class BookController extends Controller
             return $this->formatError("Invalid request");
         }
         
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(array('id' => $item->id, 'userid' => $user->id));
+        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
         if (!$userbook || !$userbook->read) {
             return $this->formatError("You haven't read this");
         }
