@@ -2,20 +2,23 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="authors")
  */
-class Author
+class Author implements JsonSerializable
 {
     /**
-     * @ORM\Column(type="integer")
+     * Author id
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\Column(type="integer", name="id")
      */
-    private $id;
+    private $authorId;
 
     /**
      * @ORM\Column(type="string", length=256)
@@ -37,7 +40,7 @@ class Author
      */
     private $alias;
     
-    private $books = array();
+    private $books;
     
     /**
      * Author constructor.
@@ -46,6 +49,7 @@ class Author
     public function __construct(string $name)
     {
         $this->setName($name);
+        $this->books = new ArrayCollection();
     }
     
     /**
@@ -54,7 +58,18 @@ class Author
      */
     public function getId()
     {
-        return $this->id;
+        return $this->authorId;
+    }
+
+    /**
+     * Sets author id
+     * @param int $authorId
+     * @return Author
+     */
+    public function setId(int $authorId) : Author
+    {
+        $this->authorId = $authorId;
+        return $this;
     }
     
     /**
@@ -78,9 +93,9 @@ class Author
     /**
      * Sets author name
      * @param string $name
-     * @return Book
+     * @return Author
      */
-    private function setName(string $name)
+    private function setName(string $name) : Author
     {
         if (stripos($name, " ") !== false) {
             $this->forename = substr($name, 0, strripos($name, " "));
@@ -98,10 +113,10 @@ class Author
      * Gets array representation of object
      * @return array
      */
-    public function toArray()
+    public function jsonSerialize()
     {
         return [
-            'id' => $this->id,
+            'authorId' => $this->authorId,
             'forename' => $this->forename,
             'surname' => $this->surname
         ];

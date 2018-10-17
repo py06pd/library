@@ -1,5 +1,5 @@
 <?php
-
+/** src/AppBundle/Entity/Audit.php */
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,39 +11,68 @@ use Doctrine\ORM\Mapping as ORM;
 class Audit
 {
     /**
-     * @ORM\Column(type="integer")
+     * Log id
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\Column(type="integer", name="logid")
      */
-    public $logid;
+    private $logId;
 
     /**
-     * @ORM\Column(type="integer")
+     * User
+     * @var User
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="userid", referencedColumnName="id")
      */
-    public $userid;
+    private $user;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="timestamp")
      */
-    public $timestamp;
+    private $timestamp;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", name="itemid", nullable=true)
      */
-    public $itemid;
+    private $itemId;
 
     /**
-     * @ORM\Column(type="string", length=256, nullable=true)
+     * @ORM\Column(type="string", name="itemname", length=256, nullable=true)
      */
-    public $itemname;
+    private $itemName;
     
     /**
-     * @ORM\Column(type="string", length=256)
+     * @ORM\Column(type="string", name="description", length=256)
      */
-    public $description;
+    private $description;
     
     /**
-     * @ORM\Column(type="json_array", length=1024, nullable=true)
+     * @ORM\Column(type="json_array", name="details", length=1024, nullable=true)
      */
-    public $details;
+    private $details;
+
+    /**
+     * Audit constructor.
+     * @param User   $user
+     * @param int    $timestamp
+     * @param int    $itemId
+     * @param string $itemName
+     * @param string $description
+     * @param array  $details
+     */
+    public function __construct(
+        User $user,
+        int $timestamp,
+        int $itemId,
+        string $itemName,
+        string $description,
+        array $details
+    ) {
+        $this->user = $user;
+        $this->timestamp = $timestamp;
+        $this->itemId = $itemId;
+        $this->itemName = $itemName;
+        $this->description = $description;
+        $this->details = $details;
+    }
 }

@@ -1,16 +1,34 @@
 <?php
-
+/** src/AppBundle/Services/GroupService.php */
 namespace AppBundle\Services;
 
 use AppBundle\Entity\GroupUser;
+use AppBundle\Services\Auditor;
+use Doctrine\ORM\EntityManager;
 
-class Group
+/**
+ * GroupService class
+ */
+class GroupService
 {
     /**
-     * @param \Doctrine\ORM\EntityManager $em
-     * @param \AppBundle\Services\Auditor $auditor
+     * Instance of Auditor
+     * @var Auditor
      */
-    public function __construct($em, $auditor)
+    private $auditor;
+    
+    /**
+     * Instance of EntityManager
+     * @var EntityManager
+     */
+    private $em;
+    
+    /**
+     * GroupService constructor.
+     * @param EntityManager $em
+     * @param Auditor $auditor
+     */
+    public function __construct(EntityManager $em, Auditor $auditor)
     {
         $this->auditor = $auditor;
         $this->em = $em;

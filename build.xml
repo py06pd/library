@@ -1,18 +1,10 @@
-<project name="StormCKS" default="dist">
-
-  <!--
-    TODO:
-     - Run JavaScript build
-     - Run PHPUnit
-     - Run post build tasks like coding standards reporting
-  -->
-  
+<project name="Library" default="dist">
   <!-- ============================================  -->
   <!-- Target: prepare                               -->
   <!-- ============================================  -->
   <target name="prepare">
-    <echo msg="Making directory ./build"/>
-    <mkdir dir="./build/uncompressed"/>
+    <echo msg="Making directory ../build"/>
+    <mkdir dir="../build/library"/>
   </target>
 
   <!-- ============================================  -->
@@ -21,51 +13,60 @@
   <target name="build" depends="prepare">
     <echo msg="Copying files to build directory..."/>
     
-    <echo msg="Copying composer.json and composer.lock to ./build/uncompressed directory..."/>
-    <copy file="composer.json" tofile="./build/uncompressed/composer.json" />
-    <copy file="composer.lock" tofile="./build/uncompressed/composer.lock" />
+    <echo msg="Copying composer.json and composer.lock to build/library directory..."/>
+    <copy file="composer.json" tofile="../build/library/composer.json" />
+    <copy file="composer.lock" tofile="../build/library/composer.lock" />
     
-    <echo msg="Copying ./app to ./build/uncompressed/app directory..."/>
-    <copy todir="./build/uncompressed/app" >
+    <echo msg="Copying /app to build/library/app directory..."/>
+    <copy todir="../build/library/app" >
       <fileset dir="app">
         <include name="**" />
         <exclude name="config/parameters.yml" />
+        <exclude name="config/parameters.yml.live" />
       </fileset>
     </copy>
-    
-    <echo msg="Copying ./bin to ./build/uncompressed/bin directory..."/>
-    <copy todir="./build/uncompressed/bin" >
+
+    <echo msg="Copying parameters.yml to build/library/app/config directory..."/>
+    <copy file="app/config/parameters.yml.live" tofile="../build/library/app/config/parameters.yml" />
+
+    <echo msg="Copying /bin to build/library/bin directory..."/>
+    <copy todir="../build/library/bin" >
       <fileset dir="bin">
         <include name="**" />
       </fileset>
     </copy>
       
-    <echo msg="Copying ./src to ./build/uncompressed/src directory..."/>
-    <copy todir="./build/uncompressed/src" >
+    <echo msg="Copying /src to build/library/src directory..."/>
+    <copy todir="../build/library/src" >
       <fileset dir="src">
         <include name="**" />
       </fileset>
     </copy>
       
-    <echo msg="Copying ./web to ./build/uncompressed/web directory..."/>
-    <copy todir="./build/uncompressed/web" >
+    <echo msg="Copying /web to build/library/web directory..."/>
+    <copy todir="../build/library/web" >
       <fileset dir="web">
         <include name="**" />
+        <exclude name="app_dev.php" />
+        <exclude name="web.config" />
       </fileset>
     </copy>
 
-    <echo msg="Copying ./scripts/clear-prod-cache.bat to ./build/uncompressed/scripts directory..."/>
-    <mkdir dir="./build/uncompressed/scripts" />
-    <copy file="./scripts/clear-prod-cache.bat" tofile="./build/uncompressed/scripts/clear-prod-cache.bat"/>
+    <echo msg="Copying web.config to build/library/web directory..."/>
+    <copy file="web/web.config.live" tofile="../build/library/web/web.config" />
+
+    <echo msg="Copying /scripts/clear-prod-cache.bat to build/library/scripts directory..."/>
+    <mkdir dir="../build/library/scripts" />
+    <copy file="./scripts/clear-prod-cache.bat" tofile="../build/library/scripts/clear-prod-cache.bat"/>
     
     <!-- Create empty folders for the cache, logs and sessions -->
-    <mkdir dir="./build/uncompressed/var" />
-    <mkdir dir="./build/uncompressed/var/cache" />
-    <mkdir dir="./build/uncompressed/var/logs" />
-    <mkdir dir="./build/uncompressed/var/sessions" />
+    <mkdir dir="../build/library/var" />
+    <mkdir dir="../build/library/var/cache" />
+    <mkdir dir="../build/library/var/logs" />
+    <mkdir dir="../build/library/var/sessions" />
     
     <!-- Run composer install on the build folder, this time excluding development only dependancies -->
-    <exec checkreturn="true" command="composer install --no-dev --no-interaction --no-scripts --optimize-autoloader" passthru="true" logoutput="true" dir="./build/uncompressed" />
+    <exec checkreturn="true" command="composer install --no-dev --no-interaction --no-scripts --optimize-autoloader" passthru="true" logoutput="true" dir="../build/library" />
     
   </target>
 
@@ -75,8 +76,8 @@
   <target name="dist" depends="build">
     <echo msg="Creating archive..."/>
 
-    <zip destfile="./build/build.zip">
-      <fileset dir="./build/uncompressed">
+    <zip destfile="../build/build.zip">
+      <fileset dir="../build/library">
         <include name="**"/>
       </fileset>
     </zip>

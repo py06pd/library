@@ -14,8 +14,8 @@ class BookAuthor
      * Book
      * @var Book
      * @ORM\Id
-     * @ManyToOne(targetEntity="Book", inversedBy="authors")
-     * @JoinColumn(name="id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Book", inversedBy="authors")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id")
      */
     private $book;
 
@@ -23,8 +23,8 @@ class BookAuthor
      * Author
      * @var Author
      * @ORM\Id
-     * @OneToOne(targetEntity="Author")
-     * @JoinColumn(name="authorid", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Author", cascade={"persist"})
+     * @ORM\JoinColumn(name="authorid", referencedColumnName="id")
      */
     private $author;
     

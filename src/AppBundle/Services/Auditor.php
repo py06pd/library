@@ -3,33 +3,49 @@
 namespace AppBundle\Services;
 
 use AppBundle\Entity\Audit;
+use AppBundle\Entity\User;
+use Doctrine\ORM\EntityManager;
+use Exception;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
+/**
+ * Class Auditor
+ * @package AppBundle\Services
+ */
 class Auditor
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     private $em;
     
     /**
-     * @var \AppBundle\Entity\User
+     * @var User
      */
     private $user;
     
     /**
-     * @param \Doctrine\ORM\EntityManager $em
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
+     * @param EntityManager $em
+     * @param TokenStorage $tokenStorage
      */
     public function __construct($em, $tokenStorage)
     {
         $this->em = $em;
         $this->user = $tokenStorage->getToken()->getUser();
     }
-    
-    public function log($id, $name, $description, $data = array())
+
+    /**
+     * Log feature update
+     * @param int $id
+     * @param string $name
+     * @param string $description
+     * @param array $data
+     * @return bool
+     */
+    public function log(int $id, string $name, string $description, array $data = [])
     {
         if (isset($data['changes'])) {
-            $checked = array();
+            $checked = [];
             foreach ($data['changes'] as $field => $values) {
                 if ($values[0] != $values[1]) {
                     $checked[$field] = $values;
@@ -39,17 +55,16 @@ class Auditor
             $data['changes'] = $checked;
         }
         
-        $audit = new Audit();
-        $audit->userid = $this->user ? $this->user->id : 0;
-        $audit->timestamp = time();
-        $audit->itemid = $id;
-        $audit->itemname = $name;
-        $audit->description = $description;
-        $audit->details = $data;
-        
-        $this->em->persist($audit);
-        
-        $this->em->flush();
+        $audit = new Audit($this->user, time(), $id, $name, $description, $data);
+
+        try {
+            $this->em->persist($audit);
+            $this->em->flush();
+        } catch (Exception $e) {
+            return false;
+        }
+
+        return true;
     }
     
     public function userBookLog($book, $user, $details)

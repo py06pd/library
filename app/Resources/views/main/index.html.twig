@@ -7,10 +7,10 @@
     </head>
     <body>
         <div id="app">
-            <span id="data" data="{{ data }}"/>
+            <span id="data" data="{{ {'user':user}|json_encode() }}"></span>
             <div id="content">
                 <div class="MenuContent">
-                    <cic-menu></cic-menu>
+                    <main-menu></main-menu>
                     <div id="userSection">
                         <span id="userName">{{ app.user.name }}</span>
                         <button type="button" class="el-button el-button--default">

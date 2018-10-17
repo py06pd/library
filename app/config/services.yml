@@ -20,19 +20,18 @@ services:
         resource: '../../src/AppBundle/*'
         # you can exclude directories or files
         # but if a service is unused, it's removed anyway
-        exclude: '../../src/AppBundle/{Entity,Repository,Tests}'
-
-    # controllers are imported separately to make sure they're public
-    # and have a tag that allows actions to type-hint services
-    AppBundle\Controller\:
-        resource: '../../src/AppBundle/Controller'
-        public: true
-        tags: ['controller.service_arguments']
+        exclude: '../../src/AppBundle/{Entity,Repository,Tests}'  
 
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+    AppBundle\Controller\BookController:
+        arguments: ['@doctrine.orm.entity_manager', '@app.book', '@security.token_storage']
+
+    AppBundle\Controller\WishlistController:
+        arguments: ['@doctrine.orm.entity_manager', '@app.book', '@security.token_storage']
+
     facebook.graph:
         class: Facebook\Facebook
         arguments: [{'app_id': '%facebookAppId%', 'app_secret': '%facebookSecret%'}]
@@ -44,23 +43,29 @@ services:
         
     app.userauthenticator:
         class: AppBundle\Security\UserAuthenticator
-        arguments: ['@doctrine.orm.entity_manager', '%secret%', {'domain': '%cookieDomain%', 'secure': '%cookieSecure%'}, '@logger']
+        arguments: [
+            '@doctrine.orm.entity_manager',
+            '%secret%',
+            {'domain': '%cookieDomain%', 'secure': '%cookieSecure%'},
+            '@datetimefactory',
+            '@logger']
         
     app.cookieauthenticator:
         class: AppBundle\Security\CookieAuthenticator
         arguments: ['@doctrine.orm.entity_manager', {'domain': '%cookieDomain%', 'secure': '%cookieSecure%'}]
-        
+       
+    # application services
     app.book:
-        class: AppBundle\Services\Book
+        class: AppBundle\Services\BookService
         arguments: ['@doctrine.orm.entity_manager', '@auditor']
         public: true
-        
     app.group:
-        class: AppBundle\Services\Group
+        class: AppBundle\Services\GroupService
         arguments: ['@doctrine.orm.entity_manager', '@auditor']
-        public: true
-        
+        public: true        
     auditor:
         class: AppBundle\Services\Auditor
         arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']
         public: true
+    datetimefactory:
+        class: AppBundle\DateTimeFactory

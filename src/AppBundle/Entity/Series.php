@@ -3,19 +3,20 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="series")
  */
-class Series
+class Series implements JsonSerializable
 {
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      */
-    private $id;
+    private $seriesId;
 
     /**
      * @ORM\Column(type="string", length=256)
@@ -39,7 +40,7 @@ class Series
      * @param string $name
      * @param string $type
      */
-    public function __construct(string $name, string $type)
+    public function __construct(string $name, string $type = "sequence")
     {
         $this->name = $name;
         $this->type = $type;
@@ -51,7 +52,18 @@ class Series
      */
     public function getId()
     {
-        return $this->id;
+        return $this->seriesId;
+    }
+
+    /**
+     * Sets series id
+     * @param int $seriesId
+     * @return Series
+     */
+    public function setId(int $seriesId) : Series
+    {
+        $this->seriesId = $seriesId;
+        return $this;
     }
     
     /**
@@ -61,5 +73,17 @@ class Series
     public function getName()
     {
         return $this->name;
+    }
+    
+    /**
+     * Gets array representation of object
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'seriesId' => $this->getId(),
+            'name' => $this->getName()
+        ];
     }
 }

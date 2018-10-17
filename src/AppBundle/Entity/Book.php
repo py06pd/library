@@ -4,19 +4,22 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repositories\BookRepository")
  * @ORM\Table(name="books")
  */
-class Book
+class Book implements JsonSerializable
 {
     /**
-     * @ORM\Column(type="integer")
+     * Book id
+     * @var int
      * @ORM\Id
+     * @ORM\Column(type="integer", name="id")
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      */
-    private $id;
+    private $bookId;
 
     /**
      * @ORM\Column(type="string", length=256)
@@ -35,17 +38,24 @@ class Book
     
     /**
      * Authors
-     * @var BookAuthor[]|Collection
-     * @ManyToOne(targetEntity="BookAuthor", mappedBy="book", cascade={"persist", "remove"})
+     * @var BookAuthor[]
+     * @ORM\OneToMany(targetEntity="BookAuthor", mappedBy="book", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $authors;
     
     /**
      * Series
-     * @var BookSeries[]|Collection
-     * @ManyToOne(targetEntity="BookSeries", mappedBy="book", cascade={"persist", "remove"})
+     * @var BookSeries[]
+     * @ORM\OneToMany(targetEntity="BookSeries", mappedBy="book", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $series;
+    
+    /**
+     * Users
+     * @var UserBook[]
+     * @ORM\OneToMany(targetEntity="UserBook", mappedBy="book", cascade={"persist", "remove"})
+     */
+    private $users;
     
     /**
      * Book constructor.
@@ -56,6 +66,7 @@ class Book
         $this->name = $name;
         $this->authors = new ArrayCollection();
         $this->series = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
     
     /**
@@ -64,17 +75,17 @@ class Book
      */
     public function getId()
     {
-        return $this->id;
+        return $this->bookId;
     }
     
     /**
      * Sets book id
-     * @param int $id
+     * @param int $bookId
      * @return Book
      */
-    public function setId(int $id)
+    public function setId(int $bookId = null)
     {
-        $this->id = $id;
+        $this->bookId = $bookId;
         return $this;
     }
     
@@ -86,7 +97,18 @@ class Book
     {
         return $this->name;
     }
-    
+
+    /**
+     * Sets name
+     * @param string $name
+     * @return Book
+     */
+    public function setName(string $name) : Book
+    {
+        $this->name = $name;
+        return $this;
+    }
+
     /**
      * Gets type
      * @return string|null
@@ -132,6 +154,17 @@ class Book
     }
     
     /**
+     * Adds author to book authors
+     * @param Author $author
+     * @return Book
+     */
+    public function addAuthor(Author $author) : Book
+    {
+        $this->authors->add(new BookAuthor($this, $author));
+        return $this;
+    }
+    
+    /**
      * Gets authors
      * @return Author[]|ArrayCollection
      */
@@ -148,30 +181,35 @@ class Book
     }
     
     /**
-     * Adds author to book authors
+     * Checks if book is by an author
      * @param Author $author
-     * @return Book
+     * @return bool
      */
-    public function addAuthor(Author $author) : Book
+    public function hasAuthor(Author $author) : bool
     {
-        $this->authors->add(new BookAuthor($this, $author));
-        return $this;
-    }
-    
-    /**
-     * Gets series
-     * @return BookSeries[]|ArrayCollection
-     */
-    public function getSeries()
-    {
-        $bookSeries = [];
-        if ($this->series) {
-            foreach ($this->series as $series) {
-                $bookSeries[] = $series->getSeries();
+        foreach ($this->authors as $bookAuthor) {
+            if ($bookAuthor->getAuthor() == $author) {
+                return true;
             }
         }
         
-        return new ArrayCollection($bookSeries);
+        return false;
+    }
+    
+    /**
+     * Remove author from book
+     * @param Author $author
+     * @return $this
+     */
+    public function removeAuthor(Author $author)
+    {
+        foreach ($this->authors as $bookAuthor) {
+            if ($bookAuthor->getAuthor() == $author) {
+                $this->authors->removeElement($bookAuthor);
+            }
+        }
+        
+        return $this;
     }
     
     /**
@@ -187,28 +225,139 @@ class Book
     }
     
     /**
+     * Gets series
+     * @return BookSeries[]
+     */
+    public function getSeries()
+    {
+        return $this->series;
+    }
+    
+    /**
+     * Gets series by id
+     * @param int $seriesId
+     * @return BookSeries
+     */
+    public function getSeriesById(int $seriesId)
+    {
+        foreach ($this->series as $bookSeries) {
+            if ($bookSeries->getSeries()->getId() == $seriesId) {
+                return $bookSeries;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Checks if a book is in a series
+     * @param Series $series
+     * @return bool
+     */
+    public function inSeries(Series $series) : bool
+    {
+        foreach ($this->series as $bookSeries) {
+            if ($bookSeries->getSeries() == $series) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Remove book from series
+     * @param Series $series
+     * @return $this
+     */
+    public function removeSeries(Series $series)
+    {
+        foreach ($this->series as $bookSeries) {
+            if ($bookSeries->getSeries() == $series) {
+                $this->series->removeElement($bookSeries);
+            }
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Adds user book mapping
+     * @param UserBook $user
+     * @return Book
+     */
+    public function addUser(UserBook $user) : Book
+    {
+        $user->setBook($this);
+        $this->users->add($user);
+        return $this;
+    }
+
+    /**
+     * Gets user book mapping
+     * @param int $userId
+     * @return UserBook|null
+     */
+    public function getUserById(int $userId)
+    {
+        foreach ($this->users as $user) {
+            if ($user->getUser()->getId() == $userId) {
+                return $user;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets all user book mapping
+     * @return UserBook[]
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * Remove user from book
+     * @param UserBook $user
+     * @return Book
+     */
+    public function removeUser(UserBook $user) : Book
+    {
+        $this->users->removeElement($user);
+        return $this;
+    }
+
+    /**
      * Gets array representation of object
      * @return array
      */
-    public function toArray()
+    public function jsonSerialize()
     {
         $authors = [];
         foreach ($this->authors as $author) {
-            $authors[] = $author->getAuthor()->toArray();
+            $authors[] = $author->getAuthor()->jsonSerialize();
         }
         
         $series = [];
         foreach ($this->series as $s) {
-            $series[] = $s->toArray();
+            $series[] = $s->jsonSerialize();
+        }
+
+        $users = [];
+        foreach ($this->users as $u) {
+            $users[] = $u->jsonSerialize();
         }
         
         return [
-            'id' => $this->id,
+            'bookId' => $this->bookId,
             'name' => $this->name,
             'type' => $this->type,
             'authors' => $authors,
-            'genres' => implode(", ", $this->genres),
-            'series' => $series
+            'genres' => $this->getGenres(),
+            'series' => $series,
+            'users' => $users,
         ];
     }
 }

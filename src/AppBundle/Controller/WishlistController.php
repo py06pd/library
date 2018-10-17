@@ -1,115 +1,86 @@
 <?php
-
+/** src/AppBundle/Controller/WishlistController.php */
 namespace AppBundle\Controller;
 
+use AppBundle\Repositories\BookRepository;
+use AppBundle\Services\BookService;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Entity\Audit;
-use AppBundle\Entity\Author;
 use AppBundle\Entity\Book;
-use AppBundle\Entity\BookAuthor;
 use AppBundle\Entity\User;
 use AppBundle\Entity\UserBook;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
+/**
+ * Class WishlistController
+ * @package AppBundle\Controller
+ */
 class WishlistController extends Controller
 {
-    private function formatError($message)
-    {
-        return $this->json(array('status' => "error", 'errorMessage' => $message));
-    }
-    
     /**
-     * @Route("/wishlist/add")
+     * BookService
+     * @var BookService
      */
-    public function addAction(Request $request)
+    private $bookService;
+
+    /**
+     * EntityManager
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * User
+     * @var User
+     */
+    private $user;
+
+    /**
+     * WishlistController constructor.
+     * @param EntityManager $em
+     * @param BookService $bookService
+     * @param TokenStorage $tokenStorage
+     */
+    public function __construct(EntityManager $em, BookService $bookService, TokenStorage $tokenStorage)
     {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->formatError("You must be logged in to make request");
-        }
-        
-        $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(Book::class)
-                   ->findOneBy(array('id' => $request->request->get('id')));
-        if (!$item) {
+        $this->bookService = $bookService;
+        $this->em = $em;
+        $this->user = $tokenStorage->getToken()->getUser();
+    }
+
+    /**
+     * Get books on wishlist
+     * @Route("/wishlist/get")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getBooks(Request $request)
+    {
+        $userId = $request->request->get('userId');
+        $start = $request->request->get('start', 0);
+
+        if ($userId != $this->user->getId() && !$this->user->getGroupUsers()->containsKey($userId)) {
             return $this->formatError("Invalid request");
-        }
-        
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
-        if ($userbook) {
-            if ($userbook->owned) {
-                return $this->formatError("You own this");
-            } elseif ($userbook->wishlist) {
-                return $this->formatError("You have already added this to your wishlist");
-            }
-        } else {
-            $userbook = new UserBook();
-            $userbook->id = $item->getId();
-            $userbook->userid = $user->id;
-            $em->persist($userbook);
         }
 
-        $userbook->wishlist = true;
-        
-        $em->flush();
-        
-        $this->get('auditor')->userBookLog($item, $user, array('wishlist' => array(0, 1)));
-        
-        return $this->json(array('status' => "OK"));
-    }
-    
-    /**
-     * @Route("/wishlist/get")
-     */
-    public function getAction(Request $request)
-    {
-        $userid = $request->request->get('userid');
-        
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->formatError("You must be logged in to make request");
-        }
-        
-        $em = $this->getDoctrine()->getManager();
-        
-        $users = array();
-        $userIds = $this->get('app.group')->getLinkedUsers($user->id);
-        
-        if (!in_array($userid, $userIds)) {
-            return $this->formatError("Invalid request");
-        }
-        
-        $data = $em->getRepository(User::class)->findBy(array('id' => $userIds));
-        foreach ($data as $user) {
-            $users[$user->id] = $user;
-        }
-        
-        $books = $em->getRepository(UserBook::class)->findBy(array('userid' => $userid, 'wishlist' => true));
-        
-        $rows = $wishlist = array();
-        foreach ($books as $row) {
-            $rows[$row->id] = $row;
-        }
-        
-        if (count($rows) > 0) {
-            $details = $em->getRepository(Book::class)->getById(array_keys($rows));
-                    
-            foreach ($details as $detail) {
-                $wishlist[] = array_merge($detail->toArray(), [
-                    'notes' => $rows[$detail->getId()]->notes,
-                    'gifted' => (
-                        $user &&
-                        $user->id !== $userid && $rows[$detail->getId()]->giftfromid != 0
-                    ) ? (
-                        isset($users[$rows[$detail->getId()]->giftfromid]) ?
-                            $users[$rows[$detail->getId()]->giftfromid]->name : 'Unknown'
-                    ) : ''
-                ]);
+        $books = $this->bookService->search(
+            $total,
+            [(object)['field' => 'wishlist', 'operator' => 'equals', 'value' => $userId]],
+            $start
+        );
+
+        if ($this->user->getId() == $userId) {
+            foreach ($books as $book) {
+                if ($book->getUserById($userId)->getGiftedFrom()) {
+                    $book->getUserById($userId)->clearGiftedFrom();
+                }
             }
         }
         
-        return $this->json(array('status' => "OK", 'books' => $wishlist));
+        return $this->json(['status' => "OK", 'books' => $books]);
     }
     
     /**
@@ -157,65 +128,9 @@ class WishlistController extends Controller
         
         return $this->json(array('status' => "OK"));
     }
-    
-    /**
-     * @Route("/wishlist/own")
-     */
-    public function ownAction(Request $request)
-    {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->formatError("You must be logged in to make request");
-        }
-        
-        $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
-        if (!$item) {
-            return $this->formatError("Invalid request");
-        }
-        
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
-        if (!$userbook || !$userbook->wishlist) {
-            return $this->formatError("You have not added this to your wishlist");
-        }
 
-        $userbook->wishlist = false;
-        $userbook->owned = true;
-        
-        $em->flush();
-        
-        $this->get('auditor')->userBookLog($item, $user, array('owned' => array(0, 1), 'wishlist' => array(1, 0)));
-        
-        return $this->json(array('status' => "OK"));
-    }
-    
-    /**
-     * @Route("/wishlist/remove")
-     */
-    public function removeAction(Request $request)
+    private function formatError($message)
     {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->formatError("You must be logged in to make request");
-        }
-        
-        $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
-        if (!$item) {
-            return $this->formatError("Invalid request");
-        }
-        
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
-        if (!$userbook || !$userbook->wishlist) {
-            return $this->formatError("You have not added this to your wishlist");
-        }
-
-        $userbook->wishlist = false;
-        
-        $em->flush();
-        
-        $this->get('auditor')->userBookLog($item, $user, array('wishlist' => array(1, 0)));
-        
-        return $this->json(array('status' => "OK"));
+        return $this->json(array('status' => "error", 'errorMessage' => $message));
     }
 }
