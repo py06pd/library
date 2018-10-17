@@ -4,14 +4,14 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 import Authors from '../components/Authors';
-import BookList from '../components/BookList';
+import BookList from '../components/BookList.vue';
 import EditAuthor from '../components/EditAuthor';
 import EditSeries from '../components/EditSeries';
 import LendingList from '../components/LendingList';
 import MyAccount from '../components/MyAccount';
 import Series from '../components/Series';
 import UserList from '../components/UserList';
-import Wishlist from '../components/Wishlist';
+import Wishlist from '../components/Wishlist.vue';
 
 export default new Router({
     routes: [
@@ -52,7 +52,7 @@ export default new Router({
         {
             path: '/wishlist/:id',
             component: Wishlist,
-            props: (route) => ({id: parseInt(route.params.id)}),
+            props: (route) => ({userId: parseInt(route.params.id)}),
         },
     ],
 });

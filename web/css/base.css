@@ -64,7 +64,31 @@ img { border: 0; vertical-align: middle; }
     word-break: normal;
 }
 
-.cic-table table { width:100%; }
+.cic-table { width:100%; margin-bottom: 5px; box-shadow: 0 0 5px #888; }
+.cic-table tr { background-color: #fff; }
+.cic-table th, .cic-table td {
+    padding-left: 10px;
+    padding-right: 10px;
+    word-break: normal;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+    border-bottom: 1px solid #dfe6ec;
+    height: 40px;
+    min-width: 0;
+    vertical-align: middle;
+    position: relative;
+}
+.cic-table th {
+    background: #DFE6EA linear-gradient(to bottom, #DFE6EA, #CCD7DD);
+    text-align: left;
+    word-wrap: normal;
+    line-height: 30px;
+}
+.cic-table td { line-height: 24px; }
+.cic-table td.primary { color: #3981ac; cursor: pointer; }
+
 #controls { margin:10px 0px; }
 #frmBook .name { width: 217px; }
 #frmBook .series-number { width: 50px; }
@@ -161,5 +185,3 @@ img { border: 0; vertical-align: middle; }
     color: green;
     font-weight: bold;
 }
-//tr.warning { background-color: #FEF5CA; }
-//.datagrid tr.overdue { background-color: #FFE8E8; color: #904040; font-weight: bold; }

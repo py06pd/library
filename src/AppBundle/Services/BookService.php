@@ -1,75 +1,76 @@
 <?php
-
+/** src/AppBundle/Services/BookService.php */
 namespace AppBundle\Services;
 
-use AppBundle\Entity\Author;
-use AppBundle\Entity\Book as BookEntity;
-use AppBundle\Entity\BookAuthor;
-use AppBundle\Entity\BookSeries;
-use AppBundle\Entity\Series;
+use AppBundle\Entity\Book;
 use AppBundle\Entity\UserBook;
 use AppBundle\Entity\User;
+use AppBundle\Repositories\BookRepository;
+use Doctrine\ORM\EntityManager;
+use Exception;
+use Psr\Log\LoggerInterface;
 
-class Book
+/**
+ * Class BookService
+ * @package AppBundle\Services
+ */
+class BookService
 {
     /**
-     * @var integer
-     */
-    public $id;
-
-    /**
-     * @var string
-     */
-    public $name;
-    
-    /**
-     * @var string
-     */
-    public $type;
-    
-    /**
-     * @var array
-     */
-    public $authors = array();
-    
-    /**
-     * @var array
-     */
-    public $genres;
-    
-    /**
-     * @var array
-     */
-    public $series = array();
-    
-    /**
-     * @var array
-     */
-    public $owners = array();
-    
-    /**
-     * @var array
-     */
-    public $read = array();
-    
-    /**
-     * @var \AppBundle\Services\Auditor
+     * @var Auditor
      */
     private $auditor;
     
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     private $em;
     
-    /**
-     * @param \Doctrine\ORM\EntityManager $em
-     * @param \AppBundle\Services\Auditor $auditor
+     /**
+     * @var LoggerInterface
      */
-    public function __construct($em, $auditor)
+    private $logger;
+    
+    /**
+     * BookService constructor.
+     * @param EntityManager $em
+     * @param Auditor $auditor
+     * @param LoggerInterface $logger
+     */
+    public function __construct(EntityManager $em, Auditor $auditor, LoggerInterface $logger)
     {
         $this->auditor = $auditor;
         $this->em = $em;
+        $this->logger = $logger;
+    }
+    
+    /**
+     * Search for books
+     * @param int $total
+     * @param array $filters
+     * @param int $first
+     * @return Book[]
+     */
+    public function search(int &$total = null, array $filters = [], int $first = 0)
+    {
+        $eq = $neq = [];
+        if (count($filters) > 0) {
+            $eq = $this->parseFilters($filters, 'equals');
+            $neq = $this->parseFilters($filters, 'does not equal');
+        }
+
+        /** @var BookRepository $repo */
+        $repo = $this->em->getRepository(Book::class);
+
+        $books = [];
+        $total = $repo->getSearchResultCount($eq, $neq);
+        if ($total > 0) {
+            $allBookIds = $repo->getSearchResults($eq, $neq);
+            $bookIds = array_slice(array_unique($allBookIds), $first, 15);
+            $books = $repo->getBooksById($bookIds);
+        }
+        
+        return $books;
     }
     
     public function borrow($id, $userId, $userIds)
@@ -314,31 +315,115 @@ class Book
     
     /**
      * Save book
-     * @param BookEntity $book
+     * @param Book $newBook
      * @return bool
      */
-    public function save(BookEntity $book)
+    public function save(Book $newBook)
     {
-        $id = $book->getId();
-        $this->em->persist($book);
-        $this->em->flush($book);
+        $bookId = $newBook->getId();
+        if ($bookId) {
+            /** @var BookRepository $bookRepo */
+            $bookRepo = $this->em->getRepository(Book::class);
+
+            $book = $bookRepo->getBookById($bookId);
+            if (!$book) {
+                return false;
+            }
+            
+            $oldBook = $book->jsonSerialize();
+            foreach ($book->getAuthors() as $author) {
+                if (!$newBook->hasAuthor($author)) {
+                    $book->removeAuthor($author);
+                }
+            }
+            
+            foreach ($book->getSeries() as $series) {
+                if (!$newBook->inSeries($series->getSeries())) {
+                    $book->removeSeries($series->getSeries());
+                }
+            }
+            
+            $book->setName($newBook->getName());
+            $book->setType($newBook->getType());
+            $book->setGenres($newBook->getGenres());
+            foreach ($newBook->getAuthors() as $author) {
+                if (!$book->hasAuthor($author)) {
+                    $book->addAuthor($author);
+                }
+            }
+            
+            foreach ($newBook->getSeries() as $series) {
+                if ($book->inSeries($series->getSeries())) {
+                    $book->getSeriesById($series->getSeries()->getId())->setNumber($series->getNumber());
+                } else {
+                    $book->addSeries($series->getSeries(), $series->getNumber());
+                }
+            }
+
+            foreach ($newBook->getUsers() as $user) {
+                if ($book->getUserById($user->getUser()->getId())) {
+                    $book->getUserById($user->getUser()->getId())
+                        ->setOwned($user->isOwned())
+                        ->setRead($user->isRead())
+                        ->setWishlist($user->onWishlist());
+                } else {
+                    $book->addUser($user);
+                }
+            }
+        } else {
+            $book = $newBook;
+            try {
+                $this->em->persist($book);
+            } catch (Exception $e) {
+                $this->logger->error($e);
+                return false;
+            }
+        }
         
-        if ($id) {
-            $existing = $this->em->getRepository(Book::class)->getBookById($id);
-            $existingArray = $existing->toArray();
-            $bookArray = $book->toArray();
+        try {
+            $this->em->flush($book);
+        } catch (Exception $e) {
+            $this->logger->error($e);
+            return false;
+        }
+        
+        if ($bookId) {
+            $bookArray = $book->jsonSerialize();
             
             $this->auditor->log($book->getId(), $book->getName(), "book '<log.itemname>' updated", ['changes' => [
-                'name' => [$existing->getName(), $book->getName()],
-                'type' => [$existing->getType(), $book->getType()],
-                'authors' => [$existingArray['authors'], $bookArray['authors']],
-                'genres' => [$existing->getGenres(), $book->getGenres()],
-                'series' => [$existingArray['series'], $bookArray['series']]
+                'name' => [$oldBook['name'], $book->getName()],
+                'type' => [$oldBook['type'], $book->getType()],
+                'authors' => [$oldBook['authors'], $bookArray['authors']],
+                'genres' => [$oldBook['genres'], $book->getGenres()],
+                'series' => [$oldBook['series'], $bookArray['series']],
+                'users' => [$oldBook['users'], $bookArray['users']]
             ]]);
         } else {
             $this->auditor->log($book->getId(), $book->getName(), "book '<log.itemname>' created");
         }
         
         return true;
+    }
+    
+    private function parseFilters($filters, $op)
+    {
+        $map = [
+            'author' => 'a{nonce}.authorId',
+            'genre' => 'b{nonce}.genres',
+            'owner' => 'bu{nonce}.owned',
+            'read' => 'bu{nonce}.read',
+            'series' => 's{nonce}.seriesId',
+            'type' => 'b{nonce}.type',
+            'wishlist' => 'bu{nonce}.wishlist',
+        ];
+
+        $query = [];
+        foreach ($filters as $filter) {
+            if ($filter->operator == $op) {
+                $query[] = [$map[$filter->field], $filter->value];
+            }
+        }
+        
+        return $query;
     }
 }

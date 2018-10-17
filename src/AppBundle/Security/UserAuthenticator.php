@@ -1,12 +1,13 @@
 <?php
-
-// src/AppBundle/Security/UserAuthenticator.php
+/** src/AppBundle/Security/UserAuthenticator.php */
 namespace AppBundle\Security;
 
+use AppBundle\DateTimeFactory;
+use AppBundle\Entity\User;
+use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,7 +15,6 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use AppBundle\Entity\User;
 
 class UserAuthenticator extends AbstractGuardAuthenticator
 {
@@ -24,76 +24,95 @@ class UserAuthenticator extends AbstractGuardAuthenticator
     private $cookieParams;
     
     /**
-     * @var Doctrine\ORM\EntityManager
+     * Instance of DateTimeFactory
+     * @var DateTimeFactory 
+     */
+    private $dateTime;
+    
+    /**
+     * @var EntityManager
      */
     private $entityManager;
+    
+    /**
+     * Implements LoggerInterface
+     * @var LoggerInterface
+     */
+    private $logger;
     
     /**
      * @var string
      */
     private $secret;
     
-    private $logger;
-    
     /**
-     * @param Doctrine\ORM\EntityManager $entityManager
+     * UserAuthenticator constructor.
+     * @param EntityManager $entityManager
      * @param string $secret
      * @param array $cookieParams
+     * @param DateTimeFactory $dateTime
      * @param LoggerInterface $logger
      */
-    public function __construct($entityManager, $secret, $cookieParams, $logger)
-    {
-        $this->entityManager = $entityManager;
-        $this->secret = $secret;
+    public function __construct(
+        EntityManager$entityManager,
+        string $secret,
+        array $cookieParams,
+        DateTimeFactory $dateTime,
+        LoggerInterface $logger
+    ) {
         $this->cookieParams = $cookieParams;
+        $this->dateTime = $dateTime;
+        $this->entityManager = $entityManager;
         $this->logger = $logger;
+        $this->secret = $secret;     
     }
     
     /**
-     * Called on every request. Return whatever credentials you want to
-     * be passed to getUser(). Returning null will cause this authenticator
-     * to be skipped.
+     * {@inheritdoc}
      */
     public function getCredentials(Request $request)
     {
-        if (!$request->request->has('username') ||
-            !$request->request->has('password') ||
-            $request->request->has('name') ||
-            $request->request->get('username') == "" ||
-            $request->request->get('password') == ""
-        ) {
-            return null;
-        }
-        
-        // What you return here will be passed to getUser() as $credentials
-        return array(
+        return [
             'username' => $request->request->get('username'),
             'password' => $request->request->get('password')
-        );
+        ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        return $this->entityManager->getRepository(User::class)
-                                ->findOneBy(array('username' => $credentials['username']));
+        if ($credentials['username'] != "") {
+            return $this->entityManager->getRepository(User::class)->findOneBy([
+                'username' => $credentials['username']
+            ]);
+        }
+        
+        return null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function checkCredentials($credentials, UserInterface $user)
     {
         $salt = substr($user->getPassword(), 0, 16);
-        if ($user->getPassword() == $salt . hash_hmac("sha256", $salt.$credentials['password'], $this->secret)) {
+        if ($user->getPassword() == $salt . hash_hmac("sha256", $salt . $credentials['password'], $this->secret)) {
             return true;
         }
         
         return null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $user = $token->getUser();
-        
-        $user->sessionid = hash("sha256", mt_rand(1, 32));
-        $this->entityManager->flush();
+        $user = $token->getUser();      
+        $user->setSessionId(hash("sha256", $this->dateTime->getNow()->getTimestamp()));
+        $this->entityManager->flush($user);
         
         $bag = new ResponseHeaderBag();
         $bag->setCookie($this->createCookie($user));
@@ -101,13 +120,16 @@ class UserAuthenticator extends AbstractGuardAuthenticator
         return new RedirectResponse($request->getBaseUrl() . "/", 302, $bag->all());
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         return $this->start($request, $exception);
     }
 
     /**
-     * Called when authentication is needed, but it's not sent
+     * {@inheritdoc}
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
@@ -118,7 +140,22 @@ class UserAuthenticator extends AbstractGuardAuthenticator
         
         return $response;
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function supports(Request $request)
+    {
+        if ($request->request->has('username') && $request->request->has('password')) {
+            return true;
+        }
+        
+        return false;
+    }
 
+    /**
+     * {@inheritdoc}
+     */
     public function supportsRememberMe()
     {
         return false;
@@ -126,13 +163,13 @@ class UserAuthenticator extends AbstractGuardAuthenticator
     
     private function createCookie($user)
     {
-        $time = time();
+        $time = $this->dateTime->getNow()->getTimestamp();
         $auth = new Cookie(
             'library',
             implode("|", array(
-                $user->id,
+                $user->getId(),
                 $time,
-                hash("sha256", $user->id . $time . $user->sessionid)
+                hash("sha256", $user->getId() . $time . $user->getSessionId())
             )),
             $time + (3600 * 24 * 365),
             '/',

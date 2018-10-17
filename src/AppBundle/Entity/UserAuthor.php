@@ -14,11 +14,11 @@ class UserAuthor
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
-    public $id;
+    private $id;
 
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
-    public $userid;
+    private $userid;
 }

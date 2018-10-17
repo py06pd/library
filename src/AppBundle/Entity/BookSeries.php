@@ -3,19 +3,20 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="bookseries")
  */
-class BookSeries
+class BookSeries implements JsonSerializable
 {
     /**
      * Book
      * @var Book
      * @ORM\Id
-     * @ManyToOne(targetEntity="Book", inversedBy="series")
-     * @JoinColumn(name="id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Book", inversedBy="series")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id")
      */
     private $book;
 
@@ -23,15 +24,15 @@ class BookSeries
      * Series
      * @var Series
      * @ORM\Id
-     * @OneToOne(targetEntity="Series")
-     * @JoinColumn(name="seriesid", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Series", cascade={"persist"})
+     * @ORM\JoinColumn(name="seriesid", referencedColumnName="id")
      */
     private $series;
     
     /**
      * Number in series
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="number", nullable=true)
      */
     private $number;
     
@@ -41,7 +42,7 @@ class BookSeries
      * @param Series $series
      * @param int $number
      */
-    public function __construct(Book $book, Series $series, int $number)
+    public function __construct(Book $book, Series $series, int $number = null)
     {
         $this->book = $book;
         $this->series = $series;
@@ -76,13 +77,24 @@ class BookSeries
     }
     
     /**
+     * Sets number
+     * @param int $number
+     * @return $this
+     */
+    public function setNumber(int $number = null)
+    {
+        $this->number = $number;
+        return $this;
+    }
+    
+    /**
      * Gets array representation of object
      * @return array
      */
-    public function toArray()
+    public function jsonSerialize()
     {
         return [
-            'id' => $this->series->getId(),
+            'seriesId' => $this->series->getId(),
             'name' => $this->series->getName(),
             'number' => $this->number
         ];

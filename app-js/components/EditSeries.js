@@ -1,4 +1,4 @@
-import BookMenu from './BookMenu';
+import BookMenu from './BookMenu.vue';
 var Http = require('../mixins/Http');
 
 export default {
