@@ -26,10 +26,10 @@
                 v-model="newFilter.value"
                 filterable
                 placeholder="Please select a value">
-                <el-option v-for="value in values" :label="value.label" :value="value"></el-option>
+                <el-option v-for="(label, value) in values" :label="label" :value="value"></el-option>
             </el-select>
         </div>
-        <div style="margin-bottom:10px">
+        <div id="filter-tags">
             <el-tag
                 v-for="(filter, filterIndex) in filters"
                 :closable="true"
@@ -59,8 +59,11 @@
 <script>
     import { Button, Option, Select, Tag } from 'element-ui';
 
+    let Http = require('../mixins/Http');
+
     export default {
         name: 'book-filter',
+        mixins: [ Http ],
         components: {
             'el-button': Button,
             'el-option': Option,
@@ -74,7 +77,7 @@
                 series: [],
                 types: [],
                 values: [],
-                newFilter: { field: '', operator: '', value: {} },
+                newFilter: { field: '', operator: '', value: '' },
                 filters: [],
             };
         },
@@ -94,12 +97,17 @@
                     this.$notify({ title: 'Warning', message: alert, type: 'warning' });
                 } else {
                     let newFilter = true;
+                    let newFilterValue = this.newFilter.value;
+                    if (this.newFilter.field === 'author' || this.newFilter.field === 'series') {
+                        newFilterValue = this.newFilter.value.substring(1);
+                    }
+
                     for (let f = 0; f < this.filters.length; f++) {
                         if (this.filters[f].field === this.newFilter.field &&
                             this.filters[f].operator === this.newFilter.operator
                         ) {
-                            this.filters[f].value.push(this.newFilter.value.value);
-                            this.filters[f].label.push(this.newFilter.value.label);
+                            this.filters[f].value.push(newFilterValue);
+                            this.filters[f].label.push(this.values[this.newFilter.value]);
                             newFilter = false;
                         }
                     }
@@ -107,17 +115,17 @@
                         this.filters.push({
                             field: this.newFilter.field,
                             operator: this.newFilter.operator,
-                            value: [this.newFilter.value.value],
-                            label: [this.newFilter.value.label],
+                            value: [newFilterValue],
+                            label: [this.values[this.newFilter.value]],
                         });
                     }
-
                     this.$emit('change', this.filters);
                 }
             },
 
             filterFieldChange (val) {
-                this.values = [];
+                this.values = {};
+                this.newFilter.value = '';
 
                 switch (val) {
                     case 'author':
@@ -128,10 +136,7 @@
                             });
                         } else {
                             for (let a in this.authors) {
-                                this.values.push({
-                                    value: this.authors[a].id,
-                                    label: this.authors[a].forename + ' ' + this.authors[a].surname,
-                                });
+                                this.values['a' + this.authors[a].authorId] = this.authors[a].forename + ' ' + this.authors[a].surname;
                             }
                         }
                         break;
@@ -143,20 +148,19 @@
                             });
                         } else {
                             for (let g in this.genres) {
-                                this.values.push({
-                                    value: this.genres[g],
-                                    label: this.genres[g],
-                                });
+                                this.values[this.genres[g]] = this.genres[g];
                             }
                         }
                         break;
                     case 'owner':
                     case 'read':
-                        for (let u in this.$root.user.groupUsers) {
-                            this.values.push({
-                                value: this.$root.user.groupUsers[u].userId,
-                                label: this.$root.user.groupUsers[u].name,
-                            });
+                        if (this.$root.user.groupUsers.length) {
+                            for (let u in this.$root.user.groupUsers) {
+                                let user = this.$root.user.groupUsers[u];
+                                this.values[user.userId] = user.name;
+                            }
+                        } else {
+                            this.values[this.$root.user.userId] = this.$root.user.name;
                         }
                         break;
                     case 'series':
@@ -167,10 +171,7 @@
                             });
                         } else {
                             for (let s in this.series) {
-                                this.values.push({
-                                    value: this.series[s].id,
-                                    label: this.series[s].name,
-                                });
+                                this.values['s' + this.series[s].seriesId] = this.series[s].name;
                             }
                         }
                         break;
@@ -182,10 +183,7 @@
                             });
                         } else {
                             for (let t in this.types) {
-                                this.values.push({
-                                    value: this.types[t],
-                                    label: this.types[t],
-                                });
+                                this.values[this.types[t]] = this.types[t];
                             }
                         }
                         break;
@@ -201,8 +199,11 @@
 </script>
 
 <style scoped>
-#book-filter {
-    display: inline-block;
-    margin-left: 10px;
-}
+    #book-filter {
+        display: inline-block;
+        margin-left: 10px;
+    }
+    #filter-tags {
+        margin-top: 10px;
+    }
 </style>

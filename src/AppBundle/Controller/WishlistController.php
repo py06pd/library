@@ -59,7 +59,7 @@ class WishlistController extends Controller
      */
     public function getBooks(Request $request)
     {
-        $userId = $request->request->get('userid');
+        $userId = $request->request->get('userId');
         $start = $request->request->get('start', 0);
 
         if ($userId != $this->user->getId() && !$this->user->getGroupUsers()->containsKey($userId)) {

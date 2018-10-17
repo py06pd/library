@@ -184,7 +184,7 @@ class BookRepository extends EntityRepository
                     } else {
                         $buqb->andWhere($buqb->expr()->in('u' . $userNonce . '.userId', $condition[1]));
                     }
-                    $buqb->andWhere($qb->expr()->eq(str_replace('{nonce}', $nonce, $condition[0]), ':true'));
+                    $buqb->andWhere($qb->expr()->eq(str_replace('{nonce}', $userNonce, $condition[0]), ':true'));
                     $bqb->setParameter('true', true);
                     $qb->andWhere($qb->expr()->in('b' . $nonce . '.bookId', $buqb->getDQL()));
                 } elseif (count($condition[1]) == 1) {

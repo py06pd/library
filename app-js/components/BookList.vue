@@ -143,3 +143,9 @@
         },
     };
 </script>
+
+<style scoped>
+    #controls > .el-button {
+        vertical-align: top;
+    }
+</style>
