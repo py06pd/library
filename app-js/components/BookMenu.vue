@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog id="bookMenu" :visible="mode === 1" :before-close="close">
+        <el-dialog id="bookMenu" :visible="mode === 1" :before-close="close" :class="{ 'not-for-mobile': mode === 2 }">
             <ul>
                 <li><el-button @click="openEdit">Edit</el-button></li>
                 <li v-if="book.isOwnedBy($root.user.getId())">

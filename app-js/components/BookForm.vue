@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog id="frmBook" title="Edit Book" :visible="formOpen" @open="loadBook" :before-close="close">
+        <el-dialog id="frmBook" title="Edit Book" :top="dialogYOffset" :visible="formOpen" @open="loadBook" :before-close="close">
             <el-form>
                 <el-form-item label="Title">
                     <el-input class="name" v-model="book.name"></el-input>
@@ -103,6 +103,17 @@
                 types: [],
             };
         },
+
+        computed: {
+            dialogYOffset () {
+                if (window.innerWidth <= 600) {
+                    return '0';
+                }
+
+                return '15%';
+            },
+        },
+
         methods: {
             authorChange: function(val) {
                 let authors = [];

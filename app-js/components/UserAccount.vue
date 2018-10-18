@@ -122,7 +122,7 @@
     }
 
     #userAccount button {
-        margin-right: 0px;
+        margin-right: 0;
         margin-left: auto;
         display: flex;
     }
@@ -132,5 +132,9 @@
         font-weight: 700;
         color: #1f2d3d;
         margin-bottom: 10px;
+    }
+
+    @media screen and (max-width: 600px) {
+        #userAccount > div { width: auto; }
     }
 </style>

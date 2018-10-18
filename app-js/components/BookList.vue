@@ -1,58 +1,58 @@
 <template>
     <div>
-        <book-filter @input="handleFilterChange" />
+        <el-button-group id="controls">
+            <template v-if="$root.user.hasRole('ROLE_ADMIN')">
+                <el-button type="primary" icon="plus" @click="openAdd"></el-button>
+                <el-button type="primary" icon="delete" @click="deleteItems"></el-button>
+            </template>
+            <el-button type="primary" icon="search" @click="openSearch"></el-button>
+        </el-button-group>
 
-        <table class="cic-table">
+        <book-filter v-show="searchOpen" @input="handleFilterChange" />
+
+        <table class="cic-table" :class="{ 'not-for-mobile': menuMode === 2 }">
             <thead>
                 <tr>
                     <th v-if="$root.user.hasRole('ROLE_ADMIN')" ></th>
                     <th>Title</th>
-                    <th>Type</th>
+                    <th class="not-for-mobile">Type</th>
                     <th>Author</th>
-                    <th>Genre</th>
-                    <th>Series</th>
-                    <th>Owner</th>
-                    <th>Read</th>
+                    <th class="not-for-mobile">Genre</th>
+                    <th class="not-for-mobile">Series</th>
+                    <th class="not-for-mobile">Owner</th>
+                    <th class="not-for-mobile">Read</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="book in books">
+                <tr v-for="book in books" :class="{ 'book-wish' : book.isOnWishlist($root.user.getId()), 'book-read' : book.hasBeenReadBy($root.user.getId()), 'book-owned' : book.isOwnedBy($root.user.getId()) }">
                     <td v-if="$root.user.hasRole('ROLE_ADMIN')" >
                         <el-checkbox @click="onRowSelected(book.getId())" />
                     </td>
                     <td class="primary" @click="openMenu(book)">{{ book.getName() }}</td>
-                    <td>{{ book.getType() }}</td>
+                    <td class="not-for-mobile">{{ book.getType() }}</td>
                     <td>
                         <span class="author-link" v-for="a in book.getAuthors()" @click="selectAuthor(a.getId())">
                             {{ a.getName() }}
                         </span>
                     </td>
-                    <td>{{ book.getGenres().join(', ') }}</td>
-                    <td>
+                    <td class="not-for-mobile">{{ book.getGenres().join(', ') }}</td>
+                    <td class="not-for-mobile">
                         <span class="series-link" v-for="s in book.getSeries()" @click="selectSeries(s.getId())">
                             {{ s.getName() }}
                         </span>
                     </td>
-                    <td>{{ book.getOwnerNames().join(', ') }}</td>
-                    <td>{{ book.getReadByNames().join(', ') }}</td>
+                    <td class="not-for-mobile">{{ book.getOwnerNames().join(', ') }}</td>
+                    <td class="not-for-mobile">{{ book.getReadByNames().join(', ') }}</td>
                 </tr>
             </tbody>
         </table>
         <el-button type="primary" style="width:100%" @click="loadMore">Load More</el-button>
-        <div id="controls">
-            <el-button v-if="$root.user.hasRole('ROLE_ADMIN')" type="primary" icon="plus" @click="openAdd">
-                Add Entry
-            </el-button>
-            <el-button v-if="$root.user.hasRole('ROLE_ADMIN')" type="primary" icon="delete" @click="deleteItems">
-                Delete Selected
-            </el-button>
-        </div>
         <book-menu :book="menu" :mode="menuMode" @change="bookMenuChange"></book-menu>
     </div>
 </template>
 
 <script>
-    import { Button, Checkbox } from 'element-ui';
+    import { Button, ButtonGroup, Checkbox } from 'element-ui';
     import Book from '../models/book';
     import BookMenu from './BookMenu.vue';
     import BookFilter from './BookFilter.vue';
@@ -65,6 +65,7 @@
             BookFilter,
             BookMenu,
             'el-button': Button,
+            'el-button-group' : ButtonGroup,
             'el-checkbox': Checkbox,
         },
         data: function () {
@@ -73,6 +74,7 @@
                 menu: new Book(),
                 menuMode: 0,
                 filters: [],
+                searchOpen: false,
                 selected: [],
             };
         },
@@ -134,6 +136,10 @@
             openMenu: function(book) {
                 this.menu = book;
                 this.menuMode = 1;
+            },
+
+            openSearch: function() {
+                this.searchOpen = !this.searchOpen;
             },
 
             selectAuthor: function (authorId) {

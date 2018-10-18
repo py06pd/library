@@ -173,13 +173,40 @@ img { border: 0; vertical-align: middle; }
     -webkit-margin-after: 0.5em;
 }
 
-.el-table tr.series-own { 
+.cic-table tr.book-owned {
     background-color: #DFFFFF;
     color: blue;
     font-weight: bold;
 }
-.el-table tr.series-read { 
+.cic-table tr.book-read {
     background-color: #CCFFCC;
     color: green;
     font-weight: bold;
+}
+.cic-table tr.book-wish {
+    background-color: #FFCCCC;
+    color: red;
+    font-weight: bold;
+}
+
+@media screen and (max-width: 600px) {
+    #loginForm { margin-top: 15px; }
+    .not-for-mobile { display: none; }
+
+    #frmBook .el-dialog {
+        top: 0;
+        left: 0;
+        width: 100%;
+        transform: none;
+        margin: 0;
+        height: 100%;
+    }
+
+    #frmBook .el-dialog__header {
+        display: none;
+    }
+
+    #frmBook .el-dialog__body {
+        padding: 20px 10px 0 10px;
+    }
 }
