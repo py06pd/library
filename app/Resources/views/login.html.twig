@@ -7,7 +7,8 @@
     </head>
     <body>
         <div id="loginForm">
-            <form action="{{ app.request.baseUrl() }}/login/verify" method="post">
+            <form action="{{ app.request.baseUrl() }}/login/verify?{{  app.request.getQueryString() }}" method="post">
+                <input type="hidden" id="hash" name="hash"/>
                 <ul>
                     <li><input name="username" placeholder="Email Address"/></li>
                     <li><input type="password" name="password" placeholder="Password"/></li>
@@ -15,5 +16,8 @@
                 </ul>                
             </form>
         </div>
+        <script type="text/javascript">
+            document.getElementById('hash').setAttribute('value', window.location.hash);
+        </script>
     </body>
 </html>
