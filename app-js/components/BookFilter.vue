@@ -113,6 +113,7 @@
             filterFieldChange (val) {
                 this.values = {};
                 this.newFilter.value = '';
+                let groupUsers = this.$root.user.getGroupUsers();
 
                 switch (val) {
                     case 'author':
@@ -141,13 +142,13 @@
                         break;
                     case 'owner':
                     case 'read':
-                        if (this.$root.user.groupUsers.length) {
-                            for (let u in this.$root.user.groupUsers) {
-                                let user = this.$root.user.groupUsers[u];
+                        if (groupUsers.length) {
+                            for (let u in groupUsers) {
+                                let user = groupUsers[u];
                                 this.values['a' + user.userId] = user.name;
                             }
                         } else {
-                            this.values['a' + this.$root.user.userId] = this.$root.user.name;
+                            this.values['a' + this.$root.user.getId()] = this.$root.user.getName();
                         }
                         break;
                     case 'series':

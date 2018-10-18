@@ -8,7 +8,7 @@ import BookList from '../components/BookList.vue';
 import EditAuthor from '../components/EditAuthor';
 import EditSeries from '../components/EditSeries';
 import LendingList from '../components/LendingList';
-import MyAccount from '../components/MyAccount';
+import MyAccount from '../components/MyAccount.vue';
 import Series from '../components/Series';
 import UserList from '../components/UserList';
 import Wishlist from '../components/Wishlist.vue';

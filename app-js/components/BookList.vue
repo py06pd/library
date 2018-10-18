@@ -1,10 +1,10 @@
 <template>
     <div>
         <div id="controls">
-            <el-button v-if="$root.user.role === 'ROLE_ADMIN'" type="primary" icon="plus" @click="openAdd">
+            <el-button v-if="$root.user.hasRole('ROLE_ADMIN')" type="primary" icon="plus" @click="openAdd">
                 Add Entry
             </el-button>
-            <el-button v-if="$root.user.role === 'ROLE_ADMIN'" type="primary" icon="delete" @click="deleteItems">
+            <el-button v-if="$root.user.hasRole('ROLE_ADMIN')" type="primary" icon="delete" @click="deleteItems">
                 Delete Selected
             </el-button>
 
@@ -14,7 +14,7 @@
         <table class="cic-table">
             <thead>
                 <tr>
-                    <th v-if="$root.user.role === 'ROLE_ADMIN'" ></th>
+                    <th v-if="$root.user.hasRole('ROLE_ADMIN')" ></th>
                     <th>Title</th>
                     <th>Type</th>
                     <th>Author</th>
@@ -26,7 +26,7 @@
             </thead>
             <tbody>
                 <tr v-for="book in books">
-                    <td v-if="$root.user.role === 'ROLE_ADMIN'" >
+                    <td v-if="$root.user.hasRole('ROLE_ADMIN')" >
                         <el-checkbox @click="onRowSelected(book.getId())" />
                     </td>
                     <td class="primary" @click="openMenu(book)">{{ book.getName() }}</td>
