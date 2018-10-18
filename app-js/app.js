@@ -8,6 +8,7 @@ import router from './router';
 
 import LogsList from './components/LogsList';
 import AppMenu from './components/MainMenu.vue';
+import User from './models/user';
 
 import { MessageBox, Notification } from 'element-ui';
 import 'element-ui/lib/theme-default/index.css';
@@ -43,6 +44,6 @@ new Vue({
         if (Object.keys(data.query).length > 0) {
             this.query = data.query;
         }
-        this.user = data.user;
+        this.user = new User(data.user);
     },
 });

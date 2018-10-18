@@ -1,183 +1,184 @@
 <?php
-
+/** src/AppBundle/Controller/UserController.php */
 namespace AppBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-
-use Facebook\Facebook;
-use Facebook\Exceptions\FacebookResponseException;
-use Facebook\Exceptions\FacebookSDKException;
-               
 use AppBundle\Entity\User;
+use AppBundle\Entity\UserSession;
+use Doctrine\ORM\EntityManager;
+use Exception;
+use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
-class UserController extends Controller
+/**
+ * Class UserController
+ * @package AppBundle\Controller
+ */
+class UserController extends AbstractController
 {
     /**
-     * @Route("/myaccount/save")
+     * EntityManager
+     * @var EntityManager
      */
-    public function myAccountSaveAction(Request $request)
+    private $em;
+
+    /**
+     * Logger
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * App secret
+     * @var string
+     */
+    private $secret;
+
+    /**
+     * User
+     * @var User
+     */
+    private $user;
+
+    /**
+     * BookController constructor.
+     * @param EntityManager $em
+     * @param string $secret
+     * @param TokenStorage $tokenStorage
+     * @param LoggerInterface $logger
+     */
+    public function __construct(EntityManager $em, string $secret, TokenStorage $tokenStorage, LoggerInterface $logger)
     {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
+        $this->em = $em;
+        $this->logger = $logger;
+        $this->secret = $secret;
+        $this->user = $tokenStorage->getToken()->getUser();
+    }
+
+    /**
+     * Deletes users
+     * @Route("/users/delete")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function delete(Request $request)
+    {
+        if (!$this->user->hasRole("ROLE_ADMIN")) {
+            return $this->formatError("Insufficient user rights");
         }
-        
-        $em = $this->getDoctrine()->getManager();
-        
-        $user->name = $request->request->get('name');
-        $user->username = $request->request->get('username');
-        
-        $password = trim($request->request->get('password'));
-        
-        if ($user->name == '' || $user->username == '' || $password == '') {
-            return $this->json(array('status' => "warn", 'errorMessage' => "Invalid form data"));
+
+        $users = $this->em->getRepository(User::class)->findBy(['userId' => $request->request->get('ids')]);
+        foreach ($users as $item) {
+            $this->em->remove($item);
         }
+
+        try {
+            $this->em->flush();
+        } catch (Exception $e) {
+            $this->logger->error($e);
+            return $this->formatError("Delete failed");
+        }
+
+        return $this->json(['status' => "OK"]);
+    }
+
+    /**
+     * Get user sessions
+     * @Route("/user/getSessions")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getSessions(Request $request)
+    {
+        $userId = $request->request->get('userId');
+
+        if ($userId != $this->user->getId() && !$this->user->hasRole('ROLE_ADMIN')) {
+            return $this->formatError("Invalid form data");
+        }
+
+        $sessions = $this->em->getRepository(UserSession::class)->findBy(['userId' => $userId]);
+
+        return $this->json(['status' => "OK", 'data' => $sessions]);
+    }
+
+    /**
+     * Gets user
+     * @Route("/user/get")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getUserDetails(Request $request)
+    {
+        if (!$this->user->hasRole("ROLE_ADMIN")) {
+            return $this->formatError("Insufficient user rights");
+        }
+
+        $user = $this->em->getRepository(User::class)->findOneBy(['userId' => $request->request->get('id')]);
+
+        return $this->json(['status' => "OK", 'data' => $user]);
+    }
+
+    /**
+     * Gets users
+     * @Route("/users/get")
+     * @return JsonResponse
+     */
+    public function getUsers()
+    {
+        if (!$this->user->hasRole("ROLE_ADMIN")) {
+            return $this->formatError("Insufficient user rights");
+        }
+
+        $data = $this->em->getRepository(User::class)->findAll();
+
+        return $this->json(['status' => "OK", 'users' => $data]);
+    }
+
+    /**
+     * Save user details
+     * @Route("/user/save")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function save(Request $request)
+    {
+        $userId = $request->request->get('userId');
+        $name = $request->request->get('name');
+        $username = $request->request->get('newUsername');
+        $password = trim($request->request->get('newPassword'));
         
+        if ($name == '' || $username == '' || $password == '') {
+            return $this->formatAlert("Invalid form data");
+        }
+
+        if ($userId != $this->user->getId() && !$this->user->hasRole('ROLE_ADMIN')) {
+            return $this->formatError("Invalid form data");
+        }
+
+        if ($userId) {
+            /** @var User $user */
+            $user = $this->em->getRepository(User::class)->findOneBy(['userId' => $userId]);
+        } else {
+            $user = new User();
+            $this->em->persist($user);
+        }
+
+        $user->setName($name);
+        $user->setUsername($username);
         if ($password !== "********") {
             $salt = substr(hash("sha256", mt_rand(0, 100)), 0, 16);
-            $user->password = $salt . hash_hmac("sha256", $salt . $password, $this->getParameter('secret'));
+            $user->setPassword($salt . hash_hmac("sha256", $salt . $password, $this->secret));
         }
-        
-        $em->flush();
-        
-        return $this->json(array('status' => "OK"));
-    }
-    
-    /**
-     * @Route("/users/delete")
-     */
-    public function deleteAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository(User::class);
-        
-        $users = $repo->findBy(array('id' => $request->request->get('ids')));
-        foreach ($users as $item) {
-            $em->remove($item);
-        }
-        $em->flush();
-                
-        return $this->json(array('status' => "OK"));
-    }
-    
-    /**
-     * @Route("/users/get")
-     */
-    public function getAction(Request $request)
-    {
-        $data = $this->getDoctrine()->getRepository(User::class)->findAll();
-                
-        return $this->json(array(
-            'status' => "OK",
-            'users' => $data
-        ));
-    }
-    
-    /**
-     * @Route("/users/user")
-     */
-    public function userAction(Request $request)
-    {
-        $item = $this->getDoctrine()
-                     ->getRepository(User::class)
-                     ->findOneBy(array('id' => $request->request->get('id')));
-        
-        return $this->json(array('status' => "OK", 'data' => $item));
-    }
-    
-    /**
-     * @Route("/users/save")
-     */
-    public function saveAction(Request $request)
-    {
-        $dataItem = json_decode($request->request->get('data'), true);
-        
-        $em = $this->getDoctrine()->getManager();
-        if ($dataItem['id'] == -1) {
-            $item = new User();
-        } else {
-            $item = $em->getRepository(User::class)
-                       ->findOneBy(array('id' => $dataItem['id']));
-        }
-        
-        $item->name = $dataItem['name'];
-        
-        if ($dataItem['id'] == -1) {
-            $em->persist($item);
-        }
-        
-        $em->flush();
-        
-        return $this->json(array('status' => "OK"));
-    }
-    
-    /**
-     * @Route("/users/auth")
-     */
-    public function authAction(Request $request)
-    {
-        $id = $request->request->get('id');
-        
-        $helper = $this->get('facebook.graph')->getRedirectLoginHelper();
-        $loginUrl = $helper->getLoginUrl(
-            $request->getSchemeAndHttpHost() . $request->getBasePath() . "/users/callback/" . $id,
-            array('user_actions.books')
-        );
-        
-        return $this->json(array('status' => "OK", 'url' => $loginUrl));
-    }
-    
-    /**
-     * @Route("/users/callback/{id}", defaults={"id": -1})
-     */
-    public function callbackAction($id, Request $request)
-    {
-        $fb = $this->get('facebook.graph');
-        $logger = $this->get('logger');
-        $helper = $fb->getRedirectLoginHelper();
-        
+
         try {
-            $accessToken = $helper->getAccessToken($request->getBasePath() . "/users/callback/" . $id);
-            
-            if (!isset($accessToken)) {
-                if ($helper->getError()) {
-                    $logger->error(
-                        'Error: ' . $helper->getError() . '. Code: ' . $helper->getErrorCode() .
-                        '. Reason: ' . $helper->getErrorReason() . '. Description: ' . $helper->getErrorDescription()
-                    );
-                }
-                return false;
-            }
-
-            // The OAuth 2.0 client handler helps us manage access tokens
-            $oAuth2Client = $fb->getOAuth2Client();
-
-            // Get the access token metadata from /debug_token
-            $tokenMetadata = $oAuth2Client->debugToken($accessToken);
-            
-            // Validation (these will throw FacebookSDKException's when they fail)
-            $tokenMetadata->validateExpiration();
-            
-            if (!$accessToken->isLongLived()) {
-                $accessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
-            }
-        } catch (FacebookResponseException $e) {
-            // When Graph returns an error
-            $logger->error('Graph returned an error: ' . $e->getMessage());
-            return false;
-        } catch (FacebookSDKException $e) {
-            // When validation fails or other local issues
-            $logger->error('Facebook SDK returned an error: ' . $e->getMessage());
-            return false;
+            $this->em->flush();
+        } catch (Exception $e) {
+            $this->logger->error($e);
+            return $this->formatError("Update failed");
         }
         
-        $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(User::class)->findOneBy(array('id' => $id));
-        $item->facebookToken = $accessToken;
-        $em->flush();
-                
-        return $this->redirect('/');
+        return $this->json(['status' => "OK"]);
     }
 }

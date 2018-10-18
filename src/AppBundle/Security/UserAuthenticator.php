@@ -4,11 +4,13 @@ namespace AppBundle\Security;
 
 use AppBundle\DateTimeFactory;
 use AppBundle\Entity\User;
+use AppBundle\Entity\UserSession;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -24,6 +26,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class UserAuthenticator extends AbstractGuardAuthenticator
 {
     /**
+     * Cookie parameters
      * @var array
      */
     private $cookieParams;
@@ -117,17 +120,35 @@ class UserAuthenticator extends AbstractGuardAuthenticator
     {
         /** @var User $user */
         $user = $token->getUser();
-        $user->setSessionId(hash("sha256", $this->dateTime->getNow()->getTimestamp()));
 
-        try {
-            $this->em->flush($user);
-        } catch (Exception $e) {
-            $this->logger->error($e->getMessage());
-            return false;
+        $now = $this->dateTime->getNow();
+        $sessionId = hash("sha256", $user->getId() . $now->getTimestamp() . $this->secret);
+        $device = $request->getHost() ? $request->getHost() : $request->getClientIp();
+        $session = new UserSession($user->getId(), $now, $sessionId, $device);
+
+        $this->em->persist($session);
+
+        // delete old device sessions
+        $sessions = $this->em->getRepository(UserSession::class)->findBy([
+            'userId' => $user->getId(),
+            'device' => $device
+        ]);
+        foreach ($sessions as $oldSession) {
+            $this->em->remove($oldSession);
         }
 
+        try {
+            $this->em->flush($session);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage() . $e->getTraceAsString());
+            return new Response('', 500);
+        }
+
+
+
+
         $bag = new ResponseHeaderBag();
-        $bag->setCookie($this->createCookie($user));
+        $bag->setCookie($this->createCookie($session));
 
         $url = $request->getBaseUrl() . "/";
         if ($request->getQueryString()) {
@@ -184,18 +205,18 @@ class UserAuthenticator extends AbstractGuardAuthenticator
 
     /**
      * Create cookie for authentication
-     * @param User $user
+     * @param UserSession $session
      * @return Cookie
      */
-    private function createCookie(User $user)
+    private function createCookie(UserSession $session)
     {
-        $time = $this->dateTime->getNow()->getTimestamp();
+        $time = $session->getCreated()->getTimestamp();
         $auth = new Cookie(
             'library',
             implode("|", [
-                $user->getId(),
+                $session->getUserId(),
                 $time,
-                hash("sha256", $user->getId() . $time . $user->getSessionId())
+                hash("sha256", $session->getUserId() . $time . $session->getSessionId())
             ]),
             $time + (3600 * 24 * 365),
             '/',

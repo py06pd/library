@@ -3,7 +3,13 @@
 /** src/AppBundle/Security/CookieAuthenticator.php */
 namespace AppBundle\Security;
 
+use AppBundle\DateTimeFactory;
+use AppBundle\Entity\UserSession;
+use AppBundle\Repositories\UserRepository;
+use DateTime;
 use Doctrine\ORM\EntityManager;
+use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -20,19 +26,42 @@ use AppBundle\Entity\User;
 class CookieAuthenticator extends AbstractGuardAuthenticator
 {
     /**
+     * Cookie parameters
+     * @var array
+     */
+    private $cookieParams;
+
+    /**
+     * Instance of DateTimeFactory
+     * @var DateTimeFactory
+     */
+    private $dateTime;
+
+    /**
+     * Instance of EntityManager
      * @var EntityManager
      */
-    private $entityManager;
-    
-    private $cookieParams;
+    private $em;
+
+    /**
+     * Implements LoggerInterface
+     * @var LoggerInterface
+     */
+    private $logger;
     
     /**
-     * @param EntityManager $entityManager
+     * CookieAuthenticator constructor.
+     * @param EntityManager $em
+     * @param array $cookieParams
+     * @param DateTimeFactory $dateTime
+     * @param LoggerInterface $logger
      */
-    public function __construct($entityManager, $cookieParams)
+    public function __construct($em, $cookieParams, DateTimeFactory $dateTime, LoggerInterface $logger)
     {
-        $this->entityManager = $entityManager;
+        $this->em = $em;
         $this->cookieParams = $cookieParams;
+        $this->dateTime = $dateTime;
+        $this->logger = $logger;
     }
     
     /**
@@ -51,15 +80,24 @@ class CookieAuthenticator extends AbstractGuardAuthenticator
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        return $this->entityManager->getRepository(User::class)->getUserById($credentials['id']);
+        /** @var UserRepository $userRepo */
+        $userRepo = $this->em->getRepository(User::class);
+        return $userRepo->getUserById($credentials['id']);
     }
 
     /**
      * {@inheritdoc}
+     * @param User $user
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-        if ($credentials['code'] == hash("sha256", $user->getId() . $credentials['datetime'] . $user->getSessionId())) {
+        $session = $this->em->getRepository(UserSession::class)->findOneBy([
+            'userId' => $user->getId(),
+            'created' => new DateTime("@" . $credentials['datetime'])
+        ]);
+        if ($session &&
+            $credentials['code'] == hash("sha256", $user->getId() . $credentials['datetime'] . $session->getSessionId())
+        ) {
             return true;
         }
         
@@ -71,6 +109,22 @@ class CookieAuthenticator extends AbstractGuardAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        $user = $token->getUser();
+        $now = $this->dateTime->getNow();
+        $data = explode("|", $request->cookies->get('library'));
+
+        $session = $this->em->getRepository(UserSession::class)->findOneBy([
+            'userId' => $user->getId(),
+            'created' => new DateTime("@" . $data[1])
+        ]);
+        $session->setLastAccessed($now);
+        try {
+            $this->em->flush($session);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+            return false;
+        }
+
         // on success, let the request continue
         return null;
     }

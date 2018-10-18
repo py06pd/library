@@ -29,6 +29,9 @@ services:
     AppBundle\Controller\BookController:
         arguments: ['@doctrine.orm.entity_manager', '@app.book', '@security.token_storage']
 
+    AppBundle\Controller\UserController:
+        arguments: ['@doctrine.orm.entity_manager', '%secret%', '@security.token_storage', '@logger']
+
     AppBundle\Controller\WishlistController:
         arguments: ['@doctrine.orm.entity_manager', '@app.book', '@security.token_storage']
 
@@ -52,7 +55,11 @@ services:
         
     app.cookieauthenticator:
         class: AppBundle\Security\CookieAuthenticator
-        arguments: ['@doctrine.orm.entity_manager', {'domain': '%cookieDomain%', 'secure': '%cookieSecure%'}]
+        arguments: [
+            '@doctrine.orm.entity_manager',
+            {'domain': '%cookieDomain%', 'secure': '%cookieSecure%'}
+            '@datetimefactory',
+            '@logger']
        
     # application services
     app.book:

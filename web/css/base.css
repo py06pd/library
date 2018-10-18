@@ -127,9 +127,7 @@ img { border: 0; vertical-align: middle; }
     width: 280px;
 }
 
-#myAccountForm input {
-    width: 200px;
-}
+#userAccount input { width: 200px; }
 
 #userName {
     font-weight: bold;

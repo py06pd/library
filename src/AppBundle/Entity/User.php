@@ -30,10 +30,11 @@ class User implements JsonSerializable, UserInterface
     private $name;
     
     /**
-     * @var string
-     * @ORM\Column(type="string", length=16)
+     * User roles
+     * @var array
+     * @ORM\Column(type="json_array", length=256)
      */
-    private $role;
+    private $roles;
     
     /**
      * @var string
@@ -46,12 +47,6 @@ class User implements JsonSerializable, UserInterface
      * @ORM\Column(type="string", length=256)
      */
     private $password;
-    
-    /**
-     * @var string
-     * @ORM\Column(type="string", name="sessionid", length=256)
-     */
-    private $sessionId;
 
     /**
      * Groups
@@ -124,6 +119,17 @@ class User implements JsonSerializable, UserInterface
     {
         return $this->username;
     }
+
+    /**
+     * Sets username
+     * @param string $username
+     * @return User
+     */
+    public function setUsername(string $username) : User
+    {
+        $this->username = $username;
+        return $this;
+    }
     
     /**
      * {@inheritdoc}
@@ -149,7 +155,7 @@ class User implements JsonSerializable, UserInterface
      */
     public function getRoles()
     {
-        return [$this->role];
+        return $this->roles;
     }
 
     /**
@@ -159,38 +165,7 @@ class User implements JsonSerializable, UserInterface
      */
     public function hasRole(string $role)
     {
-        return ($role == $this->role);
-    }
-
-    /**
-     * Sets role
-     * @param string $role
-     * @return $this
-     */
-    public function setRole(string $role)
-    {
-        $this->role = $role;
-        return $this;
-    }
-
-    /**
-     * Gets session id
-     * @return string
-     */
-    public function getSessionId()
-    {
-        return $this->sessionId;
-    }
-    
-    /**
-     * Sets session id
-     * @param string $sessionId
-     * @return User
-     */
-    public function setSessionId(string $sessionId) : User
-    {
-        $this->sessionId = $sessionId;
-        return $this;
+        return in_array($role, $this->roles);
     }
     
     /**
@@ -244,7 +219,8 @@ class User implements JsonSerializable, UserInterface
         return [
             'userId' => $this->getId(),
             'name' => $this->getName(),
-            'role' => $this->role,
+            'username' => $this->getUsername(),
+            'roles' => $this->roles,
             'groupUsers' => $groupUsers
         ];
     }

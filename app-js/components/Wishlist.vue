@@ -6,7 +6,7 @@
                     <th class="is-leaf"><div class="cell">Title</div></th>
                     <th class="is-leaf"><div class="cell">Authors</div></th>
                     <th class="is-leaf"><div class="cell">Notes</div></th>
-                    <template v-if="$root.user.userId === userId">
+                    <template v-if="$root.user.getId() === userId">
                         <th class="is-leaf"><div class="cell">Got</div></th>
                         <th class="is-leaf"><div class="cell">Remove</div></th>
                     </template>
@@ -39,7 +39,7 @@
                             </span>
                         </div>
                     </td>
-                    <template v-if="$root.user.userId === userId">
+                    <template v-if="$root.user.getId() === userId">
                         <td>
                             <div class="cell"><el-button size="small" icon="check" @click="own(book.getId())"></el-button></div>
                         </td>
