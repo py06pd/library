@@ -8,7 +8,7 @@
                 Delete Selected
             </el-button>
 
-            <book-filter @change="loadBooks" />
+            <book-filter v-model="this.filters" />
         </div>
 
         <table class="cic-table">
@@ -76,11 +76,17 @@
                 menuMode: 0,
                 filters: [],
                 selected: [],
-                start: 0,
             };
         },
+        watch: {
+            filters: function (newFilters) {
+                this.loadBooks(newFilters);
+            },
+        },
         created: function () {
-            this.loadBooks();
+            if (!this.$root.query) {
+                this.loadBooks();
+            }
         },
         methods: {
             bookMenuChange: function (val) {
@@ -100,7 +106,6 @@
             loadBooks: function(val) {
                 if (typeof(val) !== 'undefined') {
                     this.books = [];
-                    this.filters = val;
                     this.selected = [];
                 }
 

@@ -242,9 +242,10 @@ class User implements JsonSerializable, UserInterface
             $groupUsers[] = ['userId' => $user->getId(), 'name' => $user->getName()];
         }
         return [
+            'userId' => $this->getId(),
+            'name' => $this->getName(),
             'role' => $this->role,
-            'groupUsers' => $groupUsers,
-            'userId' => $this->getId()
+            'groupUsers' => $groupUsers
         ];
     }
 }

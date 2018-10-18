@@ -7,7 +7,7 @@
     </head>
     <body>
         <div id="app">
-            <span id="data" data="{{ {'user':user}|json_encode() }}"></span>
+            <span id="data" data="{{ { 'query':query, 'user':user } |json_encode()}}"></span>
             <div id="content">
                 <div class="MenuContent">
                     <main-menu></main-menu>
