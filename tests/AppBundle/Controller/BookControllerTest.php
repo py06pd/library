@@ -64,7 +64,8 @@ class BookControllerTest extends TestCase
         $this->mockTemplating = $this->createMock(EngineInterface::class);
 
         $group = (new UserGroup())->addUser((new User())->setId(123)->setName("testUser"));
-        $this->user = (new User())->setId(99999)->setRole('ROLE_USER')->addGroup($group);
+        $this->user = (new User())->setId(99999)->setName("test one")->setUsername("test01")->setRoles(['ROLE_USER'])
+            ->addGroup($group);
         $tokenStorage = new TokenStorage();
         $tokenStorage->setToken(new AnonymousToken("s3cr3t", $this->user));
 
@@ -203,13 +204,18 @@ class BookControllerTest extends TestCase
     {
         $this->mockTemplating->expects($this->once())
             ->method('render')
-            ->with('main/index.html.twig', ['user' => [
-                'userId' => 99999,
-                'role' => 'ROLE_USER',
-                'groupUsers' => [['userId' => 123, 'name' => "testUser"]]
-            ]]);
+            ->with('main/index.html.twig', [
+                'user' => [
+                    'userId' => 99999,
+                    'name' => "test one",
+                    'username' => "test01",
+                    'roles' => ['ROLE_USER'],
+                    'groupUsers' => [['userId' => 123, 'name' => "testUser"]]
+                ],
+                'query' => []
+            ]);
         
-        $this->client->homepage();
+        $this->client->homepage(new Request());
     }
 
     //</editor-fold>
@@ -685,7 +691,7 @@ class BookControllerTest extends TestCase
     public function givenUserDoesNotHaveAdminRoleWhenSaveCalledThenErrorMessageReturned()
     {
         // Arrange
-        $this->user->setRole("ROLE_USER");
+        $this->user->setRoles(["ROLE_USER"]);
 
         // Act
         $result = $this->client->save(new Request());
@@ -703,7 +709,7 @@ class BookControllerTest extends TestCase
     public function givenSaveFailsWhenSaveCalledThenErrorMessageReturned()
     {
         // Arrange
-        $this->user->setRole("ROLE_ADMIN");
+        $this->user->setRoles(["ROLE_ADMIN"]);
 
         $expected = (new Book("test1"))->setId(123)->setType("type1")->setGenres(['genres1', 'genres2'])
             ->addAuthor(new Author('author1'))->addAuthor(new Author("testy testing"))
@@ -755,7 +761,7 @@ class BookControllerTest extends TestCase
     public function givenSaveSucceedsWhenSaveCalledThenOKStatusReturned()
     {
         // Arrange
-        $this->user->setRole("ROLE_ADMIN");
+        $this->user->setRoles(["ROLE_ADMIN"]);
 
         $expected = (new Book("test1"))->setId(123)->setType("type1")->setGenres(['genres1', 'genres2'])
             ->addAuthor(new Author('author1'))->addAuthor(new Author("testy testing"))

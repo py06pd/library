@@ -71,7 +71,7 @@ class UserSession implements JsonSerializable
      * @param string   $sessionId
      * @param string   $device
      */
-    public function __construct(int $userId, DateTime $created, string $sessionId, string $device)
+    public function __construct(int $userId, DateTime $created, string $sessionId, string $device = null)
     {
         $this->userId = $userId;
         $this->created = $created;

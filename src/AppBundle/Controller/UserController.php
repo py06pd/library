@@ -69,7 +69,7 @@ class UserController extends AbstractController
             return $this->formatError("Insufficient user rights");
         }
 
-        $users = $this->em->getRepository(User::class)->findBy(['userId' => $request->request->get('ids')]);
+        $users = $this->em->getRepository(User::class)->findBy(['userId' => $request->request->get('userIds')]);
         foreach ($users as $item) {
             $this->em->remove($item);
         }
@@ -115,7 +115,7 @@ class UserController extends AbstractController
             return $this->formatError("Insufficient user rights");
         }
 
-        $user = $this->em->getRepository(User::class)->findOneBy(['userId' => $request->request->get('id')]);
+        $user = $this->em->getRepository(User::class)->findOneBy(['userId' => $request->request->get('userId')]);
 
         return $this->json(['status' => "OK", 'data' => $user]);
     }
@@ -148,32 +148,32 @@ class UserController extends AbstractController
         $name = $request->request->get('name');
         $username = $request->request->get('newUsername');
         $password = trim($request->request->get('newPassword'));
-        
-        if ($name == '' || $username == '' || $password == '') {
-            return $this->formatAlert("Invalid form data");
-        }
 
         if ($userId != $this->user->getId() && !$this->user->hasRole('ROLE_ADMIN')) {
             return $this->formatError("Invalid form data");
+        }
+
+        if ($name == '' || $username == '' || $password == '' || (!$userId && $password === "********")) {
+            return $this->formatAlert("Invalid form data");
         }
 
         if ($userId) {
             /** @var User $user */
             $user = $this->em->getRepository(User::class)->findOneBy(['userId' => $userId]);
         } else {
-            $user = new User();
+            $user = (new User())->setRoles(['ROLE_USER']);
             $this->em->persist($user);
         }
 
         $user->setName($name);
         $user->setUsername($username);
-        if ($password !== "********") {
+        if (!$userId || $password !== "********") {
             $salt = substr(hash("sha256", mt_rand(0, 100)), 0, 16);
             $user->setPassword($salt . hash_hmac("sha256", $salt . $password, $this->secret));
         }
 
         try {
-            $this->em->flush();
+            $this->em->flush($user);
         } catch (Exception $e) {
             $this->logger->error($e);
             return $this->formatError("Update failed");
