@@ -33,13 +33,16 @@ new Vue({
     router,
     data: function () {
         return {
-            params: {},
+            query: null,
             requests: 0,
             user: {},
         };
     },
     created: function() {
         var data = JSON.parse(document.getElementById('data').getAttribute('data'));
+        if (Object.keys(data.query).length > 0) {
+            this.query = data.query;
+        }
         this.user = data.user;
     },
 });

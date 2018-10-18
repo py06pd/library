@@ -89,11 +89,15 @@ class BookController extends Controller
     /**
      * Display homepage
      * @Route("/", name="homepage")
+     * @param Request $request
      * @return Response
      */
-    public function homepage()
+    public function homepage(Request $request)
     {
-        return $this->render('main/index.html.twig', ['user' => $this->user->jsonSerialize()]);
+        return $this->render('main/index.html.twig', [
+            'query' => $request->query->all(),
+            'user' => $this->user->jsonSerialize()
+        ]);
     }
     
     /**

@@ -70,6 +70,9 @@
             'el-select': Select,
             'el-tag': Tag,
         },
+        props: {
+            value : { type: Array, default: function () { return []; } },
+        },
         data: function () {
             return {
                 authors: [],
@@ -81,6 +84,11 @@
                 filters: [],
             };
         },
+
+        created: function () {
+            this.loadQueryFilters();
+        },
+
         methods: {
             addFilter () {
                 let alert = '';
@@ -96,30 +104,9 @@
                 if (alert !== '') {
                     this.$notify({ title: 'Warning', message: alert, type: 'warning' });
                 } else {
-                    let newFilter = true;
-                    let newFilterValue = this.newFilter.value;
-                    if (this.newFilter.field === 'author' || this.newFilter.field === 'series') {
-                        newFilterValue = this.newFilter.value.substring(1);
-                    }
-
-                    for (let f = 0; f < this.filters.length; f++) {
-                        if (this.filters[f].field === this.newFilter.field &&
-                            this.filters[f].operator === this.newFilter.operator
-                        ) {
-                            this.filters[f].value.push(newFilterValue);
-                            this.filters[f].label.push(this.values[this.newFilter.value]);
-                            newFilter = false;
-                        }
-                    }
-                    if (newFilter) {
-                        this.filters.push({
-                            field: this.newFilter.field,
-                            operator: this.newFilter.operator,
-                            value: [newFilterValue],
-                            label: [this.values[this.newFilter.value]],
-                        });
-                    }
-                    this.$emit('change', this.filters);
+                    this.filters = this.value;
+                    this.processFilter(this.newFilter);
+                    this.$emit('input', this.filters);
                 }
             },
 
@@ -157,10 +144,10 @@
                         if (this.$root.user.groupUsers.length) {
                             for (let u in this.$root.user.groupUsers) {
                                 let user = this.$root.user.groupUsers[u];
-                                this.values[user.userId] = user.name;
+                                this.values['a' + user.userId] = user.name;
                             }
                         } else {
-                            this.values[this.$root.user.userId] = this.$root.user.name;
+                            this.values['a' + this.$root.user.userId] = this.$root.user.name;
                         }
                         break;
                     case 'series':
@@ -171,7 +158,7 @@
                             });
                         } else {
                             for (let s in this.series) {
-                                this.values['s' + this.series[s].seriesId] = this.series[s].name;
+                                this.values['a' + this.series[s].seriesId] = this.series[s].name;
                             }
                         }
                         break;
@@ -190,9 +177,72 @@
                 }
             },
 
+            loadQueryFilters () {
+                if (!this.$root.query) {
+                    return;
+                }
+
+                this.filters = this.value;
+                for (let i in this.$root.query) {
+                    let newFilter = { field: '', operator: 'equals', value: [], label: [] };
+                    newFilter.field = i;
+                    newFilter.value = this.$root.query[i];
+                    if (i.substring(i.length - 1) === '!') {
+                        newFilter.operator = 'does not equal';
+                        newFilter.field = i.substring(0, i.length - 1);
+                    }
+
+                    if (['author', 'owner', 'read', 'series'].indexOf(newFilter.field) !== -1) {
+                        this.filterFieldChange(newFilter.field);
+                        if (isNaN(newFilter.value)) {
+                            let itemKey = Object.values(this.values).findIndex(x => x.toLowerCase() === newFilter.value.toLowerCase());
+                            if (itemKey) {
+                                newFilter.value = Object.keys(this.values)[itemKey];
+                            }
+                        } else {
+                            newFilter.value = 'a' + newFilter.value;
+                        }
+                    }
+
+                    this.processFilter(newFilter);
+                }
+
+                this.$emit('input', this.filters);
+                this.$root.query = null;
+            },
+
+            processFilter (filter) {
+                let newFilter = true;
+                let newFilterValue = filter.value;
+
+                if (['author', 'owner', 'read', 'series'].indexOf(filter.field) !== -1) {
+                    newFilterValue = filter.value.substring(1);
+                }
+
+                for (let f = 0; f < this.filters.length; f++) {
+                    if (this.filters[f].field === filter.field &&
+                        this.filters[f].operator === filter.operator
+                    ) {
+                        this.filters[f].value.push(newFilterValue);
+                        this.filters[f].label.push(this.values[filter.value]);
+                        newFilter = false;
+                    }
+                }
+
+                if (newFilter) {
+                    this.filters.push({
+                        field: filter.field,
+                        operator: filter.operator,
+                        value: [newFilterValue],
+                        label: [this.values[filter.value]],
+                    });
+                }
+            },
+
             removeFilter (filterIndex) {
+                this.filters = this.value;
                 this.filters.splice(filterIndex, 1);
-                this.$emit('change', this.filters);
+                this.$emit('input', this.filters);
             },
         },
     };
