@@ -138,14 +138,11 @@ class UserAuthenticator extends AbstractGuardAuthenticator
         }
 
         try {
-            $this->em->flush($session);
+            $this->em->flush();
         } catch (Exception $e) {
-            $this->logger->error($e->getMessage() . $e->getTraceAsString());
+            $this->logger->error($e->getMessage());
             return new Response('', 500);
         }
-
-
-
 
         $bag = new ResponseHeaderBag();
         $bag->setCookie($this->createCookie($session));

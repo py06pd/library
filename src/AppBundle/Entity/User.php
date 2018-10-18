@@ -167,6 +167,17 @@ class User implements JsonSerializable, UserInterface
     {
         return in_array($role, $this->roles);
     }
+
+    /**
+     * Sets roles
+     * @param array $roles
+     * @return User
+     */
+    public function setRoles(array $roles) : User
+    {
+        $this->roles = $roles;
+        return $this;
+    }
     
     /**
      * Gets group users
