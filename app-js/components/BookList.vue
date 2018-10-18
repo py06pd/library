@@ -1,15 +1,6 @@
 <template>
     <div>
-        <div id="controls">
-            <el-button v-if="$root.user.hasRole('ROLE_ADMIN')" type="primary" icon="plus" @click="openAdd">
-                Add Entry
-            </el-button>
-            <el-button v-if="$root.user.hasRole('ROLE_ADMIN')" type="primary" icon="delete" @click="deleteItems">
-                Delete Selected
-            </el-button>
-
-            <book-filter v-model="this.filters" />
-        </div>
+        <book-filter @input="handleFilterChange" />
 
         <table class="cic-table">
             <thead>
@@ -48,7 +39,14 @@
             </tbody>
         </table>
         <el-button type="primary" style="width:100%" @click="loadMore">Load More</el-button>
-
+        <div id="controls">
+            <el-button v-if="$root.user.hasRole('ROLE_ADMIN')" type="primary" icon="plus" @click="openAdd">
+                Add Entry
+            </el-button>
+            <el-button v-if="$root.user.hasRole('ROLE_ADMIN')" type="primary" icon="delete" @click="deleteItems">
+                Delete Selected
+            </el-button>
+        </div>
         <book-menu :book="menu" :mode="menuMode" @change="bookMenuChange"></book-menu>
     </div>
 </template>
@@ -78,11 +76,6 @@
                 selected: [],
             };
         },
-        watch: {
-            filters: function (newFilters) {
-                this.loadBooks(newFilters);
-            },
-        },
         created: function () {
             if (!this.$root.query) {
                 this.loadBooks();
@@ -101,6 +94,11 @@
                 this.save('deleteItems', { ids: this.selected }).then(function() {
                     this.loadBooks();
                 });
+            },
+
+            handleFilterChange (newFilters) {
+                this.filters = newFilters;
+                this.loadBooks(newFilters);
             },
 
             loadBooks: function(val) {
@@ -148,9 +146,3 @@
         },
     };
 </script>
-
-<style scoped>
-    #controls > .el-button {
-        vertical-align: top;
-    }
-</style>

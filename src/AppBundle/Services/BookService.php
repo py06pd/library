@@ -53,19 +53,25 @@ class BookService
      */
     public function search(int &$total = null, array $filters = [], int $first = 0)
     {
-        $eq = $neq = [];
+        $eq = $neq = $like = [];
         if (count($filters) > 0) {
             $eq = $this->parseFilters($filters, 'equals');
             $neq = $this->parseFilters($filters, 'does not equal');
+
+            foreach ($filters as $filter) {
+                if ($filter->operator == 'like') {
+                    $like[] = $filter->value[0];
+                }
+            }
         }
 
         /** @var BookRepository $repo */
         $repo = $this->em->getRepository(Book::class);
 
         $books = [];
-        $total = $repo->getSearchResultCount($eq, $neq);
+        $total = $repo->getSearchResultCount($eq, $neq, $like);
         if ($total > 0) {
-            $allBookIds = $repo->getSearchResults($eq, $neq);
+            $allBookIds = $repo->getSearchResults($eq, $neq, $like);
             $bookIds = array_slice(array_unique($allBookIds), $first, 15);
             $books = $repo->getBooksById($bookIds);
         }

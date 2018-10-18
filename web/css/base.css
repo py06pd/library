@@ -123,7 +123,7 @@ img { border: 0; vertical-align: middle; }
     padding: 5px;
 }
 
-#loginForm .login-button {
+#book-search, #loginForm .login-button {
     width: 280px;
 }
 

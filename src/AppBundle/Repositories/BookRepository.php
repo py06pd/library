@@ -87,13 +87,14 @@ class BookRepository extends EntityRepository
      * Gets search result total count
      * @param array $eq
      * @param array $neq
+     * @param array $like
      * @return int
      */
-    public function getSearchResultCount(array $eq = [], array $neq = [])
+    public function getSearchResultCount(array $eq = [], array $neq = [], array $like = [])
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('COUNT(b.bookId)');
-        $this->buildSearchQuery($qb, $eq, $neq);
+        $this->buildSearchQuery($qb, $eq, $neq, $like);
         return $qb->getQuery()->getSingleScalarResult();
     }
 
@@ -101,13 +102,14 @@ class BookRepository extends EntityRepository
      * Gets search results
      * @param array $eq
      * @param array $neq
+     * @param array $like
      * @return array
      */
-    public function getSearchResults(array $eq = [], array $neq = [])
+    public function getSearchResults(array $eq = [], array $neq = [], array $like = [])
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('b.bookId');
-        $this->buildSearchQuery($qb, $eq, $neq);
+        $this->buildSearchQuery($qb, $eq, $neq, $like);
         $result = $qb->addOrderBy('a.name', 'ASC')
             ->addOrderBy('a.forename', 'ASC')
             ->addOrderBy('s.name', 'ASC')
@@ -141,8 +143,9 @@ class BookRepository extends EntityRepository
      * @param QueryBuilder $qb
      * @param array $eq
      * @param array $neq
+     * @param array $like
      */
-    private function buildSearchQuery(QueryBuilder $qb, array $eq = [], array $neq = [])
+    private function buildSearchQuery(QueryBuilder $qb, array $eq = [], array $neq = [], array $like = [])
     {
         $qb->from(Book::class, 'b')
             ->leftJoin('b.authors', 'ba')
@@ -153,6 +156,13 @@ class BookRepository extends EntityRepository
             ->leftJoin('bu.user', 'u');
 
         $this->buildSearchSubQuery($qb, '', $qb, $eq);
+        foreach ($like as $index => $value) {
+            $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->like('b.name', ':like' . $index),
+                $qb->expr()->like("CONCAT(a.forename, ' ', a.surname)", ':like' . $index)
+            ));
+            $qb->setParameter(':like' . $index, '%' . $value . '%');
+        }
 
         if (count($neq) > 0) {
             $nqb = $this->getSearchBaseQuery('_neq');
