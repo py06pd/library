@@ -1,8 +1,10 @@
 <template>
     <div id="book-filter">
         <div>
-            <el-button type="primary" icon="plus" @click="addFilter">Add Filter</el-button>
-
+            <el-input id="book-search" :placeholder="'search titles and authors (case-sensitive)'" v-model="searchText"></el-input>
+            <el-button type="primary" @click="search">Search</el-button>
+        </div>
+        <div>
             <el-select
                 v-model="newFilter.field"
                 placeholder="Please select a field"
@@ -28,6 +30,8 @@
                 placeholder="Please select a value">
                 <el-option v-for="(label, value) in values" :label="label" :value="value"></el-option>
             </el-select>
+
+            <el-button type="primary" icon="plus" @click="addFilter">Add Filter</el-button>
         </div>
         <div id="filter-tags">
             <el-tag
@@ -57,7 +61,7 @@
 </template>
 
 <script>
-    import { Button, Option, Select, Tag } from 'element-ui';
+    import { Button, Input, Option, Select, Tag } from 'element-ui';
 
     let Http = require('../mixins/Http');
 
@@ -66,12 +70,10 @@
         mixins: [ Http ],
         components: {
             'el-button': Button,
+            'el-input': Input,
             'el-option': Option,
             'el-select': Select,
             'el-tag': Tag,
-        },
-        props: {
-            value : { type: Array, default: function () { return []; } },
         },
         data: function () {
             return {
@@ -82,6 +84,7 @@
                 values: [],
                 newFilter: { field: '', operator: '', value: '' },
                 filters: [],
+                searchText: '',
             };
         },
 
@@ -104,7 +107,6 @@
                 if (alert !== '') {
                     this.$notify({ title: 'Warning', message: alert, type: 'warning' });
                 } else {
-                    this.filters = this.value;
                     this.processFilter(this.newFilter);
                     this.$emit('input', this.filters);
                 }
@@ -183,7 +185,6 @@
                     return;
                 }
 
-                this.filters = this.value;
                 for (let i in this.$root.query) {
                     let newFilter = { field: '', operator: 'equals', value: [], label: [] };
                     newFilter.field = i;
@@ -241,9 +242,21 @@
             },
 
             removeFilter (filterIndex) {
-                this.filters = this.value;
                 this.filters.splice(filterIndex, 1);
                 this.$emit('input', this.filters);
+            },
+
+            search () {
+                if (this.searchText.trim() !== '') {
+                    this.filters.push({
+                        field: 'title or author',
+                        operator: 'like',
+                        value: [this.searchText],
+                        label: [this.searchText],
+                    });
+                    this.searchText = '';
+                    this.$emit('input', this.filters);
+                }
             },
         },
     };
@@ -252,8 +265,10 @@
 <style scoped>
     #book-filter {
         display: inline-block;
-        margin-left: 10px;
+        margin-right: 0px;
+        margin-left: auto;
     }
+    #book-filter > div { margin-bottom: 10px; }
     #filter-tags {
         margin-top: 10px;
     }
