@@ -5,6 +5,7 @@ namespace AppBundle\Security;
 use AppBundle\DateTimeFactory;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,10 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+/**
+ * Class UserAuthenticator
+ * @package AppBundle\Security
+ */
 class UserAuthenticator extends AbstractGuardAuthenticator
 {
     /**
@@ -25,14 +30,14 @@ class UserAuthenticator extends AbstractGuardAuthenticator
     
     /**
      * Instance of DateTimeFactory
-     * @var DateTimeFactory 
+     * @var DateTimeFactory
      */
     private $dateTime;
     
     /**
      * @var EntityManager
      */
-    private $entityManager;
+    private $em;
     
     /**
      * Implements LoggerInterface
@@ -47,14 +52,14 @@ class UserAuthenticator extends AbstractGuardAuthenticator
     
     /**
      * UserAuthenticator constructor.
-     * @param EntityManager $entityManager
+     * @param EntityManager $em
      * @param string $secret
      * @param array $cookieParams
      * @param DateTimeFactory $dateTime
      * @param LoggerInterface $logger
      */
     public function __construct(
-        EntityManager$entityManager,
+        EntityManager $em,
         string $secret,
         array $cookieParams,
         DateTimeFactory $dateTime,
@@ -62,9 +67,9 @@ class UserAuthenticator extends AbstractGuardAuthenticator
     ) {
         $this->cookieParams = $cookieParams;
         $this->dateTime = $dateTime;
-        $this->entityManager = $entityManager;
+        $this->em = $em;
         $this->logger = $logger;
-        $this->secret = $secret;     
+        $this->secret = $secret;
     }
     
     /**
@@ -84,7 +89,7 @@ class UserAuthenticator extends AbstractGuardAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         if ($credentials['username'] != "") {
-            return $this->entityManager->getRepository(User::class)->findOneBy([
+            return $this->em->getRepository(User::class)->findOneBy([
                 'username' => $credentials['username']
             ]);
         }
@@ -110,14 +115,30 @@ class UserAuthenticator extends AbstractGuardAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $user = $token->getUser();      
+        /** @var User $user */
+        $user = $token->getUser();
         $user->setSessionId(hash("sha256", $this->dateTime->getNow()->getTimestamp()));
-        $this->entityManager->flush($user);
-        
+
+        try {
+            $this->em->flush($user);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+            return false;
+        }
+
         $bag = new ResponseHeaderBag();
         $bag->setCookie($this->createCookie($user));
-        
-        return new RedirectResponse($request->getBaseUrl() . "/", 302, $bag->all());
+
+        $url = $request->getBaseUrl() . "/";
+        if ($request->getQueryString()) {
+            $url .= "?" . $request->getQueryString();
+        }
+
+        if ($request->request->get('hash')) {
+            $url .= $request->request->get('hash');
+        }
+
+        return new RedirectResponse($url, 302, $bag->all());
     }
 
     /**
@@ -160,17 +181,22 @@ class UserAuthenticator extends AbstractGuardAuthenticator
     {
         return false;
     }
-    
-    private function createCookie($user)
+
+    /**
+     * Create cookie for authentication
+     * @param User $user
+     * @return Cookie
+     */
+    private function createCookie(User $user)
     {
         $time = $this->dateTime->getNow()->getTimestamp();
         $auth = new Cookie(
             'library',
-            implode("|", array(
+            implode("|", [
                 $user->getId(),
                 $time,
                 hash("sha256", $user->getId() . $time . $user->getSessionId())
-            )),
+            ]),
             $time + (3600 * 24 * 365),
             '/',
             $this->cookieParams['domain'],
