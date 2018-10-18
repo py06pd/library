@@ -112,6 +112,14 @@ export default class Book {
 
         return false;
     }
+
+    isOnWishlist (userId) {
+        if (this.users.find(x => x.userId === userId && x.wishlist)) {
+            return true;
+        }
+
+        return false;
+    }
     
     serialise () {
         return {

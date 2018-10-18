@@ -48,9 +48,9 @@ export default {
         bookClass: function(id) {
             if (Object.keys(this.userbooks).indexOf(id.toString()) !== -1) {
                 if (this.userbooks[id.toString()].read) {
-                    return 'series-read';
+                    return 'book-read';
                 } else if (this.userbooks[id.toString()].owned) {
-                    return 'series-own';
+                    return 'book-owned';
                 }
             }
             
