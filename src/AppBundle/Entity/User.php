@@ -58,9 +58,19 @@ class User implements JsonSerializable, UserInterface
      * )
      */
     private $groups;
-    
-    public function __construct()
+
+    /**
+     * User constructor.
+     * @param string $name
+     * @param string $username
+     * @param string $password
+     */
+    public function __construct(string $name = null, string $username = null, string $password = null)
     {
+        $this->name = $name;
+        $this->username = $username;
+        $this->password = $password;
+        $this->roles = ['ROLE_ANONYMOUS','ROLE_USER'];
         $this->groups = new ArrayCollection();
     }
     

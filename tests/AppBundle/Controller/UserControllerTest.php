@@ -3,17 +3,9 @@
 namespace Tests\AppBundle\Controller;
 
 use AppBundle\Controller\UserController;
-use AppBundle\Entity\Author;
-use AppBundle\Entity\Book;
-use AppBundle\Entity\Series;
 use AppBundle\Entity\User;
-use AppBundle\Entity\UserBook;
-use AppBundle\Entity\UserGroup;
 use AppBundle\Entity\UserSession;
-use AppBundle\Repositories\BookRepository;
-use AppBundle\Services\BookService;
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Exception;
@@ -24,7 +16,6 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Templating\EngineInterface;
 
 /**
  * Tests for UserController

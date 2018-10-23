@@ -11,7 +11,6 @@ use AppBundle\Repositories\BookRepository;
 use AppBundle\Services\BookService;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +20,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
  * Class BookController
  * @package AppBundle\Controller
  */
-class BookController extends Controller
+class BookController extends AbstractController
 {
     /**
      * BookService
@@ -52,6 +51,26 @@ class BookController extends Controller
         $this->bookService = $bookService;
         $this->em = $em;
         $this->user = $tokenStorage->getToken()->getUser();
+    }
+
+    /**
+     * Delete books
+     * @Route("/books/delete")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function delete(Request $request)
+    {
+        if (!$this->user->hasRole("ROLE_ADMIN")) {
+            return $this->formatError("Insufficient user rights");
+        }
+
+        $result = $this->bookService->delete($request->request->get('bookIds'));
+        if ($result === false) {
+            return $this->formatError("Delete failed");
+        }
+
+        return $this->json(['status' => "OK"]);
     }
 
     /**
@@ -439,15 +458,5 @@ class BookController extends Controller
         }
 
         return $this->json(['status' => "OK"]);
-    }
-
-    /**
-     * Format error response
-     * @param string $message
-     * @return JsonResponse
-     */
-    private function formatError($message)
-    {
-        return $this->json(['status' => "error", 'errorMessage' => $message]);
     }
 }

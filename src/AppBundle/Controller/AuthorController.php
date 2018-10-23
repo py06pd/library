@@ -1,171 +1,188 @@
 <?php
-// src/AppBundle/Controller/AuthorController
+/** src/AppBundle/Controller/AuthorController.php */
 namespace AppBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Author;
-use AppBundle\Entity\Book;
-use AppBundle\Entity\BookAuthor;
-use AppBundle\Entity\BookSeries;
+use AppBundle\Entity\User;
 use AppBundle\Entity\UserAuthor;
-use AppBundle\Entity\UserBook;
+use AppBundle\Services\BookService;
+use Doctrine\ORM\EntityManager;
+use Exception;
+use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
-class AuthorController extends Controller
+/**
+ * Class AuthorController
+ * @package AppBundle\Controller
+ */
+class AuthorController extends AbstractController
 {
     /**
-     * @Route("/authors")
+     * BookService
+     * @var BookService
      */
-    public function authorsAction(Request $request)
-    {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->formatError("You must be logged in to make request");
-        }
-        
-        $em = $this->getDoctrine()->getManager();
-        $useritems = $em->getRepository(UserAuthor::class)->findBy(array('userid' => $user->id));
-        
-        $ids = array();
-        foreach ($useritems as $i) {
-            $ids[] = $i->id;
-        }
-        
-        return $this->json(array('status' => "OK", 'ids' => $ids));
-    }
-    
+    private $bookService;
+
     /**
+     * EntityManager
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Logger
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * User
+     * @var User
+     */
+    private $user;
+
+    /**
+     * BookController constructor.
+     * @param EntityManager $em
+     * @param BookService $bookService
+     * @param TokenStorage $tokenStorage
+     * @param LoggerInterface $logger
+     */
+    public function __construct(
+        EntityManager $em,
+        BookService $bookService,
+        TokenStorage $tokenStorage,
+        LoggerInterface $logger
+    ) {
+        $this->bookService = $bookService;
+        $this->em = $em;
+        $this->logger = $logger;
+        $this->user = $tokenStorage->getToken()->getUser();
+    }
+
+    /**
+     * Gets author books
      * @Route("/author/get")
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function getAction(Request $request)
+    public function getAuthor(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        
-        $item = $em->getRepository(Author::class)->findOneBy(array('id' => $request->request->get('id')));
-        if (!$item) {
+        $authorId = $request->request->get('authorId');
+
+        $author = $this->em->getRepository(Author::class)->findOneBy(['authorId' => $authorId]);
+        if (!$author) {
             return $this->formatError("Invalid request");
         }
-        
-        $books = $em->getRepository(BookAuthor::class)->findBy(array('authorid' => $item->getId()));
-        
-        $bookids = array();
-        foreach ($books as $i) {
-            $bookids[] = $i->getBook()->getId();
-        }
-            
-        $collected = $seriesids = array();
-        $series = $em->getRepository(BookSeries::class)->findBy(array('id' => $bookids));
-        foreach ($series as $s) {
-            $seriesids[$s->getSeries()->getId()] = $s->getSeries()->getId();
-            $collected[$s->getBook()->getId()] = $s->getBook()->getId();
-        }
-        
-        // add uncollected series id = 0
-        if (count($bookids) > count($collected)) {
-            $seriesids[0] = 0;
-        }
-        
-        $user = $this->getUser();
-        
+
+        $filters = [(object)['field' => 'author', 'operator' => 'equals', 'value' => [$authorId]]];
+        $books = $this->bookService->search($total, $filters, -1);
+
         $tracking = false;
-        if ($user) {
-            $userbooks = $em->getRepository(UserBook::class)->findBy(array(
-                'id' => $bookids,
-                'userid' => $user->id
-            ));
-            foreach ($userbooks as $ub) {
-                $userbook[$ub->id] = $ub;
-            }
-            
-            if ($em->getRepository(UserAuthor::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id])) {
-                $tracking = true;
-            }
+        if ($this->em->getRepository(UserAuthor::class)->findOneBy([
+            'authorId' => $authorId,
+            'userId' => $this->user->getId()])
+        ) {
+            $tracking = true;
         }
-        
-        $total = $owned = $read = 0;
-        foreach ($books as $book) {
-            $total++;
-            
-            if (isset($userbook[$book->getBook()->getId()]) && $userbook[$book->getBook()->getId()]->owned) {
-                $owned++;
-            }
-            if (isset($userbook[$book->getBook()->getId()]) && $userbook[$book->getBook()->getId()]->read) {
-                $read++;
-            }
-        }
-        
-        return $this->json(array(
+
+        return $this->json([
             'status' => "OK",
-            'author' => $item,
-            'total' => $total,
-            'owned' => $owned,
-            'read' => $read,
-            'series' => $seriesids,
+            'author' => $author,
+            'books' => $books,
             'tracking' => $tracking
-        ));
+        ]);
     }
-    
+
     /**
+     * Add author to user author list
      * @Route("/author/track")
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function trackAction(Request $request)
+    public function track(Request $request)
     {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->formatError("You must be logged in to make request");
-        }
-        
-        $em = $this->getDoctrine()->getManager();
-        
-        $item = $em->getRepository(Author::class)->findOneBy(array('id' => $request->request->get('id')));
-        if (!$item) {
+        $author = $this->em->getRepository(Author::class)->findOneBy([
+            'authorId' => $request->request->get('authorId')
+        ]);
+        if (!$author) {
             return $this->formatError("Invalid request");
         }
-        
-        $useritem = $em->getRepository(UserAuthor::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
-        if (!$useritem) {
-            $useritem = new UserAuthor();
-            $useritem->id = $item->getId();
-            $useritem->userid = $user->id;
-            
-            $em->persist($useritem);
-            
-            $em->flush();
+
+        $item = $this->em->getRepository(UserAuthor::class)->findOneBy([
+            'authorId' => $author->getId(),
+            'userId' => $this->user->getId()
+        ]);
+        if ($item) {
+            return $this->formatError("You already track this");
         }
-                
-        return $this->json(array('status' => "OK"));
+
+        $item = new UserAuthor($author->getId(), $this->user->getId());
+        $this->em->persist($item);
+
+        try {
+            $this->em->flush();
+        } catch (Exception $e) {
+            $this->logger->error($e);
+            return $this->formatError("Update failed");
+        }
+
+        return $this->json(['status' => "OK"]);
+    }
+
+    /**
+     * Gets tracked authors
+     * @Route("/authors/tracked")
+     * @return JsonResponse
+     */
+    public function tracked()
+    {
+        /** @var UserAuthor[] $authors */
+        $authors = $this->em->getRepository(UserAuthor::class)->findBy(['userId' => $this->user->getId()]);
+        
+        $authorIds = [];
+        foreach ($authors as $i) {
+            $authorIds[] = $i->getAuthorId();
+        }
+        
+        return $this->json(['status' => "OK", 'authorIds' => $authorIds]);
     }
     
     /**
+     * Remove author from user author list
      * @Route("/author/untrack")
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function untrackAction(Request $request)
+    public function untrack(Request $request)
     {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->formatError("You must be logged in to make request");
-        }
-        
-        $em = $this->getDoctrine()->getManager();
-        
-        $item = $em->getRepository(Author::class)->findOneBy(array('id' => $request->request->get('id')));
-        if (!$item) {
+        $author = $this->em->getRepository(Author::class)->findOneBy([
+            'authorId' => $request->request->get('authorId')
+        ]);
+        if (!$author) {
             return $this->formatError("Invalid request");
         }
-        
-        $useritem = $em->getRepository(UserAuthor::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
-        if ($useritem) {
-            $em->remove($useritem);
-            
-            $em->flush();
+
+        $item = $this->em->getRepository(UserAuthor::class)->findOneBy([
+            'authorId' => $author->getId(),
+            'userId' => $this->user->getId()
+        ]);
+        if (!$item) {
+            return $this->formatError("You are not tracking this");
         }
-                
-        return $this->json(array('status' => "OK"));
-    }
-    
-    private function formatError($message)
-    {
-        return $this->json(array('status' => "error", 'errorMessage' => $message));
+
+        $this->em->remove($item);
+
+        try {
+            $this->em->flush();
+        } catch (Exception $e) {
+            $this->logger->error($e);
+            return $this->formatError("Update failed");
+        }
+
+        return $this->json(['status' => "OK"]);
     }
 }

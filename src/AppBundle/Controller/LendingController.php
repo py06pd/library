@@ -1,203 +1,169 @@
 <?php
-
+/** src/AppBundle/Controller/LendingController.php */
 namespace AppBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Entity\Audit;
 use AppBundle\Entity\Book;
 use AppBundle\Entity\User;
-use AppBundle\Entity\UserBook;
+use AppBundle\Repositories\BookRepository;
+use AppBundle\Services\BookService;
+use Doctrine\ORM\EntityManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
-class LendingController extends Controller
+/**
+ * Class LendingController
+ * @package AppBundle\Controller
+ */
+class LendingController extends AbstractController
 {
     /**
-     * @Route("/lending/cancelled")
+     * BookService
+     * @var BookService
      */
-    public function cancelledAction(Request $request)
-    {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
-        }
-        
-        $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
-        if (!$item) {
-            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
-        }
-        
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(['id' => $item->getId(), 'userid' => $user->id]);
-        if (!$userbook || $userbook->requestedfromid == 0) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You have not requested this"));
-        }
-        
-        $oldid = $userbook->requestedfromid;
-        $userbook->requestedfromid = 0;
-        
-        $em->flush();
-        
-        $this->get('auditor')->userBookLog($item, $user, array('requestedfromid' => array($oldid, 0)));
-        
-        return $this->json(array('status' => "OK"));
-    }
-    
+    private $bookService;
+
     /**
+     * EntityManager
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * User
+     * @var User
+     */
+    private $user;
+
+    /**
+     * BookController constructor.
+     * @param EntityManager $em
+     * @param BookService $bookService
+     * @param TokenStorage $tokenStorage
+     */
+    public function __construct(EntityManager $em, BookService $bookService, TokenStorage $tokenStorage)
+    {
+        $this->em = $em;
+        $this->bookService = $bookService;
+        $this->user = $tokenStorage->getToken()->getUser();
+    }
+
+    /**
+     * Cancel request to borrow a book
+     * @Route("/lending/cancel")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function cancel(Request $request)
+    {
+        if (!$this->bookService->cancel($request->request->get('bookId'), $this->user->getId())) {
+            return $this->formatError("Update failed");
+        }
+
+        return $this->json(['status' => "OK"]);
+    }
+
+    /**
+     * Confirm requested book has been delivered
      * @Route("/lending/delivered")
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function deliveredAction(Request $request)
+    public function delivered(Request $request)
     {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
+        if (!$this->bookService->delivered($request->request->get('bookId'), $this->user->getId())) {
+            return $this->formatError("Update failed");
         }
         
-        $userIds = $this->get('app.group')->getLinkedUsers($user->id);
-        
-        $result = $this->get('app.book')->borrow($request->request->get('id'), $user->id, $userIds);
-        if ($result !== true) {
-            return $this->json(array('status' => "error", 'errorMessage' => $result));
-        }
-        
-        return $this->json(array('status' => "OK"));
+        return $this->json(['status' => "OK"]);
     }
     
     /**
+     * Gets books requested or borrowed from or by user
      * @Route("/lending/get")
+     * @return JsonResponse
      */
-    public function getAction(Request $request)
+    public function getLending()
     {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
-        }
-        
-        $lending = $this->get('app.book')->getLending($user->id);
-        $requested = $requesting = $borrowed = $borrowing = array();
+        /** @var BookRepository $bookRepo */
+        $bookRepo = $this->em->getRepository(Book::class);
+        $books = $bookRepo->getLending($this->user->getId());
+
+        $requested = $requesting = $borrowed = $borrowing = [];
                 
-        if (count($lending) > 0) {
-            $dbUsers = $this->getDoctrine()->getRepository(User::class)->findAll();
-            $users = array();
-            
-            foreach ($dbUsers as $dbuser) {
-                $users[$dbuser->id] = $dbuser;
+        foreach ($books as $book) {
+            if ($book->getUserById($this->user->getId())) {
+                if ($book->getUserById($this->user->getId())->getBorrowedFrom()) {
+                    $borrowing[] = $book;
+                } elseif ($book->getUserById($this->user->getId())->getRequestedFrom()) {
+                    $requesting[] = $book;
+                }
             }
-            
-            foreach ($lending as $lend) {
-                $row = (object)$lend;
-                if ($row->userid == $user->id) {
-                    if ($row->borrowedfromid != 0) {
-                        $borrowing[] = array(
-                            'id' => $row->id,
-                            'name' => $row->name,
-                            'datetime' => date("Y-m-d H:i:s", $row->borrowedtime),
-                            'from' => $users[$row->borrowedfromid]->name
-                        );
-                    } elseif ($row->requestedfromid != 0) {
-                        $requesting[] = array(
-                            'id' => $row->id,
-                            'name' => $row->name,
-                            'datetime' => date("Y-m-d H:i:s", $row->requestedtime),
-                            'from' => $users[$row->requestedfromid]->name
-                        );
-                    }
-                } else {
-                    if ($row->borrowedfromid != 0) {
-                        $borrowed[] = array(
-                            'id' => $row->id,
-                            'name' => $row->name,
-                            'datetime' => date("Y-m-d H:i:s", $row->borrowedtime),
-                            'from' => $users[$row->userid]->name
-                        );
-                    } elseif ($row->requestedfromid != 0) {
-                        $requested[] = array(
-                            'id' => $row->id,
-                            'name' => $row->name,
-                            'datetime' => date("Y-m-d H:i:s", $row->requestedtime),
-                            'from' => $users[$row->userid]->name
-                        );
-                    }
+
+            foreach ($book->getUsers() as $user) {
+                if ($user->getBorrowedFrom() && $user->getBorrowedFrom()->getId() === $this->user->getId()) {
+                    $borrowed[] = $book;
+                } elseif ($user->getRequestedFrom() && $user->getRequestedFrom()->getId() === $this->user->getId()) {
+                    $requested[] = $book;
                 }
             }
         }
         
-        return $this->json(array(
+        return $this->json([
             'status' => "OK",
             'borrowed' => $borrowed,
             'borrowing' => $borrowing,
             'requested' => $requested,
             'requesting' => $requesting
-        ));
+        ]);
     }
     
     /**
-     * @Route("/lending/rejected")
+     * Reject request to borrow a book
+     * @Route("/lending/reject")
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function rejectedAction(Request $request)
+    public function reject(Request $request)
     {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
-        }
-        
-        $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
-        if (!$item) {
-            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
-        }
-        
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(array(
-            'id' => $item->getId(),
-            'requestedfromid' => $user->id
-        ));
-        if (!$userbook) {
-            return $this->json(array('status' => "error", 'errorMessage' => "No one has requested this"));
+        if (!$this->bookService->reject($request->request->get('bookId'), $request->request->get('userId'))) {
+            return $this->formatError("Update failed");
         }
 
-        $userbook->requestedfromid = 0;
-        
-        $em->flush();
-        
-        $bookuser = $em->getRepository(User::class)->findOneBy(array('id' => $userbook->userid));
-                
-        $this->get('auditor')->userBookLog($item, $bookuser, array('requestedfromid' => array($user->id, 0)));
-        
-        return $this->json(array('status' => "OK"));
+        return $this->json(['status' => "OK"]);
     }
-    
+
     /**
+     * Requests to borrow a book
+     * @Route("/lending/request")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function request(Request $request)
+    {
+        $bookId = $request->request->get('bookId');
+
+        $result = $this->bookService->request($bookId, $this->user);
+        if ($result !== true) {
+            return $this->formatError($result);
+        }
+
+        return $this->json(['status' => "OK"]);
+    }
+
+    /**
+     * Confirm borrowed book has been returned
      * @Route("/lending/returned")
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function returnedAction(Request $request)
+    public function returned(Request $request)
     {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->json(array('status' => "error", 'errorMessage' => "You must be logged in to make request"));
-        }
-        
-        $em = $this->getDoctrine()->getManager();
-        $item = $em->getRepository(Book::class)->findOneBy(array('id' => $request->request->get('id')));
-        if (!$item) {
-            return $this->json(array('status' => "error", 'errorMessage' => "Invalid request"));
-        }
-        
-        $userbook = $em->getRepository(UserBook::class)->findOneBy(array(
-            'id' => $request->request->get('id'),
-            'borrowedfromid' => $user->id
-        ));
-        if (!$userbook) {
-            return $this->json(array('status' => "error", 'errorMessage' => "No one has borrowed this"));
+        if (!$this->bookService->returned($request->request->get('bookId'), $request->request->get('userId'))) {
+            return $this->formatError("Update failed");
         }
 
-        $userbook->borrowedfromid = 0;
-        
-        $em->flush();
-        
-        $bookuser = $em->getRepository(User::class)->findOneBy(array('id' => $userbook->userid));
-        
-        $this->get('auditor')->userBookLog($item, $bookuser, array('borrowedfromid' => array($user->id, 0)));
-        
-        return $this->json(array('status' => "OK"));
+        return $this->json(['status' => "OK"]);
     }
 }
