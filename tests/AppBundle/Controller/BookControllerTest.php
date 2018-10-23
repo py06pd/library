@@ -76,6 +76,71 @@ class BookControllerTest extends TestCase
         $this->client->setContainer($container);
     }
 
+    //<editor-fold desc="Delete method tests">
+
+    /**
+     * @test
+     */
+    public function givenUserDoesNotHaveAdminRoleWhenDeleteCalledThenErrorMessageReturned()
+    {
+        // Arrange
+        $this->user->setRoles(["ROLE_USER"]);
+
+        // Act
+        $result = $this->client->delete(new Request());
+
+        // Assert
+        $this->assertEquals(
+            json_encode(['status' => "error", 'errorMessage' => "Insufficient user rights"]),
+            $result->getContent()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function givenSaveFailsWhenDeleteCalledThenErrorMessageReturned()
+    {
+        // Arrange
+        $this->user->setRoles(["ROLE_ADMIN"]);
+
+        $this->mockBookService->expects($this->once())
+            ->method('delete')
+            ->with([123, 124])
+            ->willReturn(false);
+
+        // Act
+        $result = $this->client->delete(new Request([], ['bookIds' => [123, 124]]));
+
+        // Assert
+        $this->assertEquals(
+            json_encode(['status' => "error", 'errorMessage' => "Delete failed"]),
+            $result->getContent()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function givenSaveSucceedsWhenDeleteCalledThenOKStatusReturned()
+    {
+        /// Arrange
+        $this->user->setRoles(["ROLE_ADMIN"]);
+
+        $this->mockBookService->expects($this->once())
+            ->method('delete')
+            ->with([123, 124])
+            ->willReturn(true);
+
+        // Act
+        $result = $this->client->delete(new Request([], ['bookIds' => [123, 124]]));
+
+        // Assert
+        $this->assertEquals(json_encode(['status' => "OK"]), $result->getContent());
+    }
+
+    //</editor-fold>
+
     //<editor-fold desc="Disown method tests">
 
     /**
@@ -167,7 +232,7 @@ class BookControllerTest extends TestCase
     /**
      * @test
      */
-    public function givenSaveSucceedsWhenDisownCalledThenErrorMessageReturned()
+    public function givenSaveSucceedsWhenDisownCalledThenOKStatusReturned()
     {
         // Arrange
         $mockRepo = $this->createMock(BookRepository::class);
@@ -536,7 +601,7 @@ class BookControllerTest extends TestCase
     /**
      * @test
      */
-    public function givenSaveSucceedsWhenOwnCalledThenErrorMessageReturned()
+    public function givenSaveSucceedsWhenOwnCalledThenOKStatusReturned()
     {
         // Arrange
         $mockRepo = $this->createMock(BookRepository::class);
@@ -655,7 +720,7 @@ class BookControllerTest extends TestCase
     /**
      * @test
      */
-    public function givenSaveSucceedsWhenReadCalledThenErrorMessageReturned()
+    public function givenSaveSucceedsWhenReadCalledThenOKStatusReturned()
     {
         // Arrange
         $mockRepo = $this->createMock(BookRepository::class);
@@ -758,7 +823,7 @@ class BookControllerTest extends TestCase
     /**
      * @test
      */
-    public function givenSaveSucceedsWhenSaveCalledThenOKStatusReturned()
+    public function givenSaveSucceedsWhenSaveCalledThenOKStatusAndNewAuthorsAndNewSeriesReturned()
     {
         // Arrange
         $this->user->setRoles(["ROLE_ADMIN"]);
@@ -904,7 +969,7 @@ class BookControllerTest extends TestCase
     /**
      * @test
      */
-    public function givenSaveSucceedsWhenUnreadCalledThenErrorMessageReturned()
+    public function givenSaveSucceedsWhenUnreadCalledThenOKStatusReturned()
     {
         // Arrange
         $mockRepo = $this->createMock(BookRepository::class);
@@ -1025,7 +1090,7 @@ class BookControllerTest extends TestCase
     /**
      * @test
      */
-    public function givenSaveSucceedsWhenUnwishCalledThenErrorMessageReturned()
+    public function givenSaveSucceedsWhenUnwishCalledThenOKStatusReturned()
     {
         // Arrange
         $mockRepo = $this->createMock(BookRepository::class);
@@ -1175,7 +1240,7 @@ class BookControllerTest extends TestCase
     /**
      * @test
      */
-    public function givenSaveSucceedsWhenWishlistCalledThenErrorMessageReturned()
+    public function givenSaveSucceedsWhenWishlistCalledThenOKStatusReturned()
     {
         // Arrange
         $mockRepo = $this->createMock(BookRepository::class);

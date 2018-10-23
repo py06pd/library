@@ -33,6 +33,20 @@ export default class Book {
         return this;
     }
 
+    getBorrowedFrom (userId) {
+        return this.users.filter(x => x.borrowedFromId && x.borrowedFromId === userId);
+    }
+
+    getBorrowedBy (userId) {
+        let user = this.users.find(x => x.borrowedFromId && x.userId === userId);
+        return user.borrowedFrom;
+    }
+
+    getBorrowedTime (userId) {
+        let user = this.users.find(x => x.borrowedFromId && x.userId === userId);
+        return user.borrowedTime;
+    }
+
     getGenres () {
         return this.genres;
     }
@@ -85,8 +99,31 @@ export default class Book {
         return read;
     }
 
+    getRequestedFrom (userId) {
+        return this.users.filter(x => x.requestedFromId && x.requestedFromId === userId);
+    }
+
+    getRequestedBy (userId) {
+        let user = this.users.find(x => x.requestedFromId && x.userId === userId);
+        return user.requestedFrom;
+    }
+
+    getRequestedTime (userId) {
+        let user = this.users.find(x => x.requestedFromId && x.userId === userId);
+        return user.requestedtime;
+    }
+
     getSeries () {
         return this.series;
+    }
+
+    getSeriesById (seriesId) {
+        let series = this.series.find(x => x.getId() === seriesId);
+        if (series) {
+            return series;
+        }
+
+        return null;
     }
 
     getType () {
@@ -111,6 +148,14 @@ export default class Book {
         }
 
         return false;
+    }
+
+    canRequest (userId) {
+        if (this.users.find(x => x.userId === userId && x.requestedFrom)) {
+            return false;
+        }
+
+        return true;
     }
 
     isOnWishlist (userId) {

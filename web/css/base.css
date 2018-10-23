@@ -145,25 +145,24 @@ img { border: 0; vertical-align: middle; }
 #lending-list .cancel-column,
 #lending-list .reject-column { width:85px; }
 
-.author-head, .series-head { position:relative; }
 .author-head button,
-.series-head button { position:absolute; right:10px; top:10px; }
+.series-head button { vertical-align: middle; margin-top: -12px; }
 .author-link, .series-link { cursor:pointer; text-decoration:underline; padding-right:5px; }
 .author-link:hover, .series-link:hover { color: #3981AC; }
 .author-progress, .series-progress { width:400px; margin-bottom: 10px; }
 .author-selected, .series-selected {
     display:inline-block;
     width:70%;
-    box-shadow: 0 0 3px #000;
-    padding: 5px;
+    box-shadow: 0 0 5px #888;
+    padding: 10px;
     margin: 5px;
     vertical-align: top;
 }
 .author-title, .series-title { display:inline-block; padding-right:20px; }
 .author-tracked, .series-tracked { min-width:200px; width:20%; display:inline-block; }
-.author-tracked > div, .series-tracked > div { box-shadow: 0 0 3px #000; padding: 5px; margin: 5px; }
+.author-tracked > div, .series-tracked > div { box-shadow: 0 0 5px #888; padding: 5px; margin: 5px; }
 .author-tracked .selected, .series-tracked .selected { box-shadow: 0 0 3px red; background-color:#FFCCCC; }
-.author-tracked .author-head button, .series-tracked .series-head button { padding: 5px; right: 0px; position: absolute; top:0px; }
+.author-tracked .author-head button, .series-tracked .series-head button { display:none; }
 .author-tracked .cic-table, .series-tracked .cic-table { display:none; }
 .author-tracked h2, .series-tracked h2 { display:none; }
 .author-tracked .author-progress, .series-tracked .series-progress { width:100%; margin-bottom: 0px; }

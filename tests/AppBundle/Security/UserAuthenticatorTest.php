@@ -249,7 +249,9 @@ class UserAuthenticatorTest extends TestCase
         );
         
         // Assert
-        $this->assertEquals($expected, $result);
+        $this->assertEquals("/?test1=value1#/test", $result->getTargetUrl());
+        $this->assertEquals(302, $result->getStatusCode());
+        $this->assertEquals($expected->headers->all(), $result->headers->all());
     }
     
     /**

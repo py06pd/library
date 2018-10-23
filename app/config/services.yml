@@ -26,19 +26,23 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+    AppBundle\Controller\AuthorController:
+        arguments: ['@doctrine.orm.entity_manager', '@app.book', '@security.token_storage', '@logger']
+
     AppBundle\Controller\BookController:
         arguments: ['@doctrine.orm.entity_manager', '@app.book', '@security.token_storage']
+
+    AppBundle\Controller\LendingController:
+        arguments: ['@doctrine.orm.entity_manager', '@app.book', '@security.token_storage']
+
+    AppBundle\Controller\SeriesController:
+        arguments: ['@doctrine.orm.entity_manager', '@app.book', '@security.token_storage', '@logger']
 
     AppBundle\Controller\UserController:
         arguments: ['@doctrine.orm.entity_manager', '%secret%', '@security.token_storage', '@logger']
 
     AppBundle\Controller\WishlistController:
         arguments: ['@doctrine.orm.entity_manager', '@app.book', '@security.token_storage']
-
-    facebook.graph:
-        class: Facebook\Facebook
-        arguments: [{'app_id': '%facebookAppId%', 'app_secret': '%facebookSecret%'}]
-        public: true
         
     app.userprovider:
         class: AppBundle\Security\UserProvider
@@ -64,15 +68,9 @@ services:
     # application services
     app.book:
         class: AppBundle\Services\BookService
-        arguments: ['@doctrine.orm.entity_manager', '@auditor']
-        public: true
-    app.group:
-        class: AppBundle\Services\GroupService
-        arguments: ['@doctrine.orm.entity_manager', '@auditor']
-        public: true        
+        arguments: ['@doctrine.orm.entity_manager', '@datetimefactory', '@auditor', '@logger']
     auditor:
         class: AppBundle\Services\Auditor
         arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']
-        public: true
     datetimefactory:
         class: AppBundle\DateTimeFactory

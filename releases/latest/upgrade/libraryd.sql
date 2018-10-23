@@ -5,7 +5,7 @@ UPDATE users set roles = '["' || role || '","ROLE_USER","ROLE_ANONYMOUS"]' where
 
 ALTER TABLE users ALTER COLUMN roles SET not null;
 
-ALTER TABLE users DROP COLUMN role
+ALTER TABLE users DROP COLUMN role;
 
 CREATE TABLE public.user_sessions
 (

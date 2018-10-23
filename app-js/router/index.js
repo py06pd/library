@@ -3,13 +3,13 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
-import Authors from '../components/Authors';
+import AuthorBooks from '../components/AuthorBooks.vue';
+import AuthorList from '../components/AuthorList.vue';
 import BookList from '../components/BookList.vue';
-import EditAuthor from '../components/EditAuthor';
-import EditSeries from '../components/EditSeries';
-import LendingList from '../components/LendingList';
+import LendingList from '../components/LendingList.vue';
 import MyAccount from '../components/MyAccount.vue';
-import Series from '../components/Series';
+import SeriesBooks from '../components/SeriesBooks.vue';
+import SeriesList from '../components/SeriesList.vue';
 import UserList from '../components/UserList';
 import Wishlist from '../components/Wishlist.vue';
 
@@ -21,12 +21,12 @@ export default new Router({
         },
         {
             path: '/authors',
-            component: Authors,
+            component: AuthorList,
         },
         {
             path: '/author/:id',
-            component: EditAuthor,
-            props: (route) => ({id: parseInt(route.params.id), showSeries: true }),
+            component: AuthorBooks,
+            props: (route) => ({authorId: parseInt(route.params.id), showSeries: true }),
         },
         {
             path: '/lending',
@@ -38,12 +38,12 @@ export default new Router({
         },
         {
             path: '/series',
-            component: Series,
+            component: SeriesList,
         },
         {
             path: '/series/:id',
-            component: EditSeries,
-            props: (route) => ({id: parseInt(route.params.id)}),
+            component: SeriesBooks,
+            props: (route) => ({seriesId: parseInt(route.params.id)}),
         },
         {
             path: '/users',

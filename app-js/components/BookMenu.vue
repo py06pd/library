@@ -7,7 +7,9 @@
                     <el-button @click="disownBook">I don't own this</el-button>
                 </li>
                 <template v-else>
-                    <li v-if="book.hasOwner()"><el-button @click="borrowRequest">Borrow Request</el-button></li>
+                    <li v-if="book.hasOwner() && book.canRequest($root.user.getId())">
+                        <el-button @click="borrowRequest">Borrow Request</el-button>
+                    </li>
                     <li><el-button @click="wishlist">Add to Wishlist</el-button></li>
                     <li><el-button @click="ownBook">I own this</el-button></li>
                 </template>
@@ -42,8 +44,10 @@
         },
         methods: {
             borrowRequest: function() {
-                this.save('request', { id: this.book.id }).then(function() {
-                    this.close();
+                this.save('lending/request', { bookId: this.book.getId() }).then(function(response) {
+                    if (response.body.status === 'OK') {
+                        this.close();
+                    }
                 });
             },
 
@@ -56,32 +60,42 @@
             },
 
             ownBook: function() {
-                this.save('book/own', { bookId: this.book.getId() }).then(function() {
-                    this.close();
+                this.save('book/own', { bookId: this.book.getId() }).then(function(response) {
+                    if (response.body.status === 'OK') {
+                        this.close();
+                    }
                 });
             },
 
             readBook: function() {
-                this.save('book/read', { bookId: this.book.getId() }).then(function() {
-                    this.close();
+                this.save('book/read', { bookId: this.book.getId() }).then(function(response) {
+                    if (response.body.status === 'OK') {
+                        this.close();
+                    }
                 });
             },
 
             disownBook: function() {
-                this.save('book/disown', { bookId: this.book.getId() }).then(function() {
-                    this.close();
+                this.save('book/disown', { bookId: this.book.getId() }).then(function(response) {
+                    if (response.body.status === 'OK') {
+                        this.close();
+                    }
                 });
             },
 
             unreadBook: function() {
-                this.save('book/unread', { bookId: this.book.getId() }).then(function() {
-                    this.close();
+                this.save('book/unread', { bookId: this.book.getId() }).then(function(response) {
+                    if (response.body.status === 'OK') {
+                        this.close();
+                    }
                 });
             },
 
             wishlist: function() {
-                this.save('book/wish', { bookId: this.book.getId() }).then(function() {
-                    this.close();
+                this.save('book/wish', { bookId: this.book.getId() }).then(function(response) {
+                    if (response.body.status === 'OK') {
+                        this.close();
+                    }
                 });
             },
         },

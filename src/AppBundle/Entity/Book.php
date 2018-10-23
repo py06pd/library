@@ -53,7 +53,7 @@ class Book implements JsonSerializable
     /**
      * Users
      * @var UserBook[]
-     * @ORM\OneToMany(targetEntity="UserBook", mappedBy="book", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="UserBook", mappedBy="book", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $users;
     
@@ -218,7 +218,7 @@ class Book implements JsonSerializable
      * @param int $number
      * @return Book
      */
-    public function addSeries(Series $series, int $number) : Book
+    public function addSeries(Series $series, int $number = null) : Book
     {
         $this->series->add(new BookSeries($this, $series, $number));
         return $this;
@@ -357,7 +357,7 @@ class Book implements JsonSerializable
             'authors' => $authors,
             'genres' => $this->getGenres(),
             'series' => $series,
-            'users' => $users,
+            'users' => $users
         ];
     }
 }

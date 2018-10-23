@@ -60,27 +60,32 @@ class BookRepository extends EntityRepository
     }
 
     /**
-     * Gets books by author and/or series
-     * @param int $authorId
-     * @param int $seriesId
-     * @return ArrayCollection
+     * Get books requested or borrowed from or by user
+     * @param int $userId
+     * @return Book[]
      */
-    public function getBooksByAuthorAndSeries(int $authorId = null, int $seriesId = null) : ArrayCollection
+    public function getLending(int $userId)
     {
         $qb = $this->_em->createQueryBuilder();
-        
-        $query = $this->getBaseQuery();
-        if ($authorId > 0) {
-            $query->andWhere($qb->expr()->eq('ba.authorid', $authorId));
-        }
-        
-        if ($seriesId > 0) {
-            $query->andWhere($qb->expr()->eq('ba.seriesid', $seriesId));
-        }
-        
-        $result = $query->getQuery()->getResult();
-        
-        return new ArrayCollection($result);
+
+        /** @var Book[] $books */
+        $books = $this->getBaseQuery()
+            ->where($qb->expr()->orX(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('u.userId', $userId),
+                    $qb->expr()->isNotNull('bf.userId')
+                ),
+                $qb->expr()->andX(
+                    $qb->expr()->eq('u.userId', $userId),
+                    $qb->expr()->isNotNull('rf.userId')
+                ),
+                $qb->expr()->eq('rf.userId', $userId),
+                $qb->expr()->eq('bf.userId', $userId)
+            ))
+            ->getQuery()
+            ->getResult();
+
+        return $books;
     }
 
     /**
@@ -213,13 +218,15 @@ class BookRepository extends EntityRepository
     private function getBaseQuery()
     {
         $qb = $this->_em->createQueryBuilder();
-        return $qb->select('b', 'ba', 'a', 'bs', 's', 'bu', 'u')
+        return $qb->select('b', 'ba', 'a', 'bs', 's', 'bu', 'u', 'rf', 'bf')
             ->from(Book::class, 'b')
             ->leftJoin('b.authors', 'ba')
             ->leftJoin('ba.author', 'a')
             ->leftJoin('b.series', 'bs')
             ->leftJoin('bs.series', 's')
             ->leftJoin('b.users', 'bu')
-            ->leftJoin('bu.user', 'u');
+            ->leftJoin('bu.user', 'u')
+            ->leftJoin('bu.requestedFrom', 'rf')
+            ->leftJoin('bu.borrowedFrom', 'bf');
     }
 }

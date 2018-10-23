@@ -10,52 +10,25 @@
 
         <book-filter v-show="searchOpen" @input="handleFilterChange" />
 
-        <table class="cic-table" :class="{ 'not-for-mobile': menuMode === 2 }">
-            <thead>
-                <tr>
-                    <th v-if="$root.user.hasRole('ROLE_ADMIN')" ></th>
-                    <th>Title</th>
-                    <th class="not-for-mobile">Type</th>
-                    <th>Author</th>
-                    <th class="not-for-mobile">Genre</th>
-                    <th class="not-for-mobile">Series</th>
-                    <th class="not-for-mobile">Owner</th>
-                    <th class="not-for-mobile">Read</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="book in books" :class="{ 'book-wish' : book.isOnWishlist($root.user.getId()), 'book-read' : book.hasBeenReadBy($root.user.getId()), 'book-owned' : book.isOwnedBy($root.user.getId()) }">
-                    <td v-if="$root.user.hasRole('ROLE_ADMIN')" >
-                        <el-checkbox @click="onRowSelected(book.getId())" />
-                    </td>
-                    <td class="primary" @click="openMenu(book)">{{ book.getName() }}</td>
-                    <td class="not-for-mobile">{{ book.getType() }}</td>
-                    <td>
-                        <span class="author-link" v-for="a in book.getAuthors()" @click="selectAuthor(a.getId())">
-                            {{ a.getName() }}
-                        </span>
-                    </td>
-                    <td class="not-for-mobile">{{ book.getGenres().join(', ') }}</td>
-                    <td class="not-for-mobile">
-                        <span class="series-link" v-for="s in book.getSeries()" @click="selectSeries(s.getId())">
-                            {{ s.getName() }}
-                        </span>
-                    </td>
-                    <td class="not-for-mobile">{{ book.getOwnerNames().join(', ') }}</td>
-                    <td class="not-for-mobile">{{ book.getReadByNames().join(', ') }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <book-table
+            :class="{ 'not-for-mobile': menuMode === 2 }"
+            :books="books"
+            :columns="['selected','title','type','author','genre','series','owner','read']"
+            :selected="selected"
+            @click="openMenu"
+            @input="onRowSelected">
+        </book-table>
         <el-button type="primary" style="width:100%" @click="loadMore">Load More</el-button>
         <book-menu :book="menu" :mode="menuMode" @change="bookMenuChange"></book-menu>
     </div>
 </template>
 
 <script>
-    import { Button, ButtonGroup, Checkbox } from 'element-ui';
+    import { Button, ButtonGroup } from 'element-ui';
     import Book from '../models/book';
-    import BookMenu from './BookMenu.vue';
     import BookFilter from './BookFilter.vue';
+    import BookMenu from './BookMenu.vue';
+    import BookTable from './BookTable.vue';
     let Http = require('../mixins/Http');
 
     export default {
@@ -64,9 +37,9 @@
         components: {
             BookFilter,
             BookMenu,
+            BookTable,
             'el-button': Button,
             'el-button-group' : ButtonGroup,
-            'el-checkbox': Checkbox,
         },
         data: function () {
             return {
@@ -93,8 +66,8 @@
             },
 
             deleteItems: function() {
-                this.save('deleteItems', { ids: this.selected }).then(function() {
-                    this.loadBooks();
+                this.save('books/delete', { bookIds: this.selected }).then(function() {
+                    this.loadBooks(this.filters);
                 });
             },
 
@@ -121,11 +94,7 @@
             },
 
             onRowSelected: function(val) {
-                if (this.selected.indexOf(val) === -1) {
-                    this.selected.push(val);
-                } else {
-                    this.selected.slice(this.selected.indexOf(val), 1);
-                }
+                this.selected = val;
             },
 
             openAdd: function() {

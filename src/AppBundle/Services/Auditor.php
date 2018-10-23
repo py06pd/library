@@ -28,7 +28,7 @@ class Auditor
      * @param EntityManager $em
      * @param TokenStorage $tokenStorage
      */
-    public function __construct($em, $tokenStorage)
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage)
     {
         $this->em = $em;
         $this->user = $tokenStorage->getToken()->getUser();
@@ -57,8 +57,9 @@ class Auditor
         
         $audit = new Audit($this->user, time(), $id, $name, $description, $data);
 
+        $this->em->persist($audit);
+
         try {
-            $this->em->persist($audit);
             $this->em->flush();
         } catch (Exception $e) {
             return false;

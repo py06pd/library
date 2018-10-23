@@ -1,5 +1,5 @@
 <?php
-
+/** src/AppBundle/Controller/LoginController.php */
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Book;
@@ -11,12 +11,16 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+/**
+ * Class LoginController
+ * @package AppBundle\Controller
+ */
 class LoginController extends Controller
 {
     /**
      * @Route("/login")
      */
-    public function loginAction(Request $request)
+    public function login()
     {
         return $this->render("login.html.twig");
     }
@@ -110,9 +114,12 @@ class LoginController extends Controller
     }
     
     /**
+     * Logout
      * @Route("/login/logout")
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function logoutAction(Request $request)
+    public function logout(Request $request)
     {
         $bag = new ResponseHeaderBag();
         $bag->clearCookie('library', '/', $this->getParameter('cookieDomain'), $this->getParameter('cookieSecure'));
