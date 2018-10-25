@@ -1,39 +1,98 @@
 {
-  "name": "library-js",
+  "name": "provisioningportal-js",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "element-ui": "^1.2.7",
-    "moment": "^2.17.1",
-    "moment-timezone": "^0.5.11",
-    "vue": "^2.2.1",
-    "vue-resource": "^1.2.1",
-    "vue-router": "^2.3.0"
+    "babel-polyfill": "^6.26.0",
+    "csv-parse": "=1.2.0",
+    "element-theme": "^2.0.1",
+    "element-ui": "^2.4.8",
+    "lodash": "^4.17.11",
+    "moment": "^2.22.2",
+    "moment-timezone": "^0.5.21",
+    "node-sass": "^4.9.3",
+    "vue": "^2.5.17",
+    "vue-i18n": "^8.1.1",
+    "vue-resource": "^1.5.1",
+    "vue-router": "^2.3.0",
+    "vuex": "^3.0.0"
   },
   "devDependencies": {
-    "babel-core": "^6.0.0",
-    "babel-loader": "^6.0.0",
+    "@types/jest": "^23.3.5",
+    "@vue/test-utils": "^1.0.0-beta.25",
+    "babel-core": "^6.26.3",
+    "babel-jest": "^23.6.0",
+    "babel-loader": "^7.1.5",
     "babel-plugin-component": "^0.9.1",
-    "babel-preset-es2015": "^6.13.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "circular-dependency-plugin": "^4.4.0",
+    "clean-webpack-plugin": "^0.1.18",
     "cross-env": "^1.0.6",
     "css-loader": "^0.23.1",
+    "element-theme-chalk": "^2.4.8",
     "eslint": "^3.17.1",
     "eslint-loader": "^1.6.3",
     "eslint-plugin-html": "^3.0.0",
+    "eslint-plugin-jest": "^21.24.1",
+    "eslint-plugin-vue": "^4.7.1",
+    "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^0.8.5",
     "html-loader": "^0.4.5",
+    "jest": "^23.6.0",
+    "jest-junit": "^5.2.0",
+    "jest-vue-preprocessor": "^1.4.0",
+    "mdpdf": "^1.7.2",
+    "sass-loader": "^6.0.7",
     "style-loader": "^0.13.1",
-    "vue-loader": "^9.8.0",
-    "webpack": "^2.2.1",
+    "url-loader": "^0.5.9",
+    "vue-loader": "^12.2.0",
+    "vue-template-compiler": "^2.5.17",
+    "webpack": "^3.12.0",
     "webpack-manifest-plugin": "^1.1.0"
   },
   "scripts": {
     "build": "node_modules\\.bin\\webpack",
     "build:prod": "set NODE_ENV=production&&node_modules\\.bin\\webpack",
     "watch": "node_modules\\.bin\\webpack --watch",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint:js": "eslint . --cache"
+    "test": "jest",
+    "lint:js": "node_modules\\.bin\\eslint . --cache --ext js,vue",
+    "docs": "node scripts\\generate-docs.js"
   },
-  "author": ""
+  "author": "",
+  "jest": {
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "vue"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      ".*\\.(vue)$": "<rootDir>/node_modules/jest-vue-preprocessor"
+    },
+    "collectCoverageFrom": [
+      "**/*.{js,vue}",
+      "!**/node_modules/**",
+      "!**/scripts/**",
+      "!**/coverage/**",
+      "!app.js",
+      "!webpack.config.js"
+    ],
+    "coverageDirectory": "tests/coverage",
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "suiteName": "Jest tests"
+        }
+      ]
+    ]
+  },
+  "jest-junit": {
+    "output": "tests/results/jest-junit.xml"
+  }
 }

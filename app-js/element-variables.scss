@@ -1,0 +1,70 @@
+/*
+SCSS variables for customising the CSS of the element UI library.
+
+To see which variables are available see node-modules/element-theme-chalk/src/common/var.scss.
+
+Note: if a SCSS variable depends on another, both need to be included in this file
+      in the correct order. For example, we have added $--color-dark-white which
+      depends on $--color-white, so we must include $--color-white here even though
+      we don't want to customise it.
+*/
+
+/* Font
+-------------------------- */
+$--font-size-base: 14px;
+$--font-size-medium: 16px;
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+
+/* Colors
+-------------------------- */
+$--color-primary: #446F82;
+$--color-success: #67c23a;
+$--color-text-placeholder: #97a8be;
+
+$--color-white: #fff;
+$--color-dark-white: mix($--color-white, $--color-primary, 2%);
+$--color-border-grey: #bfcfd9;
+$--color-light-storm-grey: #eaeff2;
+$--color-medium-storm-grey: #8396a5;
+$--color-storm-browny-grey: #efefef;
+$--color-dark-storm-grey: #CED9DE;
+$--color-dark-blue: #004255;
+
+/* Border
+-------------------------- */
+$--border-color-base: $--color-border-grey;
+$--border-radius-base: 5px;
+$--border-radius-small: 3px;
+
+/* Radio
+-------------------------- */
+$--radio-button-font-size: 12px;
+
+/* Select
+-------------------------- */
+$--select-group-height: 33px;
+
+/* Input
+-------------------------- */
+$--input-height: 33px;
+$--input-small-height: 30px;
+
+/* Button
+-------------------------- */
+$--button-padding-vertical: 10px;
+$--button-padding-horizontal: 15px;
+$--button-default-border: $--color-dark-blue;
+
+/* Dialog
+-------------------------- */
+$--dialog-background-color: $--color-light-storm-grey;
+
+/* Table
+-------------------------- */
+$--table-header-background: $--color-dark-storm-grey;
+$--table-footer-background: $--color-dark-white;
+
+/* Tag
+-------------------------- */
+$--tag-fill: $--color-medium-storm-grey;
+$--tag-color: $--color-white;

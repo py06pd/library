@@ -11,9 +11,14 @@ import AppMenu from './components/MainMenu.vue';
 import User from './models/user';
 
 import { MessageBox, Notification } from 'element-ui';
-import 'element-ui/lib/theme-default/index.css';
 import lang from 'element-ui/lib/locale/lang/en';
 import locale from 'element-ui/lib/locale';
+
+// Import polyfills
+import 'babel-polyfill';
+
+// Import css
+import './styles.scss';
 
 Vue.use(VueResource);
 
