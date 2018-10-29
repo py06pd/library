@@ -123,7 +123,10 @@ class UserAuthenticator extends AbstractGuardAuthenticator
 
         $now = $this->dateTime->getNow();
         $sessionId = hash("sha256", $user->getId() . $now->getTimestamp() . $this->secret);
-        $device = $request->getHost() ? $request->getHost() : $request->getClientIp();
+
+        $agent = $request->headers->get('User-Agent');
+        $device = substr($agent, strpos($agent, '(') + 1, strpos($agent, ')') - strpos($agent, '(') - 1);
+        
         $session = new UserSession($user->getId(), $now, $sessionId, $device);
 
         $this->em->persist($session);
