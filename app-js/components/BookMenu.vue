@@ -1,8 +1,32 @@
 <template>
     <div>
-        <el-dialog id="bookMenu" :visible="mode === 1" :before-close="close" :class="{ 'not-for-mobile': mode === 2 }">
+        <el-dialog id="bookMenu" :visible="mode === 1" :before-close="close" :class="{ 'not-for-mobile': mode === 2 }" :title="book.getName()" :top="dialogYOffset">
+            <ul id="bookInfo" class="for-mobile">
+                <li><b>Type</b><span>{{ book.getType() }}</span></li>
+                <li>
+                    <b>Author</b>
+                    <span>
+                        <span class="author-link" v-for="a in book.getAuthors()" @click="selectAuthor(a.getId())">
+                            {{ a.getName() }}
+                        </span>
+                    </span>
+                </li>
+                <li><b>Genre</b><span>{{ book.getGenres().join(', ') }}</span></li>
+                <li>
+                    <b>Series</b>
+                    <span>
+                        <span class="series-link" v-for="s in book.getSeries()" @click="selectSeries(s.getId())">
+                            {{ s.getName() }}
+                        </span>
+                    </span>
+                </li>
+                <li><b>Owner</b><span>{{ book.getOwnerNames().join(', ') }}</span></li>
+                <li><b>Read</b><span>{{ book.getReadByNames().join(', ') }}</span></li>
+            </ul>
             <ul>
-                <li><el-button @click="openEdit">Edit</el-button></li>
+                <li v-if="$root.user.hasRole('ROLE_ADMIN') || ($root.user.hasRole('ROLE_LIBRARIAN') && book.isOnlyUser($root.user.getId()))">
+                    <el-button @click="openEdit">Edit</el-button>
+                </li>
                 <li v-if="book.isOwnedBy($root.user.getId())">
                     <el-button @click="disownBook">I don't own this</el-button>
                 </li>
@@ -38,10 +62,22 @@
             'el-dialog': Dialog,
             BookForm,
         },
+
         props: {
             book : { type: Object, default: new Book() },
             mode: { type: Number, default: 0 },
         },
+
+        computed: {
+            dialogYOffset () {
+                if (window.innerWidth <= 600) {
+                    return '0';
+                }
+
+                return '15%';
+            },
+        },
+
         methods: {
             borrowRequest: function() {
                 this.save('lending/request', { bookId: this.book.getId() }).then(function(response) {
@@ -53,6 +89,14 @@
 
             close: function() {
                 this.$emit('change', 0);
+            },
+
+            disownBook: function() {
+                this.save('book/disown', { bookId: this.book.getId() }).then(function(response) {
+                    if (response.body.status === 'OK') {
+                        this.close();
+                    }
+                });
             },
 
             openEdit: function() {
@@ -75,12 +119,12 @@
                 });
             },
 
-            disownBook: function() {
-                this.save('book/disown', { bookId: this.book.getId() }).then(function(response) {
-                    if (response.body.status === 'OK') {
-                        this.close();
-                    }
-                });
+            selectAuthor: function (authorId) {
+                this.$router.push('/author/' + authorId);
+            },
+
+            selectSeries: function (seriesId) {
+                this.$router.push('/series/' + seriesId);
             },
 
             unreadBook: function() {

@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-button-group id="controls">
-            <template v-if="$root.user.hasRole('ROLE_ADMIN')">
+            <template v-if="$root.user.hasRole('ROLE_LIBRARIAN')">
                 <el-button type="primary" icon="plus" @click="openAdd"></el-button>
                 <el-button type="primary" icon="delete" @click="deleteItems"></el-button>
             </template>

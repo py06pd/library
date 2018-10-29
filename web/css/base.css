@@ -187,10 +187,23 @@ img { border: 0; vertical-align: middle; }
     color: red;
     font-weight: bold;
 }
+.for-mobile { display: none; }
 
 @media screen and (max-width: 600px) {
     #loginForm { margin-top: 15px; }
     .not-for-mobile { display: none; }
+    .for-mobile { display: block; }
+
+    #bookMenu .el-dialog {
+        top: 0;
+        left: 0;
+        width: 100%;
+        transform: none;
+        margin: 0;
+    }
+    #bookMenu .el-dialog__body { padding: 10px 0 0 0; }
+    #bookInfo { padding: 0 0 10px 10px; }
+    #bookInfo b { width: 60px; display: inline-block; }
 
     #frmBook .el-dialog {
         top: 0;

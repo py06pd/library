@@ -11,6 +11,7 @@ export default class Book {
             this.bookId = data.bookId;
             this.name = data.name;
             this.type = data.type;
+            this.creatorId = data.creatorId;
             this.authors = data.authors.map(x => new Author(x));
             this.genres = data.genres === '' ? [] : data.genres;
             this.series = data.series.map(x => new Series(x));
@@ -140,6 +141,12 @@ export default class Book {
 
     hasOwner () {
         return this.users.find(x => x.owned);
+    }
+
+    isOnlyUser (userId) {
+        return (this.creatorId === userId && (this.users.length === 0 || (
+            this.users.length === 1 && this.users[0].userId === userId
+        )));
     }
 
     isOwnedBy (userId) {

@@ -35,6 +35,14 @@ class Book implements JsonSerializable
      * @ORM\Column(type="json_array", length=1024, nullable=true)
      */
     private $genres;
+
+    /**
+     * Creator user
+     * @var User
+     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="creator_id", referencedColumnName="id")
+     */
+    private $creator;
     
     /**
      * Authors
@@ -150,6 +158,26 @@ class Book implements JsonSerializable
     public function setGenres(array $genres = null) : Book
     {
         $this->genres = $genres;
+        return $this;
+    }
+
+    /**
+     * Gets creator
+     * @return User
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    /**
+     * Sets creator
+     * @param User $creator
+     * @return Book
+     */
+    public function setCreator(User $creator) : Book
+    {
+        $this->creator = $creator;
         return $this;
     }
     
@@ -319,6 +347,18 @@ class Book implements JsonSerializable
     }
 
     /**
+     * Check if user is only one connected to book
+     * @param User $user
+     * @return bool
+     */
+    public function isOnlyUser(User $user)
+    {
+        return ($this->getCreator()->getId() == $user->getId() && (count($this->getUsers()) == 0 || (
+            count($this->getUsers()) == 1 && $this->getUsers()[0]->getUser()->getId() == $user->getId()
+        )));
+    }
+
+    /**
      * Remove user from book
      * @param UserBook $user
      * @return Book
@@ -354,6 +394,7 @@ class Book implements JsonSerializable
             'bookId' => $this->bookId,
             'name' => $this->name,
             'type' => $this->type,
+            'creatorId' => $this->creator ? $this->creator->getId() : null,
             'authors' => $authors,
             'genres' => $this->getGenres(),
             'series' => $series,

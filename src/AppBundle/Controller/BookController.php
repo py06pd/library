@@ -61,11 +61,25 @@ class BookController extends AbstractController
      */
     public function delete(Request $request)
     {
-        if (!$this->user->hasRole("ROLE_ADMIN")) {
+        if (!$this->user->hasRole("ROLE_LIBRARIAN")) {
             return $this->formatError("Insufficient user rights");
         }
 
-        $result = $this->bookService->delete($request->request->get('bookIds'));
+        $bookIds = $request->request->get('bookIds');
+
+        /** @var Book[] $books */
+        $books = $this->em->getRepository(Book::class)->findBy(['bookId' => $bookIds]);
+        if (count($books) != count($bookIds)) {
+            return $this->formatError("Invalid form data");
+        }
+
+        foreach ($books as $book) {
+            if (!$this->user->hasRole("ROLE_ADMIN") && !$book->isOnlyUser($this->user)) {
+                return $this->formatError("Insufficient user rights");
+            }
+        }
+
+        $result = $this->bookService->delete($books);
         if ($result === false) {
             return $this->formatError("Delete failed");
         }
@@ -309,16 +323,31 @@ class BookController extends AbstractController
      */
     public function save(Request $request)
     {
-        if (!$this->user->hasRole("ROLE_ADMIN")) {
+        if (!$this->user->hasRole("ROLE_LIBRARIAN")) {
             return $this->formatError("Insufficient user rights");
         }
 
         $data = json_decode($request->request->get('data'), true);
-        
+
+        if ($data['bookId']) {
+            /** @var BookRepository $bookRepo */
+            $bookRepo = $this->em->getRepository(Book::class);
+
+            $book = $bookRepo->getBookById($data['bookId']);
+            if (!$book) {
+                return $this->formatError('Invalid form data');
+            }
+
+            if (!$this->user->hasRole("ROLE_ADMIN") && !$book->isOnlyUser($this->user)) {
+                return $this->formatError("Insufficient user rights");
+            }
+        }
+
         $book = new Book($data['name']);
         $book->setId($data['bookId']);
         $book->setType($data['type']);
         $book->setGenres($data['genres']);
+        $book->setCreator($this->user);
 
         $newAuthors = [];
         foreach ($data['authors'] as $a) {

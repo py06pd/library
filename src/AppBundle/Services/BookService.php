@@ -84,17 +84,11 @@ class BookService
 
     /**
      * Delete books
-     * @param array $bookIds
+     * @param Book[] $books
      * @return bool
      */
-    public function delete(array $bookIds) : bool
+    public function delete(array $books) : bool
     {
-        /** @var Book[] $books */
-        $books = $this->em->getRepository(Book::class)->findBy(['bookId' => $bookIds]);
-        if (count($books) != count($bookIds)) {
-            return false;
-        }
-
         foreach ($books as $book) {
             $this->em->remove($book);
         }

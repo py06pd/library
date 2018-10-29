@@ -2,7 +2,7 @@
     <table class="cic-table">
         <thead>
             <tr>
-                <th v-if="$root.user.hasRole('ROLE_ADMIN') && columns.indexOf('selected') !== -1"></th>
+                <th v-if="$root.user.hasRole('ROLE_LIBRARIAN') && columns.indexOf('selected') !== -1"></th>
                 <th v-if="columns.indexOf('number') !== -1" style="width:30px">#</th>
                 <th v-if="columns.indexOf('title') !== -1">Title</th>
                 <th v-if="columns.indexOf('type') !== -1" class="not-for-mobile">Type</th>
@@ -15,8 +15,8 @@
         </thead>
         <tbody>
             <tr v-for="book in books" :class="{ 'book-wish' : book.isOnWishlist($root.user.getId()), 'book-read' : book.hasBeenReadBy($root.user.getId()), 'book-owned' : book.isOwnedBy($root.user.getId()) }">
-                <td v-if="$root.user.hasRole('ROLE_ADMIN') && columns.indexOf('selected') !== -1">
-                    <el-checkbox @change="onRowSelected(book.getId())" />
+                <td v-if="$root.user.hasRole('ROLE_LIBRARIAN') && columns.indexOf('selected') !== -1">
+                    <el-checkbox v-if="$root.user.hasRole('ROLE_ADMIN') || book.isOnlyUser($root.user.getId())" @change="onRowSelected(book.getId())" />
                 </td>
                 <td v-if="columns.indexOf('number') !== -1">
                     {{ book.getSeriesById(seriesId).getNumber() }}
