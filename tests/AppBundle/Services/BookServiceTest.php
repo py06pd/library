@@ -155,43 +155,9 @@ class BookServiceTest extends TestCase
     /**
      * @test
      */
-    public function givenBookDoesNotExistWhenDeleteCalledThenFalseReturned()
-    {
-        // Arrange
-        $mockRepo = $this->createMock(BookRepository::class);
-        $mockRepo->expects($this->once())
-            ->method('findBy')
-            ->with(['bookId' => [123, 124]])
-            ->willReturn([new Book("test1")]);
-
-        $this->mockEm->expects($this->once())
-            ->method('getRepository')
-            ->with(Book::class)
-            ->willReturn($mockRepo);
-
-        // Act
-        $result = $this->client->delete([123, 124]);
-
-        // Assert
-        $this->assertFalse($result);
-    }
-
-    /**
-     * @test
-     */
     public function givenSaveFailsWhenDeleteCalledThenFalseReturned()
     {
         // Arrange
-        $mockRepo = $this->createMock(BookRepository::class);
-        $mockRepo->expects($this->once())
-            ->method('findBy')
-            ->with(['bookId' => [123, 124]])
-            ->willReturn([new Book("test1"), new Book("test2")]);
-
-        $this->mockEm->expects($this->once())
-            ->method('getRepository')
-            ->with(Book::class)
-            ->willReturn($mockRepo);
         $this->mockEm->expects($this->exactly(2))
             ->method('remove')
             ->withConsecutive([new Book("test1")], [new Book("test2")]);
@@ -200,7 +166,7 @@ class BookServiceTest extends TestCase
             ->willThrowException(new Exception("test exception"));
 
         // Act
-        $result = $this->client->delete([123, 124]);
+        $result = $this->client->delete([new Book("test1"), new Book("test2")]);
 
         // Assert
         $this->assertFalse($result);
@@ -212,16 +178,6 @@ class BookServiceTest extends TestCase
     public function givenSaveSucceedsWhenDeleteCalledThenTrueReturned()
     {
         // Arrange
-        $mockRepo = $this->createMock(BookRepository::class);
-        $mockRepo->expects($this->once())
-            ->method('findBy')
-            ->with(['bookId' => [123, 124]])
-            ->willReturn([(new Book("test1"))->setId(123), (new Book("test2"))->setId(124)]);
-
-        $this->mockEm->expects($this->once())
-            ->method('getRepository')
-            ->with(Book::class)
-            ->willReturn($mockRepo);
         $this->mockEm->expects($this->exactly(2))
             ->method('remove')
             ->withConsecutive([(new Book("test1"))->setId(123)], [(new Book("test2"))->setId(124)]);
@@ -236,7 +192,7 @@ class BookServiceTest extends TestCase
             );
 
         // Act
-        $result = $this->client->delete([123, 124]);
+        $result = $this->client->delete([(new Book("test1"))->setId(123), (new Book("test2"))->setId(124)]);
 
         // Assert
         $this->assertTrue($result);
@@ -849,8 +805,8 @@ class BookServiceTest extends TestCase
         $groupUser4 = (new User("test four"))->setId(127);
         $groupUser5 = (new User("test five"))->setId(128);
         $user = (new User())->setId(99999)->addGroup(
-            (new UserGroup())->addUser($groupUser1)->addUser($groupUser2)->addUser($groupUser3)->addUser($groupUser4)
-                ->addUser($groupUser5)
+            (new UserGroup("group1"))->addUser($groupUser1)->addUser($groupUser2)->addUser($groupUser3)
+                ->addUser($groupUser4)->addUser($groupUser5)
         );
         $book = (new Book("test1"))->setId(123)->addUser((new UserBook($groupUser1))->setOwned(true))
             ->addUser((new UserBook($groupUser2))->setOwned(true))
@@ -903,8 +859,8 @@ class BookServiceTest extends TestCase
         $groupUser4 = (new User("test four"))->setId(127);
         $groupUser5 = (new User("test five"))->setId(128);
         $user = (new User())->setId(99999)->addGroup(
-            (new UserGroup())->addUser($groupUser1)->addUser($groupUser2)->addUser($groupUser3)->addUser($groupUser4)
-                ->addUser($groupUser5)
+            (new UserGroup("group1"))->addUser($groupUser1)->addUser($groupUser2)->addUser($groupUser3)
+                ->addUser($groupUser4)->addUser($groupUser5)
         );
         $book = (new Book("test1"))->setId(123)->addUser((new UserBook($groupUser1))->setOwned(true))
             ->addUser((new UserBook($groupUser2))->setOwned(true))

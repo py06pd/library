@@ -49,7 +49,7 @@ class WishlistControllerTest extends TestCase
         $this->mockBookService = $this->createMock(BookService::class);
         $this->mockEm = $this->createMock(EntityManager::class);
 
-        $group = (new UserGroup())->addUser((new User())->setId(123)->setName("testUser"));
+        $group = (new UserGroup("group1"))->setId(122)->addUser((new User())->setId(123)->setName("testUser"));
         $this->user = (new User())->setId(99999)->setName("test one")->setUsername("test01")->setRoles(['ROLE_USER'])
             ->addGroup($group);
         $tokenStorage = new TokenStorage();

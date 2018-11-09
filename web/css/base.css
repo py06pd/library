@@ -90,10 +90,10 @@ img { border: 0; vertical-align: middle; }
 .cic-table td.primary { color: #3981ac; cursor: pointer; }
 
 #controls { margin:10px 0px; }
-#frmBook .name { width: 217px; }
+.cic-dialog .name { width: 217px; }
+.cic-dialog .el-form-item__label { width: 70px; text-align: left; }
+.cic-dialog .el-form-item__content { margin-left: 70px; }
 #frmBook .series-number { width: 50px; }
-#frmBook .el-form-item__label { width: 70px; text-align: left; }
-#frmBook .el-form-item__content { margin-left: 70px; }
 
 #menuSection, #userSection { display: inline-block; }
 #menuSection .el-menu {
@@ -205,7 +205,7 @@ img { border: 0; vertical-align: middle; }
     #bookInfo { padding: 0 0 10px 10px; }
     #bookInfo b { width: 60px; display: inline-block; }
 
-    #frmBook .el-dialog {
+    .cic-dialog .el-dialog {
         top: 0;
         left: 0;
         width: 100%;
@@ -214,11 +214,11 @@ img { border: 0; vertical-align: middle; }
         height: 100%;
     }
 
-    #frmBook .el-dialog__header {
+    .cic-dialog .el-dialog__header {
         display: none;
     }
 
-    #frmBook .el-dialog__body {
+    .cic-dialog .el-dialog__body {
         padding: 20px 10px 0 10px;
     }
 }

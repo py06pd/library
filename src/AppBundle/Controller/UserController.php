@@ -161,7 +161,7 @@ class UserController extends AbstractController
             /** @var User $user */
             $user = $this->em->getRepository(User::class)->findOneBy(['userId' => $userId]);
         } else {
-            $user = (new User())->setRoles(['ROLE_USER']);
+            $user = (new User())->setRoles(['ROLE_USER', 'ROLE_ANONYMOUS']);
             $this->em->persist($user);
         }
 
@@ -175,7 +175,7 @@ class UserController extends AbstractController
         try {
             $this->em->flush($user);
         } catch (Exception $e) {
-            $this->logger->error($e);
+            $this->logger->error($e->getMessage());
             return $this->formatError("Update failed");
         }
         

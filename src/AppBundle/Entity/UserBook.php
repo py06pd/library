@@ -105,6 +105,15 @@ class UserBook implements JsonSerializable
     }
 
     /**
+     * Gets book
+     * @return Book
+     */
+    public function getBook() : Book
+    {
+        return $this->book;
+    }
+
+    /**
      * Sets book
      * @param Book $book
      * @return UserBook

@@ -6,11 +6,12 @@ Vue.use(Router);
 import AuthorBooks from '../components/AuthorBooks.vue';
 import AuthorList from '../components/AuthorList.vue';
 import BookList from '../components/BookList.vue';
+import GroupList from '../components/GroupList.vue';
 import LendingList from '../components/LendingList.vue';
 import MyAccount from '../components/MyAccount.vue';
 import SeriesBooks from '../components/SeriesBooks.vue';
 import SeriesList from '../components/SeriesList.vue';
-import UserList from '../components/UserList';
+import UserList from '../components/UserList.vue';
 import Wishlist from '../components/Wishlist.vue';
 
 export default new Router({
@@ -44,6 +45,10 @@ export default new Router({
             path: '/series/:id',
             component: SeriesBooks,
             props: (route) => ({seriesId: parseInt(route.params.id)}),
+        },
+        {
+            path: '/groups',
+            component: GroupList,
         },
         {
             path: '/users',

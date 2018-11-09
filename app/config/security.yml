@@ -24,6 +24,7 @@ security:
             
         main:
             stateless: true
+            provider: app
             guard:
                 authenticators:
                     - app.cookieauthenticator

@@ -235,7 +235,7 @@ class UserControllerTest extends TestCase
                 'name' => "test one",
                 'username' => "test01",
                 'roles' => ['ROLE_TEST'],
-                'groupUsers' => []
+                'groups' => []
             ]]),
             $result->getContent()
         );
@@ -292,14 +292,14 @@ class UserControllerTest extends TestCase
                     'name' => "test one",
                     'username' => "test01",
                     'roles' => ['ROLE_TEST1'],
-                    'groupUsers' => []
+                    'groups' => []
                 ],
                 [
                     'userId' => 124,
                     'name' => "test two",
                     'username' => "test02",
                     'roles' => ['ROLE_TEST2'],
-                    'groupUsers' => []
+                    'groups' => []
                 ]
             ]]),
             $result->getContent()
@@ -453,7 +453,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(json_encode(['status' => "OK"]), $result->getContent());
         $this->assertEquals("test one", $user->getName());
         $this->assertEquals("test01", $user->getUsername());
-        $this->assertEquals(['ROLE_USER'], $user->getRoles());
+        $this->assertEquals(['ROLE_USER', 'ROLE_ANONYMOUS'], $user->getRoles());
     }
 
     //</editor-fold>

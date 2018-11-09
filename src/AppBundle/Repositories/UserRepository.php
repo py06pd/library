@@ -39,9 +39,10 @@ class UserRepository extends EntityRepository
     private function getBaseQuery()
     {
         $qb = $this->_em->createQueryBuilder();
-        return $qb->select('u', 'g', 'gu')
+        return $qb->select('u', 'ug', 'g', 'gu')
             ->from(User::class, 'u')
-            ->leftJoin('u.groups', 'g')
+            ->leftJoin('u.groups', 'ug')
+            ->leftJoin('ug.group', 'g')
             ->leftJoin('g.users', 'gu');
     }
 }

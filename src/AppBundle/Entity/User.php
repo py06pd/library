@@ -50,12 +50,8 @@ class User implements JsonSerializable, UserInterface
 
     /**
      * Groups
-     * @var UserGroup[]|Collection
-     * @ORM\ManyToMany(targetEntity="UserGroup", inversedBy="users")
-     * @ORM\JoinTable(name="groupuser",
-     *     joinColumns={@ORM\JoinColumn(name="userid", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="id", referencedColumnName="group_id")}
-     * )
+     * @var GroupUser[]|Collection
+     * @ORM\OneToMany(targetEntity="GroupUser", mappedBy="user")
      */
     private $groups;
 
@@ -188,24 +184,6 @@ class User implements JsonSerializable, UserInterface
         $this->roles = $roles;
         return $this;
     }
-    
-    /**
-     * Gets group users
-     * @return User[]|Collection
-     */
-    public function getGroupUsers()
-    {
-        $groupUsers = new ArrayCollection();
-        foreach ($this->groups as $group) {
-            foreach ($group->getUsers() as $user) {
-                if (!$groupUsers->containsKey($user->getId())) {
-                    $groupUsers->set($user->getId(), $user);
-                }
-            }
-        }
-        
-        return $groupUsers;
-    }
 
     /**
      * Add mapped group
@@ -214,8 +192,67 @@ class User implements JsonSerializable, UserInterface
      */
     public function addGroup(UserGroup $group) : User
     {
-        $this->groups->add($group);
+        $this->groups->add(new GroupUser($this, $group));
         return $this;
+    }
+
+    /**
+     * Get a user in one of this user's groups
+     * @param int $userId
+     * @return User|null
+     */
+    public function getGroupUser(int $userId)
+    {
+        foreach ($this->groups as $group) {
+            foreach ($group->getGroup()->getUsers() as $user) {
+                if ($user->getId() == $userId) {
+                    return $user;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets users in groups
+     * @return User[]
+     */
+    public function getGroupUsers()
+    {
+        $users = [];
+        foreach ($this->groups as $group) {
+            foreach ($group->getGroup()->getUsers() as $user) {
+                $users[] = $user;
+            }
+        }
+
+        return $users;
+    }
+
+    /**
+     * Gets user groups
+     * @return GroupUser[]
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    /**
+     * Checks if user is in given group
+     * @param int $groupId
+     * @return bool
+     */
+    public function inGroup(int $groupId) : bool
+    {
+        foreach ($this->groups as $group) {
+            if ($group->getGroup()->getId() == $groupId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -232,17 +269,17 @@ class User implements JsonSerializable, UserInterface
      */
     public function jsonSerialize()
     {
-        $users = $this->getGroupUsers();
-        $groupUsers = [];
-        foreach ($users as $user) {
-            $groupUsers[] = ['userId' => $user->getId(), 'name' => $user->getName()];
+        $groups = [];
+        foreach ($this->groups as $group) {
+            $groups[] = $group->getGroup()->jsonSerialize();
         }
+
         return [
             'userId' => $this->getId(),
             'name' => $this->getName(),
             'username' => $this->getUsername(),
             'roles' => $this->roles,
-            'groupUsers' => $groupUsers
+            'groups' => $groups
         ];
     }
 }

@@ -57,7 +57,7 @@ class WishlistController extends AbstractController
     {
         $userId = $request->request->get('userId');
 
-        if ($userId != $this->user->getId() && !$this->user->getGroupUsers()->containsKey($userId)) {
+        if ($userId != $this->user->getId() && !$this->user->getGroupUser($userId)) {
             return $this->formatError("Invalid request");
         }
 
@@ -89,7 +89,7 @@ class WishlistController extends AbstractController
         $bookId = $request->request->get('bookId');
         $userId = $request->request->get('userId');
 
-        if (!$this->user->getGroupUsers()->containsKey($userId)) {
+        if (!$this->user->getGroupUser($userId)) {
             return $this->formatError("Invalid request");
         }
 
@@ -113,7 +113,7 @@ class WishlistController extends AbstractController
         $userId = $request->request->get('userId');
         $text = trim($request->request->get('text'));
 
-        if ($userId != $this->user->getId() && !$this->user->getGroupUsers()->containsKey($userId)) {
+        if ($userId != $this->user->getId() && !$this->user->getGroupUser($userId)) {
             return $this->formatError("Invalid request");
         }
 

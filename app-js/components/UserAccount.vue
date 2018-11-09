@@ -12,7 +12,11 @@
                 <el-form-item label="Password">
                     <el-input type="password" v-model="user.password"/>
                 </el-form-item>
-                <el-button type="primary" @click="updateAccount">Save</el-button>
+                <el-button-group v-if="closable">
+                    <el-button type="primary" @click="updateAccount">Save</el-button>
+                    <el-button @click="close">Cancel</el-button>
+                </el-button-group>
+                <el-button v-else type="primary" @click="updateAccount">Save</el-button>
             </el-form>
         </div>
         <br>
@@ -39,16 +43,20 @@
 </template>
 
 <script>
-    import { Button, Form, FormItem, Input } from 'element-ui';
+    import { Button, ButtonGroup, Form, FormItem, Input } from 'element-ui';
     import User from '../models/user';
     let Http = require('../mixins/Http');
 
     export default {
         name: 'user-account',
         mixins: [ Http ],
-        props: { value : { type: Object } },
+        props: {
+            closable : { type: Boolean, default: false },
+            value : { type: Object },
+        },
         components: {
             'el-button': Button,
+            'el-button-group': ButtonGroup,
             'el-form': Form,
             'el-form-item': FormItem,
             'el-input': Input,
@@ -70,6 +78,10 @@
             this.loadSessions();
         },
         methods: {
+            close () {
+                this.$emit('blur');
+            },
+
             loadSessions () {
                 this.sessions = [];
                 this.load('user/getSessions', { userId: this.value.getId() }).then(function(response) {
@@ -93,11 +105,14 @@
                 }
 
                 var params = {
-                    userId: this.value.getId(),
                     name: this.user.name,
-                    newUsername: this.user.username,
+                    newUsername: this.user.getUsername(),
                     newPassword: this.user.password,
                 };
+
+                if (this.user.getId()) {
+                    params.userId = this.value.getId();
+                }
 
                 this.save('user/save', params).then(function(response) {
                     if (response.body.status === 'OK') {

@@ -1,12 +1,13 @@
 <template>
     <div>
-        <el-button-group id="controls">
-            <template v-if="$root.user.hasRole('ROLE_LIBRARIAN')">
+        <template v-if="$root.user.hasRole('ROLE_LIBRARIAN')">
+            <el-button-group id="controls">
                 <el-button type="primary" icon="plus" @click="openAdd"></el-button>
                 <el-button type="primary" icon="delete" @click="deleteItems"></el-button>
-            </template>
-            <el-button type="primary" icon="search" @click="openSearch"></el-button>
-        </el-button-group>
+                <el-button type="primary" icon="search" @click="openSearch"></el-button>
+            </el-button-group>
+        </template>
+        <el-button v-else type="primary" icon="search" @click="openSearch"></el-button>
 
         <book-filter v-show="searchOpen" @input="handleFilterChange" />
 

@@ -63,7 +63,7 @@ class BookControllerTest extends TestCase
         $this->mockEm = $this->createMock(EntityManager::class);
         $this->mockTemplating = $this->createMock(EngineInterface::class);
 
-        $group = (new UserGroup())->addUser((new User())->setId(123)->setName("testUser"));
+        $group = (new UserGroup("group1"))->setId(122)->addUser((new User())->setId(123)->setName("testUser"));
         $this->user = (new User())->setId(99999)->setName("test one")->setUsername("test01")->setRoles(['ROLE_USER'])
             ->addGroup($group);
         $tokenStorage = new TokenStorage();
@@ -81,7 +81,7 @@ class BookControllerTest extends TestCase
     /**
      * @test
      */
-    public function givenUserDoesNotHaveAdminRoleWhenDeleteCalledThenErrorMessageReturned()
+    public function givenUserDoesNotHaveLibrarianRoleWhenDeleteCalledThenErrorMessageReturned()
     {
         // Arrange
         $this->user->setRoles(["ROLE_USER"]);
@@ -99,14 +99,91 @@ class BookControllerTest extends TestCase
     /**
      * @test
      */
+    public function givenBookNotFoundWhenDeleteCalledThenErrorMessageReturned()
+    {
+        // Arrange
+        $this->user->setRoles(["ROLE_LIBRARIAN"]);
+
+        $mockRepo = $this->createMock(EntityRepository::class);
+        $mockRepo->expects($this->once())
+            ->method('findBy')
+            ->with(['bookId' => [123, 124]])
+            ->willReturn([]);
+
+        $this->mockEm->expects($this->once())
+            ->method('getRepository')
+            ->with(Book::class)
+            ->willReturn($mockRepo);
+
+        // Act
+        $result = $this->client->delete(new Request([], ['bookIds' => [123, 124]]));
+
+        // Assert
+        $this->assertEquals(
+            json_encode(['status' => "error", 'errorMessage' => "Invalid form data"]),
+            $result->getContent()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function givenUserDoesNotHaveAdminRoleAndNotOnlyUserWhenDeleteCalledThenErrorMessageReturned()
+    {
+        // Arrange
+        $this->user->setRoles(["ROLE_LIBRARIAN"]);
+
+        $mockRepo = $this->createMock(EntityRepository::class);
+        $mockRepo->expects($this->once())
+            ->method('findBy')
+            ->with(['bookId' => [123, 124]])
+            ->willReturn([
+                (new Book("test1"))->setCreator(new User("test01")),
+                (new Book("test2"))->setCreator(new User("test02"))
+            ]);
+
+        $this->mockEm->expects($this->once())
+            ->method('getRepository')
+            ->with(Book::class)
+            ->willReturn($mockRepo);
+
+        // Act
+        $result = $this->client->delete(new Request([], ['bookIds' => [123, 124]]));
+
+        // Assert
+        $this->assertEquals(
+            json_encode(['status' => "error", 'errorMessage' => "Insufficient user rights"]),
+            $result->getContent()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function givenSaveFailsWhenDeleteCalledThenErrorMessageReturned()
     {
         // Arrange
-        $this->user->setRoles(["ROLE_ADMIN"]);
+        $this->user->setRoles(["ROLE_LIBRARIAN"]);
+
+        $books = [
+            (new Book("test1"))->setCreator($this->user)->addUser(new UserBook($this->user)),
+            (new Book("test2"))->setCreator($this->user)
+        ];
+
+        $mockRepo = $this->createMock(EntityRepository::class);
+        $mockRepo->expects($this->once())
+            ->method('findBy')
+            ->with(['bookId' => [123, 124]])
+            ->willReturn($books);
+
+        $this->mockEm->expects($this->once())
+            ->method('getRepository')
+            ->with(Book::class)
+            ->willReturn($mockRepo);
 
         $this->mockBookService->expects($this->once())
             ->method('delete')
-            ->with([123, 124])
+            ->with($books)
             ->willReturn(false);
 
         // Act
@@ -125,11 +202,24 @@ class BookControllerTest extends TestCase
     public function givenSaveSucceedsWhenDeleteCalledThenOKStatusReturned()
     {
         /// Arrange
-        $this->user->setRoles(["ROLE_ADMIN"]);
+        $this->user->setRoles(["ROLE_ADMIN","ROLE_LIBRARIAN"]);
+
+        $books = [new Book("test1"), new Book("test2")];
+
+        $mockRepo = $this->createMock(EntityRepository::class);
+        $mockRepo->expects($this->once())
+            ->method('findBy')
+            ->with(['bookId' => [123, 124]])
+            ->willReturn($books);
+
+        $this->mockEm->expects($this->once())
+            ->method('getRepository')
+            ->with(Book::class)
+            ->willReturn($mockRepo);
 
         $this->mockBookService->expects($this->once())
             ->method('delete')
-            ->with([123, 124])
+            ->with($books)
             ->willReturn(true);
 
         // Act
@@ -275,7 +365,13 @@ class BookControllerTest extends TestCase
                     'name' => "test one",
                     'username' => "test01",
                     'roles' => ['ROLE_USER'],
-                    'groupUsers' => [['userId' => 123, 'name' => "testUser"]]
+                    'groups' => [
+                        [
+                            'groupId' => 122,
+                            'name' => "group1",
+                            'users' => [['userId' => 123, 'name' => "testUser"]]
+                        ]
+                    ]
                 ],
                 'query' => []
             ]);
@@ -753,7 +849,7 @@ class BookControllerTest extends TestCase
     /**
      * @test
      */
-    public function givenUserDoesNotHaveAdminRoleWhenSaveCalledThenErrorMessageReturned()
+    public function givenUserDoesNotHaveLibrarianRoleWhenSaveCalledThenErrorMessageReturned()
     {
         // Arrange
         $this->user->setRoles(["ROLE_USER"]);
@@ -771,17 +867,82 @@ class BookControllerTest extends TestCase
     /**
      * @test
      */
+    public function givenBookNotFoundWhenSaveCalledThenErrorMessageReturned()
+    {
+        // Arrange
+        $this->user->setRoles(["ROLE_LIBRARIAN"]);
+
+        $mockRepo = $this->createMock(BookRepository::class);
+        $mockRepo->expects($this->once())
+            ->method('getBookById')
+            ->with(123)
+            ->willReturn(null);
+
+        $this->mockEm->expects($this->once())
+            ->method('getRepository')
+            ->with(Book::class)
+            ->willReturn($mockRepo);
+
+        $this->mockBookService->expects($this->never())
+            ->method('save');
+
+        // Act
+        $result = $this->client->save(new Request([], ['data' => json_encode(['bookId' => 123])]));
+
+        // Assert
+        $this->assertEquals(
+            json_encode(['status' => "error", 'errorMessage' => "Invalid form data"]),
+            $result->getContent()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function givenUserDoesNotHaveAdminRoleAndNotOnlyUserWhenSaveCalledThenErrorMessageReturned()
+    {
+        // Arrange
+        $this->user->setRoles(["ROLE_LIBRARIAN"]);
+
+        $mockRepo = $this->createMock(BookRepository::class);
+        $mockRepo->expects($this->once())
+            ->method('getBookById')
+            ->with(123)
+            ->willReturn((new Book("test1"))->setCreator(new User("test01")));
+
+        $this->mockEm->expects($this->once())
+            ->method('getRepository')
+            ->with(Book::class)
+            ->willReturn($mockRepo);
+
+        $this->mockBookService->expects($this->never())
+            ->method('save');
+
+        // Act
+        $result = $this->client->save(new Request([], ['data' => json_encode(['bookId' => 123])]));
+
+        // Assert
+        $this->assertEquals(
+            json_encode(['status' => "error", 'errorMessage' => "Insufficient user rights"]),
+            $result->getContent()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function givenSaveFailsWhenSaveCalledThenErrorMessageReturned()
     {
         // Arrange
-        $this->user->setRoles(["ROLE_ADMIN"]);
+        $this->user->setRoles(["ROLE_LIBRARIAN"]);
 
         $expected = (new Book("test1"))->setId(123)->setType("type1")->setGenres(['genres1', 'genres2'])
             ->addAuthor(new Author('author1'))->addAuthor(new Author("testy testing"))
             ->addSeries(new Series('series1', 'sequence'), 126)
-            ->addSeries(new Series('series2', 'sequence'), 127);
+            ->addSeries(new Series('series2', 'sequence'), 127)
+            ->setCreator($this->user);
 
-        $mockRepo = $this->createMock(EntityRepository::class);
+        $mockRepo = $this->createMock(BookRepository::class);
         $mockRepo->expects($this->exactly(2))
             ->method('findOneBy')
             ->withConsecutive([['authorId' => 124]], [['seriesId' => 125]])
@@ -789,10 +950,14 @@ class BookControllerTest extends TestCase
                 new Author("author1"),
                 new Series('series1', 'sequence')
             );
+        $mockRepo->expects($this->once())
+            ->method('getBookById')
+            ->with(123)
+            ->willReturn((new Book("test1"))->setCreator($this->user)->addUser(new UserBook($this->user)));
 
-        $this->mockEm->expects($this->exactly(2))
+        $this->mockEm->expects($this->exactly(3))
             ->method('getRepository')
-            ->withConsecutive([Author::class], [Series::class])
+            ->withConsecutive([Book::class], [Author::class], [Series::class])
             ->willReturn($mockRepo);
 
         $this->mockBookService->expects($this->once())
@@ -826,14 +991,15 @@ class BookControllerTest extends TestCase
     public function givenSaveSucceedsWhenSaveCalledThenOKStatusAndNewAuthorsAndNewSeriesReturned()
     {
         // Arrange
-        $this->user->setRoles(["ROLE_ADMIN"]);
+        $this->user->setRoles(["ROLE_ADMIN","ROLE_LIBRARIAN"]);
 
         $expected = (new Book("test1"))->setId(123)->setType("type1")->setGenres(['genres1', 'genres2'])
             ->addAuthor(new Author('author1'))->addAuthor(new Author("testy testing"))
             ->addSeries(new Series('series1', 'sequence'), 126)
-            ->addSeries(new Series('series2', 'sequence'), 127);
+            ->addSeries(new Series('series2', 'sequence'), 127)
+            ->setCreator($this->user);
 
-        $mockRepo = $this->createMock(EntityRepository::class);
+        $mockRepo = $this->createMock(BookRepository::class);
         $mockRepo->expects($this->exactly(2))
             ->method('findOneBy')
             ->withConsecutive([['authorId' => 124]], [['seriesId' => 125]])
@@ -841,10 +1007,14 @@ class BookControllerTest extends TestCase
                 new Author("author1"),
                 new Series('series1', 'sequence')
             );
+        $mockRepo->expects($this->once())
+            ->method('getBookById')
+            ->with(123)
+            ->willReturn(new Book("test1"));
 
-        $this->mockEm->expects($this->exactly(2))
+        $this->mockEm->expects($this->exactly(3))
             ->method('getRepository')
-            ->withConsecutive([Author::class], [Series::class])
+            ->withConsecutive([Book::class], [Author::class], [Series::class])
             ->willReturn($mockRepo);
 
         $this->mockBookService->expects($this->once())

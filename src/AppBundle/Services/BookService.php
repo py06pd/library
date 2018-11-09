@@ -313,10 +313,9 @@ class BookService
         }
 
         $total = [];
-        $groupUsers = $user->getGroupUsers();
         foreach ($book->getUsers() as $record) {
             $userId = $record->getUser()->getId();
-            if ($groupUsers->get($userId)) {
+            if ($user->getGroupUser($userId)) {
                 if ($record->isOwned()) {
                     if (!isset($total[$userId])) {
                         $total[$userId] = $record->getStock();
@@ -345,7 +344,7 @@ class BookService
 
         foreach ($total as $ownerId => $stock) {
             if ($stock > 0) {
-                $bookUser->setRequestedFrom($groupUsers->get($ownerId))
+                $bookUser->setRequestedFrom($user->getGroupUser($ownerId))
                     ->setRequestedTime($this->dateTime->getNow());
                 break;
             }

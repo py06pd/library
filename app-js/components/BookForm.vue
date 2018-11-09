@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog id="frmBook" title="Edit Book" :top="dialogYOffset" :visible="formOpen" @open="loadBook" :before-close="close">
+        <el-dialog id="frmBook" class="cic-dialog" title="Edit Book" :top="dialogYOffset" :visible="formOpen" @open="loadBook" :before-close="close">
             <el-form>
                 <el-form-item label="Title">
                     <el-input class="name" v-model="book.name"></el-input>

@@ -1,18 +1,26 @@
 export default class User {
     constructor(data = {}) {
-        this.groupUsers = [];
+        this.password = '********';
+        this.groups = [];
         this.roles = [];
         if (Object.keys(data).length > 0) {
             this.userId = data.userId;
             this.name = data.name;
             this.username = data.username;
             this.roles = data.roles;
-            this.groupUsers = data.groupUsers;
+            this.groups = data.groups;
         }
     }
 
     getGroupUsers() {
-        return this.groupUsers;
+        let users = [];
+        for (let i in this.groups) {
+            for (let j in this.groups[i].users) {
+                users.push(this.groups[i].users[j]);
+            }
+        }
+
+        return users;
     }
 
     getId() {
@@ -47,7 +55,7 @@ export default class User {
             name: this.name,
             username: this.username,
             roles: this.roles,
-            groupUsers: this.groupUsers,
+            groups: this.groups,
         };
     }
 }
