@@ -84,11 +84,13 @@
 
             loadSessions () {
                 this.sessions = [];
-                this.load('user/getSessions', { userId: this.value.getId() }).then(function(response) {
-                    if (response.body.status === 'OK') {
-                        this.sessions = response.body.data;
-                    }
-                });
+                if (this.value.getId()) {
+                    this.load('user/getSessions', {userId: this.value.getId()}).then(function (response) {
+                        if (response.body.status === 'OK') {
+                            this.sessions = response.body.data;
+                        }
+                    });
+                }
             },
 
             updateAccount () {
@@ -106,7 +108,7 @@
 
                 var params = {
                     name: this.user.name,
-                    newUsername: this.user.getUsername(),
+                    newUsername: this.user.username,
                     newPassword: this.user.password,
                 };
 
