@@ -148,7 +148,7 @@ class BookController extends AbstractController
                 $values = $this->em->getRepository(Author::class)->findBy([], ['name' => 'ASC', 'forename' => 'ASC']);
                 break;
             case 'genre':
-                $books = $this->bookService->search();
+                $books = $this->bookService->search($total, [], -1);
                 foreach ($books as $book) {
                     foreach ($book->getGenres() as $genre) {
                         if (!in_array($genre, $values)) {
@@ -162,7 +162,7 @@ class BookController extends AbstractController
                 $values = $this->em->getRepository(Series::class)->findBy([], ['name' => 'ASC']);
                 break;
             case 'type':
-                $books = $this->bookService->search();
+                $books = $this->bookService->search($total, [], -1);
                 foreach ($books as $book) {
                     if (!in_array($book->getType(), $values)) {
                         $values[] = $book->getType();
@@ -215,7 +215,7 @@ class BookController extends AbstractController
         $total = 0;
 
         /** @var Book[] $data */
-        $data = $this->bookService->search($total);
+        $data = $this->bookService->search($total, [], -1);
         
         $authors = $this->em->getRepository(Author::class)->findBy([], ['name' => "ASC", 'forename' => "ASC"]);
         $series = $this->em->getRepository(Series::class)->findBy([], ['name' => "ASC"]);

@@ -112,7 +112,7 @@
                     newPassword: this.user.password,
                 };
 
-                if (this.user.getId()) {
+                if (this.value.getId()) {
                     params.userId = this.value.getId();
                 }
 
