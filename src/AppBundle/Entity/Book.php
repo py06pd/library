@@ -25,14 +25,19 @@ class Book implements JsonSerializable
      * @ORM\Column(type="string", length=256)
      */
     private $name;
-    
+
     /**
-     * @ORM\Column(type="string", length=256, nullable=true)
+     * Type
+     * @var Type
+     * @ORM\ManyToOne(targetEntity="Type", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id")
      */
     private $type;
-    
+
     /**
-     * @ORM\Column(type="json_array", length=1024, nullable=true)
+     * Genres
+     * @var BookGenre[]
+     * @ORM\OneToMany(targetEntity="BookGenre", mappedBy="book", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $genres;
 
@@ -73,6 +78,7 @@ class Book implements JsonSerializable
     {
         $this->name = $name;
         $this->authors = new ArrayCollection();
+        $this->genres = new ArrayCollection();
         $this->series = new ArrayCollection();
         $this->users = new ArrayCollection();
     }
@@ -119,7 +125,7 @@ class Book implements JsonSerializable
 
     /**
      * Gets type
-     * @return string|null
+     * @return Type|null
      */
     public function getType()
     {
@@ -128,36 +134,71 @@ class Book implements JsonSerializable
     
     /**
      * Sets type
-     * @param string|null $type
+     * @param Type|null $type
      * @return Book
      */
-    public function setType(string $type = null) : Book
+    public function setType(Type $type = null) : Book
     {
         $this->type = $type;
         return $this;
     }
-    
+
+    /**
+     * Adds genre to book genres
+     * @param Genre $genre
+     * @return Book
+     */
+    public function addGenre(Genre $genre) : Book
+    {
+        $this->genres->add(new BookGenre($this, $genre));
+        return $this;
+    }
+
     /**
      * Gets genres
-     * @return array
+     * @return Genre[]|ArrayCollection
      */
     public function getGenres()
     {
+        $genres = [];
         if ($this->genres) {
-            return $this->genres;
+            foreach ($this->genres as $genre) {
+                $genres[] = $genre->getGenre();
+            }
         }
-        
-        return [];
+
+        return new ArrayCollection($genres);
     }
-    
+
     /**
-     * Sets genres
-     * @param array|null $genres
-     * @return Book
+     * Checks if book is by an genre
+     * @param Genre $genre
+     * @return bool
      */
-    public function setGenres(array $genres = null) : Book
+    public function hasGenre(Genre $genre) : bool
     {
-        $this->genres = $genres;
+        foreach ($this->genres as $bookGenre) {
+            if ($bookGenre->getGenre() === $genre) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Remove genre from book
+     * @param Genre $genre
+     * @return $this
+     */
+    public function removeGenre(Genre $genre)
+    {
+        foreach ($this->genres as $bookGenre) {
+            if ($bookGenre->getGenre() === $genre) {
+                $this->genres->removeElement($bookGenre);
+            }
+        }
+
         return $this;
     }
 
@@ -216,7 +257,7 @@ class Book implements JsonSerializable
     public function hasAuthor(Author $author) : bool
     {
         foreach ($this->authors as $bookAuthor) {
-            if ($bookAuthor->getAuthor() == $author) {
+            if ($bookAuthor->getAuthor() === $author) {
                 return true;
             }
         }
@@ -232,7 +273,7 @@ class Book implements JsonSerializable
     public function removeAuthor(Author $author)
     {
         foreach ($this->authors as $bookAuthor) {
-            if ($bookAuthor->getAuthor() == $author) {
+            if ($bookAuthor->getAuthor() === $author) {
                 $this->authors->removeElement($bookAuthor);
             }
         }
@@ -285,7 +326,7 @@ class Book implements JsonSerializable
     public function inSeries(Series $series) : bool
     {
         foreach ($this->series as $bookSeries) {
-            if ($bookSeries->getSeries() == $series) {
+            if ($bookSeries->getSeries() === $series) {
                 return true;
             }
         }
@@ -301,7 +342,7 @@ class Book implements JsonSerializable
     public function removeSeries(Series $series)
     {
         foreach ($this->series as $bookSeries) {
-            if ($bookSeries->getSeries() == $series) {
+            if ($bookSeries->getSeries() === $series) {
                 $this->series->removeElement($bookSeries);
             }
         }
@@ -379,6 +420,11 @@ class Book implements JsonSerializable
         foreach ($this->authors as $author) {
             $authors[] = $author->getAuthor()->jsonSerialize();
         }
+
+        $genres = [];
+        foreach ($this->genres as $genre) {
+            $genres[] = $genre->getGenre()->jsonSerialize();
+        }
         
         $series = [];
         foreach ($this->series as $s) {
@@ -393,10 +439,10 @@ class Book implements JsonSerializable
         return [
             'bookId' => $this->bookId,
             'name' => $this->name,
-            'type' => $this->type,
+            'type' => $this->type ? $this->type->jsonSerialize() : null,
             'creatorId' => $this->creator ? $this->creator->getId() : null,
             'authors' => $authors,
-            'genres' => $this->getGenres(),
+            'genres' => $genres,
             'series' => $series,
             'users' => $users
         ];

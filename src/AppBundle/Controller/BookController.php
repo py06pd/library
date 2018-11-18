@@ -4,7 +4,9 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Author;
 use AppBundle\Entity\Book;
+use AppBundle\Entity\Genre;
 use AppBundle\Entity\Series;
+use AppBundle\Entity\Type;
 use AppBundle\Entity\User;
 use AppBundle\Entity\UserBook;
 use AppBundle\Repositories\BookRepository;
@@ -148,27 +150,13 @@ class BookController extends AbstractController
                 $values = $this->em->getRepository(Author::class)->findBy([], ['name' => 'ASC', 'forename' => 'ASC']);
                 break;
             case 'genre':
-                $books = $this->bookService->search($total, [], -1);
-                foreach ($books as $book) {
-                    foreach ($book->getGenres() as $genre) {
-                        if (!in_array($genre, $values)) {
-                            $values[] = $genre;
-                        }
-                    }
-                }
-                sort($values);
+                $values = $this->em->getRepository(Genre::class)->findBy([], ['name' => 'ASC']);
                 break;
             case 'series':
                 $values = $this->em->getRepository(Series::class)->findBy([], ['name' => 'ASC']);
                 break;
             case 'type':
-                $books = $this->bookService->search($total, [], -1);
-                foreach ($books as $book) {
-                    if (!in_array($book->getType(), $values)) {
-                        $values[] = $book->getType();
-                    }
-                }
-                sort($values);
+                $values = $this->em->getRepository(Type::class)->findBy([], ['name' => 'ASC']);
                 break;
         }
         
@@ -211,31 +199,11 @@ class BookController extends AbstractController
                 return $this->formatError("Invalid request");
             }
         }
-
-        $total = 0;
-
-        /** @var Book[] $data */
-        $data = $this->bookService->search($total, [], -1);
         
         $authors = $this->em->getRepository(Author::class)->findBy([], ['name' => "ASC", 'forename' => "ASC"]);
+        $genres = $this->em->getRepository(Genre::class)->findBy([], ['name' => "ASC"]);
         $series = $this->em->getRepository(Series::class)->findBy([], ['name' => "ASC"]);
-        
-        $genres = [];
-        $types = [];
-        foreach ($data as $item) {
-            foreach ($item->getGenres() as $value) {
-                if (!in_array($value, $genres)) {
-                    $genres[] = $value;
-                }
-            }
-            
-            if ($item->getType() && !in_array($item->getType(), $types)) {
-                $types[] = $item->getType();
-            }
-        }
-
-        sort($genres);
-        sort($types);
+        $types = $this->em->getRepository(Type::class)->findBy([], ['name' => "ASC"]);
         
         return $this->json([
             'status' => "OK",
@@ -345,9 +313,37 @@ class BookController extends AbstractController
 
         $book = new Book($data['name']);
         $book->setId($data['bookId']);
-        $book->setType($data['type']);
-        $book->setGenres($data['genres']);
         $book->setCreator($this->user);
+
+        $newTypes = [];
+        if (isset($data['type'])) {
+            if (isset($data['type']['typeId'])) {
+                /** @var Type $type */
+                $type = $this->em->getRepository(Type::class)->findOneBy(['typeId' => $data['type']['typeId']]);
+                if ($type) {
+                    $book->setType($type);
+                }
+            } else {
+                $type = new Type(trim($data['type']['name']));
+                $book->setType($type);
+                $newTypes[] = $type;
+            }
+        }
+
+        $newGenres = [];
+        foreach ($data['genres'] as $a) {
+            if (isset($a['genreId'])) {
+                /** @var Genre $genre */
+                $genre = $this->em->getRepository(Genre::class)->findOneBy(['genreId' => $a['genreId']]);
+                if ($genre) {
+                    $book->addGenre($genre);
+                }
+            } else {
+                $genre = new Genre(trim($a['name']));
+                $book->addGenre($genre);
+                $newGenres[] = $genre;
+            }
+        }
 
         $newAuthors = [];
         foreach ($data['authors'] as $a) {
@@ -384,7 +380,13 @@ class BookController extends AbstractController
             return $this->formatError('Save failed');
         }
         
-        return $this->json(['status' => "OK", 'newAuthors' => $newAuthors, 'newSeries' => $newSeries]);
+        return $this->json([
+            'status' => "OK",
+            'newAuthors' => $newAuthors,
+            'newGenres' => $newGenres,
+            'newSeries' => $newSeries,
+            'newTypes' => $newTypes
+        ]);
     }
     
 

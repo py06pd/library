@@ -25,7 +25,7 @@
                     {{ book.getName() }}
                 </td>
                 <td v-if="columns.indexOf('type') !== -1" class="not-for-mobile">
-                    {{ book.getType() }}
+                    {{ book.getTypeName() }}
                 </td>
                 <td v-if="columns.indexOf('author') !== -1">
                     <span class="author-link" v-for="a in book.getAuthors()" @click="selectAuthor(a.getId())">
@@ -33,7 +33,7 @@
                     </span>
                 </td>
                 <td v-if="columns.indexOf('genre') !== -1" class="not-for-mobile">
-                    {{ book.getGenres().join(', ') }}
+                    {{ book.getGenreNames().join(', ') }}
                 </td>
                 <td v-if="columns.indexOf('series') !== -1" class="not-for-mobile">
                     <span class="series-link" v-for="s in book.getSeries()" @click="selectSeries(s.getId())">

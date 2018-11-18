@@ -138,7 +138,7 @@
                             });
                         } else {
                             for (let g in this.genres) {
-                                this.values[this.genres[g]] = this.genres[g];
+                                this.values['a' + this.genres[g].genreId] = this.genres[g].name;
                             }
                         }
                         break;
@@ -173,7 +173,7 @@
                             });
                         } else {
                             for (let t in this.types) {
-                                this.values[this.types[t]] = this.types[t];
+                                this.values['a' + this.types[t].typeId] = this.types[t].name;
                             }
                         }
                         break;
@@ -194,7 +194,7 @@
                         newFilter.field = i.substring(0, i.length - 1);
                     }
 
-                    if (['author', 'owner', 'read', 'series'].indexOf(newFilter.field) !== -1) {
+                    if (['author', 'genre', 'owner', 'read', 'series', 'type'].indexOf(newFilter.field) !== -1) {
                         this.filterFieldChange(newFilter.field);
                         if (isNaN(newFilter.value)) {
                             let itemKey = Object.values(this.values).findIndex(x => x.toLowerCase() === newFilter.value.toLowerCase());
@@ -217,7 +217,7 @@
                 let newFilter = true;
                 let newFilterValue = filter.value;
 
-                if (['author', 'owner', 'read', 'series'].indexOf(filter.field) !== -1) {
+                if (['author', 'genre', 'owner', 'read', 'series', 'type'].indexOf(filter.field) !== -1) {
                     newFilterValue = filter.value.substring(1);
                 }
 
@@ -265,7 +265,7 @@
 <style scoped>
     #book-filter {
         display: inline-block;
-        margin-right: 0px;
+        margin-right: 0;
         margin-left: auto;
     }
     #book-filter > div { margin-bottom: 10px; }

@@ -137,8 +137,11 @@ class BookRepository extends EntityRepository
             ->from(Book::class, 'b' . $nonce)
             ->leftJoin('b' . $nonce . '.authors', 'ba' . $nonce)
             ->leftJoin('ba' . $nonce . '.author', 'a' . $nonce)
+            ->leftJoin('b' . $nonce . '.genres', 'bg' . $nonce)
+            ->leftJoin('bg' . $nonce . '.genre', 'g' . $nonce)
             ->leftJoin('b' . $nonce . '.series', 'bs' . $nonce)
             ->leftJoin('bs' . $nonce . '.series', 's' . $nonce)
+            ->leftJoin('b' . $nonce . '.type', 't' . $nonce)
             ->leftJoin('b' . $nonce . '.users', 'bu' . $nonce)
             ->leftJoin('bu' . $nonce . '.user', 'u' . $nonce);
     }
@@ -155,8 +158,11 @@ class BookRepository extends EntityRepository
         $qb->from(Book::class, 'b')
             ->leftJoin('b.authors', 'ba')
             ->leftJoin('ba.author', 'a')
+            ->leftJoin('b.genres', 'bg')
+            ->leftJoin('bg.genre', 'g')
             ->leftJoin('b.series', 'bs')
             ->leftJoin('bs.series', 's')
+            ->leftJoin('b.type', 't')
             ->leftJoin('b.users', 'bu')
             ->leftJoin('bu.user', 'u');
 
@@ -186,7 +192,7 @@ class BookRepository extends EntityRepository
     private function buildSearchSubQuery(QueryBuilder $qb, string $nonce, QueryBuilder $bqb, array $conditions = [])
     {
         if (count($conditions) > 0) {
-            foreach ($conditions as $condition) {
+            foreach ($conditions as $key => $condition) {
                 if (in_array($condition[0], ['bu{nonce}.owned', 'bu{nonce}.read', 'bu{nonce}.wishlist'])) {
                     $userNonce = $nonce . '_' . substr($condition[0], 10);
                     $buqb = $this->_em->createQueryBuilder();
@@ -218,12 +224,15 @@ class BookRepository extends EntityRepository
     private function getBaseQuery()
     {
         $qb = $this->_em->createQueryBuilder();
-        return $qb->select('b', 'ba', 'a', 'bs', 's', 'bu', 'u', 'rf', 'bf')
+        return $qb->select('b', 'ba', 'a', 'bg', 'g', 'bs', 's', 't', 'bu', 'u', 'rf', 'bf')
             ->from(Book::class, 'b')
             ->leftJoin('b.authors', 'ba')
             ->leftJoin('ba.author', 'a')
+            ->leftJoin('b.genres', 'bg')
+            ->leftJoin('bg.genre', 'g')
             ->leftJoin('b.series', 'bs')
             ->leftJoin('bs.series', 's')
+            ->leftJoin('b.type', 't')
             ->leftJoin('b.users', 'bu')
             ->leftJoin('bu.user', 'u')
             ->leftJoin('bu.requestedFrom', 'rf')

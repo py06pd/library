@@ -5,7 +5,9 @@ namespace Tests\AppBundle\Controller;
 use AppBundle\Controller\BookController;
 use AppBundle\Entity\Author;
 use AppBundle\Entity\Book;
+use AppBundle\Entity\Genre;
 use AppBundle\Entity\Series;
+use AppBundle\Entity\Type;
 use AppBundle\Entity\User;
 use AppBundle\Entity\UserBook;
 use AppBundle\Entity\UserGroup;
@@ -416,20 +418,32 @@ class BookControllerTest extends TestCase
     {
         // Arrange
         $data = [
-            (new Book("test one"))->setGenres(['test2', 'test1']),
-            (new Book("test two"))->setGenres(['test1', 'test3'])
+            (new Genre('test1'))->setId(124),
+            (new Genre('test2'))->setId(123),
+            (new Genre('test3'))->setId(125)
         ];
 
-        $this->mockBookService->expects($this->once())
-            ->method('search')
+        $mockRepo = $this->createMock(EntityRepository::class);
+        $mockRepo->expects($this->once())
+            ->method('findBy')
+            ->with([], ['name' => 'ASC'])
             ->willReturn($data);
+
+        $this->mockEm->expects($this->once())
+            ->method('getRepository')
+            ->with(Genre::class)
+            ->willReturn($mockRepo);
 
         // Act
         $result = $this->client->getBookFilters(new Request([], ['field' => "genre"]));
 
         // Assert
         $this->assertEquals(
-            json_encode(['status' => "OK", 'data' => ['test1', 'test2', 'test3']]),
+            json_encode(['status' => "OK", 'data' => [
+                ['genreId' => 124, 'name' => 'test1'],
+                ['genreId' => 123, 'name' => 'test2'],
+                ['genreId' => 125, 'name' => 'test3']
+            ]]),
             $result->getContent()
         );
     }
@@ -467,21 +481,30 @@ class BookControllerTest extends TestCase
     {
         // Arrange
         $data = [
-            (new Book("test one"))->setType('test2'),
-            (new Book("test two"))->setType('test1'),
-            (new Book("test three"))->setType('test2')
+            (new Type('test1'))->setId(124),
+            (new Type('test2'))->setId(123)
         ];
 
-        $this->mockBookService->expects($this->once())
-            ->method('search')
+        $mockRepo = $this->createMock(EntityRepository::class);
+        $mockRepo->expects($this->once())
+            ->method('findBy')
+            ->with([], ['name' => 'ASC'])
             ->willReturn($data);
+
+        $this->mockEm->expects($this->once())
+            ->method('getRepository')
+            ->with(Type::class)
+            ->willReturn($mockRepo);
 
         // Act
         $result = $this->client->getBookFilters(new Request([], ['field' => "type"]));
 
         // Assert
         $this->assertEquals(
-            json_encode(['status' => "OK", 'data' => ['test1', 'test2']]),
+            json_encode(['status' => "OK", 'data' => [
+                ['typeId' => 124, 'name' => 'test1'],
+                ['typeId' => 123, 'name' => 'test2']
+            ]]),
             $result->getContent()
         );
     }
@@ -566,26 +589,20 @@ class BookControllerTest extends TestCase
             ->method('getBookById')
             ->with(123)
             ->willReturn((new Book("test1"))->setId(123));
-        $mockRepo->expects($this->exactly(2))
+        $mockRepo->expects($this->exactly(4))
             ->method('findBy')
             ->withConsecutive(
                 [[], ['name' => "ASC", 'forename' => "ASC"]],
+                [[], ['name' => "ASC"]],
+                [[], ['name' => "ASC"]],
                 [[], ['name' => "ASC"]]
             )
-            ->willReturnOnConsecutiveCalls(["authors"], ["series"]);
+            ->willReturnOnConsecutiveCalls(["authors"], ["genres"], ["series"], ["types"]);
 
-        $this->mockEm->expects($this->exactly(3))
+        $this->mockEm->expects($this->exactly(5))
             ->method('getRepository')
-            ->withConsecutive([Book::class], [Author::class], [Series::class])
+            ->withConsecutive([Book::class], [Author::class], [Genre::class], [Series::class], [Type::class])
             ->willReturn($mockRepo);
-
-        $this->mockBookService->expects($this->once())
-            ->method('search')
-            ->with(0)
-            ->willReturn([
-                (new Book("test2"))->setType("type2")->setGenres(['genre3', 'genre1']),
-                (new Book("test3"))->setType("type1")->setGenres(['genre2'])
-            ]);
 
         // Act
         $result = $this->client->getBook(new Request([], ['bookId' => 123]));
@@ -596,8 +613,8 @@ class BookControllerTest extends TestCase
                 'status' => "OK",
                 'data' => (new Book("test1"))->setId(123),
                 'authors' => ["authors"],
-                'genres' => ['genre1', 'genre2', 'genre3'],
-                'types' => ['type1', 'type2'],
+                'genres' => ['genres'],
+                'types' => ['types'],
                 'series' => ["series"]
             ]),
             $result->getContent()
@@ -936,17 +953,20 @@ class BookControllerTest extends TestCase
         // Arrange
         $this->user->setRoles(["ROLE_LIBRARIAN"]);
 
-        $expected = (new Book("test1"))->setId(123)->setType("type1")->setGenres(['genres1', 'genres2'])
+        $expected = (new Book("test1"))->setId(123)->setType(new Type("type1"))
+            ->addGenre((new Genre('genres1'))->setId(128))
+            ->addGenre(new Genre('genres2'))
             ->addAuthor(new Author('author1'))->addAuthor(new Author("testy testing"))
             ->addSeries(new Series('series1', 'sequence'), 126)
             ->addSeries(new Series('series2', 'sequence'), 127)
             ->setCreator($this->user);
 
         $mockRepo = $this->createMock(BookRepository::class);
-        $mockRepo->expects($this->exactly(2))
+        $mockRepo->expects($this->exactly(3))
             ->method('findOneBy')
-            ->withConsecutive([['authorId' => 124]], [['seriesId' => 125]])
+            ->withConsecutive([['genreId' => 128]], [['authorId' => 124]], [['seriesId' => 125]])
             ->willReturnOnConsecutiveCalls(
+                (new Genre('genres1'))->setId(128),
                 new Author("author1"),
                 new Series('series1', 'sequence')
             );
@@ -955,9 +975,9 @@ class BookControllerTest extends TestCase
             ->with(123)
             ->willReturn((new Book("test1"))->setCreator($this->user)->addUser(new UserBook($this->user)));
 
-        $this->mockEm->expects($this->exactly(3))
+        $this->mockEm->expects($this->exactly(4))
             ->method('getRepository')
-            ->withConsecutive([Book::class], [Author::class], [Series::class])
+            ->withConsecutive([Book::class], [Genre::class], [Author::class], [Series::class])
             ->willReturn($mockRepo);
 
         $this->mockBookService->expects($this->once())
@@ -969,8 +989,8 @@ class BookControllerTest extends TestCase
         $result = $this->client->save(new Request([], ['data' => json_encode([
             'bookId' => 123,
             'name' => "test1",
-            'type' => "type1",
-            'genres' => ['genres1', 'genres2'],
+            'type' => ['name' => "type1"],
+            'genres' => [['genreId' => 128], ['name' => 'genres2']],
             'authors' => [['authorId' => 124], ['forename' => 'testy testing']],
             'series' => [
                 ['seriesId' => 125, 'name' => "series1", 'number' => 126],
@@ -993,17 +1013,21 @@ class BookControllerTest extends TestCase
         // Arrange
         $this->user->setRoles(["ROLE_ADMIN","ROLE_LIBRARIAN"]);
 
-        $expected = (new Book("test1"))->setId(123)->setType("type1")->setGenres(['genres1', 'genres2'])
+        $expected = (new Book("test1"))->setId(123)->setType((new Type("type1"))->setId(129))
+            ->addGenre((new Genre('genres1'))->setId(128))
+            ->addGenre(new Genre('genres2'))
             ->addAuthor(new Author('author1'))->addAuthor(new Author("testy testing"))
             ->addSeries(new Series('series1', 'sequence'), 126)
             ->addSeries(new Series('series2', 'sequence'), 127)
             ->setCreator($this->user);
 
         $mockRepo = $this->createMock(BookRepository::class);
-        $mockRepo->expects($this->exactly(2))
+        $mockRepo->expects($this->exactly(4))
             ->method('findOneBy')
-            ->withConsecutive([['authorId' => 124]], [['seriesId' => 125]])
+            ->withConsecutive([['typeId' => 129]], [['genreId' => 128]], [['authorId' => 124]], [['seriesId' => 125]])
             ->willReturnOnConsecutiveCalls(
+                (new Type('type1'))->setId(129),
+                (new Genre('genres1'))->setId(128),
                 new Author("author1"),
                 new Series('series1', 'sequence')
             );
@@ -1012,9 +1036,9 @@ class BookControllerTest extends TestCase
             ->with(123)
             ->willReturn(new Book("test1"));
 
-        $this->mockEm->expects($this->exactly(3))
+        $this->mockEm->expects($this->exactly(5))
             ->method('getRepository')
-            ->withConsecutive([Book::class], [Author::class], [Series::class])
+            ->withConsecutive([Book::class], [Type::class], [Genre::class], [Author::class], [Series::class])
             ->willReturn($mockRepo);
 
         $this->mockBookService->expects($this->once())
@@ -1026,8 +1050,8 @@ class BookControllerTest extends TestCase
         $result = $this->client->save(new Request([], ['data' => json_encode([
             'bookId' => 123,
             'name' => "test1",
-            'type' => "type1",
-            'genres' => ['genres1', 'genres2'],
+            'type' => ['typeId' => 129],
+            'genres' => [['genreId' => 128], ['name' => 'genres2']],
             'authors' => [['authorId' => 124], ['forename' => 'testy testing']],
             'series' => [
                 ['seriesId' => 125, 'name' => "series1", 'number' => 126],
@@ -1040,7 +1064,9 @@ class BookControllerTest extends TestCase
             json_encode([
                 'status' => "OK",
                 'newAuthors' => [new Author("testy testing")],
-                'newSeries' => [new Series('series2', 'sequence')]
+                'newGenres' => [new Genre("genres2")],
+                'newSeries' => [new Series('series2', 'sequence')],
+                'newTypes' => []
             ]),
             $result->getContent()
         );

@@ -2,8 +2,6 @@
 /** src/AppBundle/Controller/LoginController.php */
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Book;
-use AppBundle\Entity\Genre;
 use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -22,44 +20,6 @@ class LoginController extends Controller
      */
     public function login()
     {
-        return $this->render("login.html.twig");
-    }
-    
-    /**
-     * @Route("/login/genre")
-     */
-    public function genreAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $books = $em->getRepository(Book::class)->findAll();
-        $genres = [];
-        foreach ($books as $book) {
-            foreach ($book->getGenres() as $genre) {
-                if (!in_array($genre, $genres)) {
-                    $genres[] = $genre;
-                    $em->persist(new Genre($genre));
-                }
-            }
-        }
-        
-        $em->flush();
-        
-        $aGenres = [];
-        $genres = $em->getRepository(Genre::class)->findAll();
-        foreach ($genres as $genre) {
-            $aGenres[$genre->getName()] = $genre->getId();
-        }
-        
-        foreach ($books as $book) {
-            foreach ($book->getGenres() as $genre) {
-                if (isset($aGenres[$genre])) {
-                    $book->addGenre(new BookGenre($book, $genre));
-                }
-            }
-        }
-        
-        $em->flush();
-        
         return $this->render("login.html.twig");
     }
     

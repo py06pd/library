@@ -5,7 +5,9 @@ namespace Tests\AppBundle\Services;
 use AppBundle\DateTimeFactory;
 use AppBundle\Entity\Author;
 use AppBundle\Entity\Book;
+use AppBundle\Entity\Genre;
 use AppBundle\Entity\Series;
+use AppBundle\Entity\Type;
 use AppBundle\Entity\User;
 use AppBundle\Entity\UserBook;
 use AppBundle\Entity\UserGroup;
@@ -1047,23 +1049,31 @@ class BookServiceTest extends TestCase
         $author2 = new Author("author two");
         $author3 = new Author("author three");
 
+        $genre1 = new Genre("genre1");
+        $genre2 = new Genre("genre2");
+        $genre3 = new Genre("genre3");
+
         $series1 = (new Series("series 1"))->setId(124);
         $series2 = (new Series("series 2"))->setId(125);
         $series3 = (new Series("series 3"))->setId(126);
 
-        $book = (new Book("title"))->setId(123)->setType("test type 2")->setGenres(['genre1', 'genre3'])
+        $type1 = new Type("test type");
+        $type2 = new Type("test type 2");
+
+        $book = (new Book("title"))->setId(123)->setType($type2)->addGenre($genre1)->addGenre($genre3)
             ->addAuthor($author1)->addAuthor($author3)->addSeries($series1, 1)->addSeries($series3, 3);
 
-        $expected = (new Book("title"))->setId(123)->setType("test type 2")->setGenres(['genre1', 'genre3'])
-            ->addAuthor($author1)->addAuthor($author2)->removeAuthor($author2)->addAuthor($author3)
-            ->addSeries($series1, 1)->addSeries($series2, 2)->removeSeries($series2)->addSeries($series3, 3);
+        $expected = (new Book("title"))->setId(123)->setType($type2)->addGenre($genre1)->addGenre($genre2)
+            ->removeGenre($genre2)->addGenre($genre3)->addAuthor($author1)->addAuthor($author2)->removeAuthor($author2)
+            ->addAuthor($author3)->addSeries($series1, 1)->addSeries($series2, 2)->removeSeries($series2)
+            ->addSeries($series3, 3);
 
         $mockRepo = $this->createMock(BookRepository::class);
         $mockRepo->expects($this->once())
             ->method('getBookById')
             ->with(123)
             ->willReturn(
-                (new Book("old title"))->setId(123)->setType("test type")->setGenres(['genre1', 'genre2'])
+                (new Book("old title"))->setId(123)->setType($type1)->addGenre($genre1)->addGenre($genre2)
                     ->addAuthor($author1)->addAuthor($author2)->addSeries($series1, 1)->addSeries($series2, 2)
             );
 
@@ -1094,17 +1104,25 @@ class BookServiceTest extends TestCase
         $author2 = (new Author("author two"))->setId(128);
         $author3 = (new Author("author three"))->setId(129);
 
+        $genre1 = (new Genre("genre1"))->setId(223);
+        $genre2 = (new Genre("genre2"))->setId(224);
+        $genre3 = (new Genre("genre3"))->setId(225);
+
         $series1 = (new Series("series 1"))->setId(124);
         $series2 = (new Series("series 2"))->setId(125);
         $series3 = (new Series("series 3"))->setId(126);
 
-        $book = (new Book("title"))->setId(123)->setType("test type 2")->setGenres(['genre1', 'genre3'])
+        $type1 = (new Type("test type"))->setId(323);
+        $type2 = (new Type("test type 2"))->setId(324);
+
+        $book = (new Book("title"))->setId(123)->setType($type2)->addGenre($genre1)->addGenre($genre3)
             ->addAuthor($author1)->addAuthor($author3)->addSeries($series1, 1)->addSeries($series3, 3)
             ->addUser((new UserBook((new User("test one"))->setId(130)))->setOwned(true)->setRead(true));
 
-        $expected = (new Book("title"))->setId(123)->setType("test type 2")->setGenres(['genre1', 'genre3'])
-            ->addAuthor($author1)->addAuthor($author2)->removeAuthor($author2)->addAuthor($author3)
-            ->addSeries($series1, 1)->addSeries($series2, 2)->removeSeries($series2)->addSeries($series3, 3)
+        $expected = (new Book("title"))->setId(123)->setType($type2)->addGenre($genre1)->addGenre($genre2)
+            ->removeGenre($genre2)->addGenre($genre3)->addAuthor($author1)->addAuthor($author2)->removeAuthor($author2)
+            ->addAuthor($author3)->addSeries($series1, 1)->addSeries($series2, 2)->removeSeries($series2)
+            ->addSeries($series3, 3)
             ->addUser((new UserBook((new User("test one"))->setId(130)))->setOwned(true)->setRead(true));
 
         $mockRepo = $this->createMock(BookRepository::class);
@@ -1112,7 +1130,7 @@ class BookServiceTest extends TestCase
             ->method('getBookById')
             ->with(123)
             ->willReturn(
-                (new Book("old title"))->setId(123)->setType("test type")->setGenres(['genre1', 'genre2'])
+                (new Book("old title"))->setId(123)->setType($type1)->addGenre($genre1)->addGenre($genre2)
                     ->addAuthor($author1)->addAuthor($author2)->addSeries($series1, 1)->addSeries($series2, 2)
                     ->addUser(new UserBook((new User("test one"))->setId(130)))
             );
@@ -1130,7 +1148,10 @@ class BookServiceTest extends TestCase
             ->method('log')
             ->with(123, "title", "book '<log.itemname>' updated", ['changes' => [
                 'name' => ["old title", "title"],
-                'type' => ["test type", "test type 2"],
+                'type' => [
+                    ['typeId' => 323, 'name' => "test type"],
+                    ['typeId' => 324, 'name' => "test type 2"]
+                ],
                 'authors' => [
                     [
                         ['authorId' => 127, 'forename' => "author", 'surname' => "one"],
@@ -1141,7 +1162,10 @@ class BookServiceTest extends TestCase
                         ['authorId' => 129, 'forename' => "author", 'surname' => "three"]
                     ]
                 ],
-                'genres' => [['genre1', 'genre2'], ['genre1', 'genre3']],
+                'genres' => [
+                    [['genreId' => 223, 'name' => 'genre1'], ['genreId' => 224, 'name' => 'genre2']],
+                    [['genreId' => 223, 'name' => 'genre1'], ['genreId' => 225, 'name' => 'genre3']]
+                ],
                 'series' => [
                     [
                         ['seriesId' => 124, 'name' => 'series 1', 'number' => 1],
@@ -1206,13 +1230,18 @@ class BookServiceTest extends TestCase
         $author1 = (new Author("author one"))->setId(127);
         $author3 = (new Author("author three"))->setId(129);
 
+        $genre1 = (new Genre("genre1"))->setId(223);
+        $genre3 = (new Genre("genre3"))->setId(225);
+
         $series1 = (new Series("series 1"))->setId(124);
         $series3 = (new Series("series 3"))->setId(126);
 
-        $book = (new Book("title"))->setType("test type 2")->setGenres(['genre1', 'genre3'])
+        $type2 = (new Type("test type 2"))->setId(324);
+
+        $book = (new Book("title"))->setType($type2)->addGenre($genre1)->addGenre($genre3)
             ->addAuthor($author1)->addAuthor($author3)->addSeries($series1, 1)->addSeries($series3, 3);
 
-        $expected = (new Book("title"))->setType("test type 2")->setGenres(['genre1', 'genre3'])
+        $expected = (new Book("title"))->setType($type2)->addGenre($genre1)->addGenre($genre3)
             ->addAuthor($author1)->addAuthor($author3)->addSeries($series1, 1)->addSeries($series3, 3);
 
         $mockRepo = $this->createMock(BookRepository::class);

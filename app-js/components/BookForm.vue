@@ -9,9 +9,10 @@
                     <el-select
                         allow-create
                         filterable
-                        v-model="book.type"
-                        placeholder="Please select a type">
-                        <el-option v-for="type in types" :label="type" :value="type"></el-option>
+                        :value="book.getTypeValue()"
+                        placeholder="Please select a type"
+                        @input="typeChange">
+                        <el-option v-for="type in types" :label="type.getName()" :value="type.getId()"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Authors">
@@ -30,9 +31,10 @@
                         allow-create
                         filterable
                         multiple
-                        v-model="book.genres"
-                        placeholder="Please select a genre">
-                        <el-option v-for="genre in genres" :label="genre" :value="genre"></el-option>
+                        :value="book.getGenreValues()"
+                        placeholder="Please select a genre"
+                        @input="genreChange">
+                        <el-option v-for="genre in genres" :label="genre.getName()" :value="genre.getId()"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Series">
@@ -76,7 +78,9 @@
     import { Button, Dialog, Form, FormItem, Input, Option, Select } from 'element-ui';
     import Author from '../models/author';
     import Book from '../models/book';
+    import Genre from '../models/genre';
     import Series from '../models/series';
+    import Type from '../models/type';
 
     let Http = require('../mixins/Http');
 
@@ -137,13 +141,42 @@
                 this.$emit('change');
             },
 
+            genreChange: function(val) {
+                let genres = [];
+                for (let i in val) {
+                    if (val.hasOwnProperty(i)) {
+                        if (isNaN(val[i])) {
+                            genres.push(new Genre({ name: val[i] }));
+                        } else {
+                            let genre = this.genres.find(x => x.getId() === val[i]);
+                            if (genre) {
+                                genres.push(genre);
+                            }
+                        }
+                    }
+                }
+
+                this.book.setGenres(genres);
+            },
+
+            typeChange: function(val) {
+                if (isNaN(val)) {
+                    this.book.setType(new Type({ name: val }));
+                } else {
+                    let type = this.types.find(x => x.getId() === val);
+                    if (type) {
+                        this.book.setType(type);
+                    }
+                }
+            },
+
             loadBook: function() {
                 this.load('book/get', { bookId: this.id }).then(function(response) {
                     this.book = new Book(response.body.data);
-                    this.authors = response.body.authors.map (x => new Author(x));
-                    this.genres = response.body.genres;
-                    this.series = response.body.series.map (x => new Series(x));
-                    this.types = response.body.types;
+                    this.authors = response.body.authors.map(x => new Author(x));
+                    this.genres = response.body.genres.map(x => new Genre(x));
+                    this.series = response.body.series.map(x => new Series(x));
+                    this.types = response.body.types.map(x => new Type(x));
                 });
             },
 
@@ -156,8 +189,20 @@
                             this.authors.push(a);
 
                             for (let j in this.book.authors) {
-                                if (this.book.authors[j].toString().trim() === a.getName()) {
-                                    this.book.authors[j] = a.getId();
+                                if (this.book.authors[j].getName() === a.getName()) {
+                                    this.book.authors[j].authorId = a.getId();
+                                    break;
+                                }
+                            }
+                        }
+
+                        for (let i in response.body.newGenres) {
+                            let a = new Genre(response.body.newGenres[i]);
+                            this.genres.push(a);
+
+                            for (let j in this.book.genres) {
+                                if (this.book.genres[j].getName() === a.getName()) {
+                                    this.book.genres[j].genreId = a.getId();
                                     break;
                                 }
                             }
@@ -168,10 +213,19 @@
                             this.series.push(s);
 
                             for (let j in this.book.series) {
-                                if (this.book.series[j].name === s.name) {
-                                    this.book.series[j].id = s.id;
+                                if (this.book.series[j].getName() === s.getName()) {
+                                    this.book.series[j].seriesId = s.getId();
                                     break;
                                 }
+                            }
+                        }
+
+                        for (let i in response.body.newTypes) {
+                            let a = new Type(response.body.newTypes[i]);
+                            this.types.push(a);
+
+                            if (this.book.type.getName() === a.getName()) {
+                                this.book.type.typeId = a.getId();
                             }
                         }
 

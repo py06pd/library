@@ -1,5 +1,7 @@
 import Author from '../models/author';
+import Genre from '../models/genre';
 import Series from '../models/series';
+import Type from '../models/type';
 
 export default class Book {
     constructor(data = {}) {
@@ -10,10 +12,10 @@ export default class Book {
         if (Object.keys(data).length > 0) {
             this.bookId = data.bookId;
             this.name = data.name;
-            this.type = data.type;
+            this.type = data.type ? new Type(data.type) : null;
             this.creatorId = data.creatorId;
             this.authors = data.authors.map(x => new Author(x));
-            this.genres = data.genres === '' ? [] : data.genres;
+            this.genres = data.genres.map(x => new Genre(x));
             this.series = data.series.map(x => new Series(x));
             this.users = data.users;
         }
@@ -27,11 +29,6 @@ export default class Book {
         let authorIds = [];
         this.authors.forEach(x => authorIds.push(x.getValue()));
         return authorIds;
-    }
-
-    setAuthors (authors) {
-        this.authors = authors;
-        return this;
     }
 
     getBorrowedFrom (userId) {
@@ -50,6 +47,16 @@ export default class Book {
 
     getGenres () {
         return this.genres;
+    }
+
+    getGenreNames () {
+        return this.genres.map(x => x.name);
+    }
+
+    getGenreValues () {
+        let genreIds = [];
+        this.genres.forEach(x => genreIds.push(x.getValue()));
+        return genreIds;
     }
 
     getGiftedFrom (userId) {
@@ -131,6 +138,14 @@ export default class Book {
         return this.type;
     }
 
+    getTypeName () {
+        return this.type ? this.type.getName() : null;
+    }
+
+    getTypeValue () {
+        return this.type ? this.type.getValue() : null;
+    }
+
     hasBeenReadBy (userId) {
         if (this.users.find(x => x.userId === userId && x.read)) {
             return true;
@@ -172,14 +187,29 @@ export default class Book {
 
         return false;
     }
-    
+
+    setAuthors (authors) {
+        this.authors = authors;
+        return this;
+    }
+
+    setGenres (genres) {
+        this.genres = genres;
+        return this;
+    }
+
+    setType (type) {
+        this.type = type;
+        return this;
+    }
+
     serialise () {
         return {
             bookId: this.bookId,
             name: this.name,
-            type: this.type,
+            type: this.type ? this.type.serialise() : null,
             authors: this.authors.map(x => x.serialise()),
-            genres: this.genres,
+            genres: this.genres.map(x => x.serialise()),
             series: this.series.map(x => x.serialise()),
             users: this.users,
         };

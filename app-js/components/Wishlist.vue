@@ -56,7 +56,7 @@
 </template>
 
 <script>
-    import { Button, Dialog } from 'element-ui';
+    import { Button, Dialog, Input } from 'element-ui';
     import Book from '../models/book';
     let Http = require('../mixins/Http');
 
@@ -66,6 +66,7 @@
         components: {
             'el-button': Button,
             'el-dialog': Dialog,
+            'el-input': Input,
         },
         props: {
             userId: Number,

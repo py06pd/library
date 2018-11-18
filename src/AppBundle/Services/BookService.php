@@ -435,6 +435,12 @@ class BookService
                 }
             }
 
+            foreach ($book->getGenres() as $genre) {
+                if (!$newBook->hasGenre($genre)) {
+                    $book->removeGenre($genre);
+                }
+            }
+
             foreach ($book->getSeries() as $series) {
                 if (!$newBook->inSeries($series->getSeries())) {
                     $book->removeSeries($series->getSeries());
@@ -443,10 +449,16 @@ class BookService
 
             $book->setName($newBook->getName());
             $book->setType($newBook->getType());
-            $book->setGenres($newBook->getGenres());
+
             foreach ($newBook->getAuthors() as $author) {
                 if (!$book->hasAuthor($author)) {
                     $book->addAuthor($author);
+                }
+            }
+
+            foreach ($newBook->getGenres() as $genre) {
+                if (!$book->hasGenre($genre)) {
+                    $book->addGenre($genre);
                 }
             }
 
@@ -485,9 +497,9 @@ class BookService
 
             $this->auditor->log($book->getId(), $book->getName(), "book '<log.itemname>' updated", ['changes' => [
                 'name' => [$oldBook['name'], $book->getName()],
-                'type' => [$oldBook['type'], $book->getType()],
+                'type' => [$oldBook['type'], $bookArray['type']],
                 'authors' => [$oldBook['authors'], $bookArray['authors']],
-                'genres' => [$oldBook['genres'], $book->getGenres()],
+                'genres' => [$oldBook['genres'], $bookArray['genres']],
                 'series' => [$oldBook['series'], $bookArray['series']],
                 'users' => [$oldBook['users'], $bookArray['users']]
             ]]);
@@ -635,11 +647,11 @@ class BookService
     {
         $map = [
             'author' => 'a{nonce}.authorId',
-            'genre' => 'b{nonce}.genres',
+            'genre' => 'g{nonce}.genreId',
             'owner' => 'bu{nonce}.owned',
             'read' => 'bu{nonce}.read',
             'series' => 's{nonce}.seriesId',
-            'type' => 'b{nonce}.type',
+            'type' => 't{nonce}.typeId',
             'wishlist' => 'bu{nonce}.wishlist',
         ];
 
