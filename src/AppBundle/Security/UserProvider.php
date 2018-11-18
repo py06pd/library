@@ -1,47 +1,68 @@
 <?php
-
-// src/AppBundle/Security/UserProvider.php
+/** src/AppBundle/Security/UserProvider.php */
 namespace AppBundle\Security;
 
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use AppBundle\Entity\User;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+/**
+ * Class UserProvider
+ * @package AppBundle\Security
+ */
 class UserProvider implements UserProviderInterface
 {
     /**
-     * @var Doctrine\ORM\EntityManager
+     * EntityManager
+     * @var EntityManager
      */
-    private $entityManager;
-    
+    private $em;
+
     /**
-     * @param Doctrine\ORM\EntityManager $entityManager
+     * UserProvider constructor.
+     * @param EntityManager $em
      */
-    public function __construct($entityManager)
+    public function __construct($em)
     {
-        $this->entityManager = $entityManager;
+        $this->em = $em;
     }
-    
+
+    /**
+     * Get user by username
+     * @param string $username
+     * @return UserInterface|null
+     */
     public function loadUserByUsername($username)
     {
+        $user = null;
         if ($username != null) {
-            return $this->entityManager->getRepository(User::class)->findOneBy(array('username' => $username));
+            /** @var User $user */
+            $user = $this->em->getRepository(User::class)->findOneBy(['username' => $username]);
         }
+
+        return $user;
     }
 
+    /**
+     * Reset user
+     * @param UserInterface $user
+     * @return UserInterface|null
+     */
     public function refreshUser(UserInterface $user)
     {
-        if (!$user instanceof User) {
-            throw new UnsupportedUserException(
-                sprintf('Instances of "%s" are not supported.', get_class($user))
-            );
-        }
+        /** @var User $user */
+        $user = $this->em->getRepository(User::class)->findOneBy(['id' => $user->getId()]);
 
-        return $this->entityManager->getRepository(User::class)->findOneBy(array('id' => $user->id));
+        return $user;
     }
 
+    /**
+     * Check if class
+     * @param string $class
+     * @return bool
+     */
     public function supportsClass($class)
     {
         return User::class === $class;

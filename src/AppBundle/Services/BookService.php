@@ -624,21 +624,24 @@ class BookService
                 }
             }
         }
-        
-        $oldid = $userbook->requestedfromid;
-        $oldtime = $userbook->requestedtime;
+
         $userbook->requestedfromid = 0;
         $userbook->requestedtime = null;
         $userbook->borrowedtime = time();
         
         $this->em->flush();
-        
-        $this->auditor->userBookLog($item, $user, array(
-            'requestedfromid' => array($oldid, 0),
-            'requestedtime' => array($oldtime, null),
-            'borrowedfromid' => array(0, $userbook->borrowedfromid),
-            'borrowedtime' => array(null, $userbook->borrowedtime)
-        ));
+
+        $this->auditor->log(
+            $item->getId(),
+            $item->getName(),
+            "book '<log.itemname>' borrowed from user '<log.user.name>'",
+            [
+                'user' => [
+                    'userId' => $user->getId(),
+                    'name' => $user->getName(),
+                ]
+            ]
+        );
         
         return true;
     }

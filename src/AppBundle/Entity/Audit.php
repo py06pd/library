@@ -2,6 +2,7 @@
 /** src/AppBundle/Entity/Audit.php */
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -53,23 +54,23 @@ class Audit
 
     /**
      * Audit constructor.
-     * @param User   $user
-     * @param int    $timestamp
-     * @param int    $itemId
-     * @param string $itemName
-     * @param string $description
-     * @param array  $details
+     * @param User     $user
+     * @param DateTime $dateTime
+     * @param int      $itemId
+     * @param string   $itemName
+     * @param string   $description
+     * @param array    $details
      */
     public function __construct(
         User $user,
-        int $timestamp,
+        DateTime $dateTime,
         int $itemId,
         string $itemName,
         string $description,
         array $details
     ) {
         $this->user = $user;
-        $this->timestamp = $timestamp;
+        $this->timestamp = $dateTime->getTimestamp();
         $this->itemId = $itemId;
         $this->itemName = $itemName;
         $this->description = $description;

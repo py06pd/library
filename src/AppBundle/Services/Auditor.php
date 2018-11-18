@@ -1,7 +1,8 @@
 <?php
-
+/** src/AppBundle/Services/Auditor.php */
 namespace AppBundle\Services;
 
+use AppBundle\DateTimeFactory;
 use AppBundle\Entity\Audit;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
@@ -15,6 +16,12 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 class Auditor
 {
     /**
+     * DateTime factory
+     * @var DateTimeFactory
+     */
+    private $dateTime;
+
+    /**
      * @var EntityManager
      */
     private $em;
@@ -23,13 +30,16 @@ class Auditor
      * @var User
      */
     private $user;
-    
+
     /**
-     * @param EntityManager $em
-     * @param TokenStorage $tokenStorage
+     * Auditor constructor.
+     * @param EntityManager   $em
+     * @param DateTimeFactory $dateTime
+     * @param TokenStorage    $tokenStorage
      */
-    public function __construct(EntityManager $em, TokenStorage $tokenStorage)
+    public function __construct(EntityManager $em, DateTimeFactory $dateTime, TokenStorage $tokenStorage)
     {
+        $this->dateTime = $dateTime;
         $this->em = $em;
         $this->user = $tokenStorage->getToken()->getUser();
     }
@@ -55,7 +65,7 @@ class Auditor
             $data['changes'] = $checked;
         }
         
-        $audit = new Audit($this->user, time(), $id, $name, $description, $data);
+        $audit = new Audit($this->user, $this->dateTime->getNow(), $id, $name, $description, $data);
 
         $this->em->persist($audit);
 
@@ -66,25 +76,5 @@ class Auditor
         }
 
         return true;
-    }
-    
-    public function userBookLog($book, $user, $details)
-    {
-        $changes = [];
-        foreach ($details as $detail) {
-            if ($detail[0] != $detail[1]) {
-                $changes[] = $detail;
-            }
-        }
-        
-        $this->log(
-            $book->getId(),
-            $book->getName(),
-            "book '<log.itemname>' updated for user '<log.details.user.name>'",
-            array(
-                'user' => array('id' => $user->id, 'name' => $user->name),
-                'changes' => $changes
-            )
-        );
     }
 }

@@ -71,6 +71,6 @@ services:
         arguments: ['@doctrine.orm.entity_manager', '@datetimefactory', '@auditor', '@logger']
     auditor:
         class: AppBundle\Services\Auditor
-        arguments: ['@doctrine.orm.entity_manager', '@security.token_storage']
+        arguments: ['@doctrine.orm.entity_manager', '@datetimefactory', '@security.token_storage']
     datetimefactory:
         class: AppBundle\DateTimeFactory
