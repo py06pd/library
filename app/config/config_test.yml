@@ -12,5 +12,16 @@ web_profiler:
     toolbar: false
     intercept_redirects: false
 
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver: pdo_sqlite
+        host: ~
+        port: ~
+        dbname: ~
+        user: ~
+        password: ~
+        charset: UTF8
+
 swiftmailer:
     disable_delivery: true

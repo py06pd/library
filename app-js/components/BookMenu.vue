@@ -2,7 +2,7 @@
     <div>
         <el-dialog id="bookMenu" :visible="mode === 1" :before-close="close" :class="{ 'not-for-mobile': mode === 2 }" :title="book.getName()" :top="dialogYOffset">
             <ul id="bookInfo" class="for-mobile">
-                <li><b>Type</b><span>{{ book.getType() }}</span></li>
+                <li><b>Type</b><span>{{ book.getTypeName() }}</span></li>
                 <li>
                     <b>Author</b>
                     <span>
@@ -11,7 +11,10 @@
                         </span>
                     </span>
                 </li>
-                <li><b>Genre</b><span>{{ book.getGenres().join(', ') }}</span></li>
+                <li>
+                    <b>Genre</b>
+                    <span>{{ book.getGenreNames().join(', ') }}</span>
+                </li>
                 <li>
                     <b>Series</b>
                     <span>

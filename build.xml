@@ -49,6 +49,7 @@
         <include name="**" />
         <exclude name="app_dev.php" />
         <exclude name="web.config" />
+        <exclude name="web.config.live" />
       </fileset>
     </copy>
 
