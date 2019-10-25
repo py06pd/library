@@ -1,0 +1,24 @@
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver: pdo_pgsql
+        host: '%env(database_host)%'
+        port: '%env(database_port)%'
+        dbname: '%env(database_name)%'
+        user: '%env(database_user)%'
+        password: '%env(database_password)%'
+        server_version: 10.0
+        charset: UTF8
+        types:
+            datetime: App\DoctrineExtensions\DBAL\Types\DateTimeType
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App

@@ -5,7 +5,9 @@ module.exports = {
         "es6": true,
         "node": true,
     },
-    "extends": "eslint:recommended",
+    "extends": [
+        "plugin:vue/recommended"
+    ],
     "parserOptions": {
         "sourceType": "module",
     },
@@ -20,6 +22,17 @@ module.exports = {
         "no-trailing-spaces": ["error", { "skipBlankLines": true }],
         "keyword-spacing": ["error", { "after": true}],
         "space-before-blocks": ["error", "always"],
+        "vue/html-closing-bracket-newline": ["off"],
+        "vue/html-closing-bracket-spacing": ["off"],
+        "vue/html-indent": ["error", 4],
+        "vue/max-attributes-per-line": ["error", {
+            "singleline": 2,
+            "multiline": {
+                "max": 1,
+                "allowFirstLine": false
+            }
+        }],
+        "vue/singleline-html-element-content-newline": ["off"],
     },
     "plugins": [
         "html",

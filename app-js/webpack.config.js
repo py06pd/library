@@ -1,6 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var ManifestPlugin = require('webpack-manifest-plugin');
+var VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const devBuild = process.env.NODE_ENV !== 'production';
 
@@ -10,7 +11,7 @@ const config = {
     },
     output: {
         filename: '[name].[chunkhash].js',
-        path: path.resolve(__dirname, '../web/js'),
+        path: path.resolve(__dirname, '../public/js'),
         publicPath: 'js/',
     },
     devtool: 'source-map',
@@ -29,7 +30,7 @@ const config = {
                 test: /\.js$/,
                 loader: 'babel-loader',
                 options: {
-                    presets: ['es2015'],
+                    presets: ['@babel/preset-env'],
                 },
                 exclude: /node_modules/,
             },
@@ -63,7 +64,8 @@ const config = {
         ],
     },
     plugins: [
-        new ManifestPlugin({ basePath : 'js/' })
+        new ManifestPlugin({ basePath : 'js/' }),
+        new VueLoaderPlugin(),
     ],
 };
 

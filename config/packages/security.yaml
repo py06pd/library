@@ -1,0 +1,43 @@
+# To get started with security, check out the documentation:
+# https://symfony.com/doc/current/security.html
+security:
+    access_denied_url: /login
+
+    # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+    providers:
+        app:
+            id: App\Security\UserProvider
+        in_memory:
+            memory: ~
+
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        login:
+            pattern: ^/login$
+            anonymous: ~
+            stateless: true
+            security: false
+
+        main:
+            stateless: true
+            provider: app
+            guard:
+                authenticators:
+                    - App\Security\CookieAuthenticator
+                    - App\Security\UserAuthenticator
+                entry_point: App\Security\CookieAuthenticator
+            # activate different ways to authenticate
+
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+            #http_basic: ~
+
+            # https://symfony.com/doc/current/security/form_login_setup.html
+            #form_login: ~
+
+    access_control:
+        - { path: ^/login, roles: [ROLE_ANONYMOUS]  }
+        - { path: ^/, roles: [ROLE_USER] }

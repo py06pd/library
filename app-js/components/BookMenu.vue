@@ -1,12 +1,22 @@
 <template>
     <div>
-        <el-dialog id="bookMenu" :visible="mode === 1" :before-close="close" :class="{ 'not-for-mobile': mode === 2 }" :title="book.getName()" :top="dialogYOffset">
+        <el-dialog
+            id="bookMenu"
+            :visible="mode === 1"
+            :before-close="close"
+            :class="{ 'not-for-mobile': mode === 2 }"
+            :title="book.getName()"
+            :top="dialogYOffset">
             <ul id="bookInfo" class="for-mobile">
                 <li><b>Type</b><span>{{ book.getTypeName() }}</span></li>
                 <li>
                     <b>Author</b>
                     <span>
-                        <span class="author-link" v-for="a in book.getAuthors()" @click="selectAuthor(a.getId())">
+                        <span
+                            v-for="a in book.getAuthors()"
+                            :key="a.getId()"
+                            class="author-link"
+                            @click="selectAuthor(a.getId())">
                             {{ a.getName() }}
                         </span>
                     </span>
@@ -18,7 +28,11 @@
                 <li>
                     <b>Series</b>
                     <span>
-                        <span class="series-link" v-for="s in book.getSeries()" @click="selectSeries(s.getId())">
+                        <span
+                            v-for="s in book.getSeries()"
+                            :key="s.getId()"
+                            class="series-link"
+                            @click="selectSeries(s.getId())">
                             {{ s.getName() }}
                         </span>
                     </span>
@@ -47,104 +61,106 @@
             </ul>
         </el-dialog>
 
-        <book-form :id="book.getId()" :formOpen="mode === 2" @change="close"></book-form>
+        <book-form
+            :id="book.getId()"
+            :form-open="mode === 2"
+            @change="close"/>
     </div>
 </template>
 
 <script>
-    import { Button, Dialog } from 'element-ui';
-    import Book from '../models/book';
-    import BookForm from './BookForm.vue';
-    let Http = require('../mixins/Http');
+import { Button, Dialog } from 'element-ui';
+import Book from '../models/book';
+import BookForm from './BookForm.vue';
+import Http from '../mixins/Http';
 
-    export default {
-        name: 'book-menu',
-        mixins: [ Http ],
-        components: {
-            'el-button': Button,
-            'el-dialog': Dialog,
-            BookForm,
+export default {
+    name: 'BookMenu',
+    components: {
+        'el-button': Button,
+        'el-dialog': Dialog,
+        BookForm,
+    },
+    mixins: [ Http ],
+    props: {
+        book : { type: Object, default: new Book() },
+        mode: { type: Number, default: 0 },
+    },
+
+    computed: {
+        dialogYOffset () {
+            if (window.innerWidth <= 600) {
+                return '0';
+            }
+
+            return '15%';
         },
+    },
 
-        props: {
-            book : { type: Object, default: new Book() },
-            mode: { type: Number, default: 0 },
-        },
-
-        computed: {
-            dialogYOffset () {
-                if (window.innerWidth <= 600) {
-                    return '0';
+    methods: {
+        borrowRequest () {
+            this.save('lending/request', { bookId: this.book.getId() }).then((response) => {
+                if (response.body.status === 'OK') {
+                    this.close();
                 }
-
-                return '15%';
-            },
+            });
         },
 
-        methods: {
-            borrowRequest: function() {
-                this.save('lending/request', { bookId: this.book.getId() }).then(function(response) {
-                    if (response.body.status === 'OK') {
-                        this.close();
-                    }
-                });
-            },
-
-            close: function() {
-                this.$emit('change', 0);
-            },
-
-            disownBook: function() {
-                this.save('book/disown', { bookId: this.book.getId() }).then(function(response) {
-                    if (response.body.status === 'OK') {
-                        this.close();
-                    }
-                });
-            },
-
-            openEdit: function() {
-                this.$emit('change', 2);
-            },
-
-            ownBook: function() {
-                this.save('book/own', { bookId: this.book.getId() }).then(function(response) {
-                    if (response.body.status === 'OK') {
-                        this.close();
-                    }
-                });
-            },
-
-            readBook: function() {
-                this.save('book/read', { bookId: this.book.getId() }).then(function(response) {
-                    if (response.body.status === 'OK') {
-                        this.close();
-                    }
-                });
-            },
-
-            selectAuthor: function (authorId) {
-                this.$router.push('/author/' + authorId);
-            },
-
-            selectSeries: function (seriesId) {
-                this.$router.push('/series/' + seriesId);
-            },
-
-            unreadBook: function() {
-                this.save('book/unread', { bookId: this.book.getId() }).then(function(response) {
-                    if (response.body.status === 'OK') {
-                        this.close();
-                    }
-                });
-            },
-
-            wishlist: function() {
-                this.save('book/wish', { bookId: this.book.getId() }).then(function(response) {
-                    if (response.body.status === 'OK') {
-                        this.close();
-                    }
-                });
-            },
+        close () {
+            this.$emit('change', 0);
         },
-    };
+
+        disownBook () {
+            this.save('book/disown', { bookId: this.book.getId() }).then((response) => {
+                if (response.body.status === 'OK') {
+                    this.close();
+                }
+            });
+        },
+
+        openEdit () {
+            this.$emit('change', 2);
+        },
+
+        ownBook () {
+            this.save('book/own', { bookId: this.book.getId() }).then((response) => {
+                if (response.body.status === 'OK') {
+                    this.close();
+                }
+            });
+        },
+
+        readBook () {
+            this.save('book/read', { bookId: this.book.getId() }).then((response) => {
+                if (response.body.status === 'OK') {
+                    this.close();
+                }
+            });
+        },
+
+        selectAuthor (authorId) {
+            this.$router.push('/author/' + authorId);
+        },
+
+        selectSeries (seriesId) {
+            this.$router.push('/series/' + seriesId);
+        },
+
+        unreadBook () {
+            this.save('book/unread', { bookId: this.book.getId() }).then((response) => {
+                if (response.body.status === 'OK') {
+                    this.close();
+                }
+            });
+        },
+
+        wishlist () {
+            this.save('book/wish', { bookId: this.book.getId() }).then((response) => {
+                if (response.body.status === 'OK') {
+                    this.close();
+                }
+            });
+        },
+    },
+};
 </script>

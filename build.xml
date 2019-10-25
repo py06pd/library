@@ -16,18 +16,7 @@
     <echo msg="Copying composer.json and composer.lock to build/library directory..."/>
     <copy file="composer.json" tofile="../build/library/composer.json" />
     <copy file="composer.lock" tofile="../build/library/composer.lock" />
-    
-    <echo msg="Copying /app to build/library/app directory..."/>
-    <copy todir="../build/library/app" >
-      <fileset dir="app">
-        <include name="**" />
-        <exclude name="config/parameters.yml" />
-        <exclude name="config/parameters.yml.live" />
-      </fileset>
-    </copy>
-
-    <echo msg="Copying parameters.yml to build/library/app/config directory..."/>
-    <copy file="app/config/parameters.yml.live" tofile="../build/library/app/config/parameters.yml" />
+    <copy file=".env.live" tofile="../build/library/.env" />
 
     <echo msg="Copying /bin to build/library/bin directory..."/>
     <copy todir="../build/library/bin" >
@@ -35,26 +24,32 @@
         <include name="**" />
       </fileset>
     </copy>
-      
+
+    <echo msg="Copying /config to build/library/config directory..."/>
+    <copy todir="../build/library/config" >
+      <fileset dir="config">
+        <include name="**" />
+      </fileset>
+    </copy>
+
+    <echo msg="Copying /public to build/library/public directory..."/>
+    <copy todir="../build/library/public" >
+      <fileset dir="public">
+        <include name="**" />
+        <exclude name="web.config" />
+        <exclude name="web.config.live" />
+      </fileset>
+    </copy>
+
+    <echo msg="Copying web.config to build/library/public directory..."/>
+    <copy file="public/web.config.live" tofile="../build/library/public/web.config" />
+
     <echo msg="Copying /src to build/library/src directory..."/>
     <copy todir="../build/library/src" >
       <fileset dir="src">
         <include name="**" />
       </fileset>
     </copy>
-      
-    <echo msg="Copying /web to build/library/web directory..."/>
-    <copy todir="../build/library/web" >
-      <fileset dir="web">
-        <include name="**" />
-        <exclude name="app_dev.php" />
-        <exclude name="web.config" />
-        <exclude name="web.config.live" />
-      </fileset>
-    </copy>
-
-    <echo msg="Copying web.config to build/library/web directory..."/>
-    <copy file="web/web.config.live" tofile="../build/library/web/web.config" />
 
     <echo msg="Copying /scripts/clear-prod-cache.bat to build/library/scripts directory..."/>
     <mkdir dir="../build/library/scripts" />

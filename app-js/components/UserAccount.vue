@@ -10,13 +10,18 @@
                     <el-input v-model="user.username"/>
                 </el-form-item>
                 <el-form-item label="Password">
-                    <el-input type="password" v-model="user.password"/>
+                    <el-input v-model="user.password" type="password"/>
                 </el-form-item>
                 <el-button-group v-if="closable">
                     <el-button type="primary" @click="updateAccount">Save</el-button>
                     <el-button @click="close">Cancel</el-button>
                 </el-button-group>
-                <el-button v-else type="primary" @click="updateAccount">Save</el-button>
+                <el-button
+                    v-else
+                    type="primary"
+                    @click="updateAccount">
+                    Save
+                </el-button>
             </el-form>
         </div>
         <br>
@@ -31,7 +36,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="session in sessions">
+                    <tr v-for="session in sessions" :key="session.device">
                         <td>{{ session.device }}</td>
                         <td>{{ session.created }}</td>
                         <td>{{ session.lastAccessed }}</td>
@@ -43,90 +48,96 @@
 </template>
 
 <script>
-    import { Button, ButtonGroup, Form, FormItem, Input } from 'element-ui';
-    import User from '../models/user';
-    let Http = require('../mixins/Http');
+import { Button, ButtonGroup, Form, FormItem, Input } from 'element-ui';
+import User from '../models/user';
+import Http from '../mixins/Http';
 
-    export default {
-        name: 'user-account',
-        mixins: [ Http ],
-        props: {
-            closable : { type: Boolean, default: false },
-            value : { type: Object },
+export default {
+    name: 'UserAccount',
+    components: {
+        'el-button': Button,
+        'el-button-group': ButtonGroup,
+        'el-form': Form,
+        'el-form-item': FormItem,
+        'el-input': Input,
+    },
+    mixins: [ Http ],
+    props: {
+        closable : {
+            type: Boolean,
+            default: false,
         },
-        components: {
-            'el-button': Button,
-            'el-button-group': ButtonGroup,
-            'el-form': Form,
-            'el-form-item': FormItem,
-            'el-input': Input,
+        value : {
+            type: Object,
+            required: true,
         },
-        data: function () {
-            return {
-                sessions: [],
-                user: {
-                    name: '',
-                    username: '',
-                    password: '',
-                },
-            };
-        },
-        created: function () {
-            this.user.name = this.value.getName();
-            this.user.username = this.value.getUsername();
-            this.user.password = '********';
-            this.loadSessions();
-        },
-        methods: {
-            close () {
-                this.$emit('blur');
+    },
+    data () {
+        return {
+            sessions: [],
+            user: {
+                name: '',
+                username: '',
+                password: '',
             },
+        };
+    },
+    created () {
+        this.user.name = this.value.getName();
+        this.user.username = this.value.getUsername();
+        this.user.password = '********';
+        this.loadSessions();
+    },
+    methods: {
+        close () {
+            this.$emit('blur');
+        },
 
-            loadSessions () {
-                this.sessions = [];
-                if (this.value.getId()) {
-                    this.load('user/getSessions', {userId: this.value.getId()}).then(function (response) {
-                        if (response.body.status === 'OK') {
-                            this.sessions = response.body.data;
-                        }
-                    });
-                }
-            },
-
-            updateAccount () {
-                if (this.user.name === '') {
-                    this.showWarningMessage('Display Name is a required field');
-                }
-
-                if (this.user.username === '') {
-                    this.showWarningMessage('Username is a required field');
-                }
-
-                if (this.user.password === '') {
-                    this.showWarningMessage('Password is a required field');
-                }
-
-                var params = {
-                    name: this.user.name,
-                    newUsername: this.user.username,
-                    newPassword: this.user.password,
-                };
-
-                if (this.value.getId()) {
-                    params.userId = this.value.getId();
-                }
-
-                this.save('user/save', params).then(function(response) {
+        loadSessions () {
+            this.sessions = [];
+            if (this.value.getId()) {
+                this.load('user/getSessions', {userId: this.value.getId()}).then((response) => {
                     if (response.body.status === 'OK') {
-                        let user = new User(this.value.serialise());
-                        user.setName(this.user.name);
-                        user.setUsername(this.user.username);
-                        this.$emit('input', user);
+                        this.sessions = response.body.data;
                     }
                 });
-            },
+            }
         },
-    };
+
+        updateAccount () {
+            if (this.user.name === '') {
+                this.showWarningMessage('Display Name is a required field');
+            }
+
+            if (this.user.username === '') {
+                this.showWarningMessage('Username is a required field');
+            }
+
+            if (this.user.password === '') {
+                this.showWarningMessage('Password is a required field');
+            }
+
+            let params = {
+                name: this.user.name,
+                newUsername: this.user.username,
+                newPassword: this.user.password,
+            };
+
+            if (this.value.getId()) {
+                params.userId = this.value.getId();
+            }
+
+            this.save('user/save', params).then(function(response) {
+                if (response.body.status === 'OK') {
+                    let user = new User(this.value.serialise());
+                    user.setName(this.user.name);
+                    user.setUsername(this.user.username);
+                    this.$emit('input', user);
+                }
+            });
+        },
+    },
+};
 </script>
 
 <style scoped>

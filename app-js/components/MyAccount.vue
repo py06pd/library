@@ -1,12 +1,12 @@
 <template>
-    <user-account v-model="$root.user"></user-account>
+    <user-account v-model="$root.user"/>
 </template>
 
 <script>
-    import UserAccount from './UserAccount.vue';
+import UserAccount from './UserAccount.vue';
 
-    export default {
-        name: 'user-account-me',
-        components: { 'user-account': UserAccount },
-    };
+export default {
+    name: 'MyAccount',
+    components: { UserAccount },
+};
 </script>

@@ -1,43 +1,47 @@
 <template>
     <div>
         <div class="series-tracked">
-            <div v-for="seriesId in seriesIds" @click="select(seriesId)" :class="{ 'selected':(selected === seriesId) }">
-                <series-books :seriesId="seriesId"></series-books>
+            <div
+                v-for="seriesId in seriesIds"
+                :key="seriesId"
+                :class="{ 'selected':(selected === seriesId) }"
+                @click="select(seriesId)">
+                <series-books :series-id="seriesId"/>
             </div>
         </div>
-        <div class="series-selected" v-if="selected > 0">
-            <series-books :seriesId="selected"></series-books>
+        <div v-if="selected > 0" class="series-selected">
+            <series-books :series-id="selected"/>
         </div>
     </div>
 </template>
 
 <script>
-    import SeriesBooks from './SeriesBooks.vue';
-    let Http = require('../mixins/Http');
+import SeriesBooks from './SeriesBooks.vue';
+import Http from '../mixins/Http';
 
-    export default {
-        name: 'series-list',
-        mixins: [ Http ],
-        components: { SeriesBooks },
-        data: function () {
-            return {
-                seriesIds: [],
-                selected: 0,
-            };
+export default {
+    name: 'SeriesList',
+    components: { SeriesBooks },
+    mixins: [ Http ],
+    data () {
+        return {
+            seriesIds: [],
+            selected: 0,
+        };
+    },
+    created () {
+        this.loadSeries();
+    },
+    methods: {
+        loadSeries () {
+            this.load('series/tracked', {}).then((response) => {
+                this.seriesIds = response.body.seriesIds;
+            });
         },
-        created: function () {
-            this.loadSeries();
-        },
-        methods: {
-            loadSeries: function() {
-                this.load('series/tracked', {}).then(function(response) {
-                    this.seriesIds = response.body.seriesIds;
-                });
-            },
 
-            select: function(seriesId) {
-                this.selected = seriesId;
-            },
+        select (seriesId) {
+            this.selected = seriesId;
         },
-    };
+    },
+};
 </script>
