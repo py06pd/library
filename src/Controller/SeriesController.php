@@ -112,7 +112,8 @@ class SeriesController extends AbstractController
         $main = $other = [];
         foreach ($books as $book) {
             if ($seriesId > 0 && $book->getSeriesById($seriesId) && $book->getSeriesById($seriesId)->getNumber()) {
-                $main[str_pad($book->getSeriesById($seriesId)->getNumber(), 6, '0') . $book->getId()] = $book;
+                $number = $book->getSeriesById($seriesId)->getNumber();
+                $main[str_pad($number, 6, '0', STR_PAD_LEFT) . '-' . $book->getId()] = $book;
             } else {
                 $other[$book->getName()] = $book;
             }
