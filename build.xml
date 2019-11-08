@@ -37,12 +37,8 @@
       <fileset dir="public">
         <include name="**" />
         <exclude name="web.config" />
-        <exclude name="web.config.live" />
       </fileset>
     </copy>
-
-    <echo msg="Copying web.config to build/library/public directory..."/>
-    <copy file="public/web.config.live" tofile="../build/library/public/web.config" />
 
     <echo msg="Copying /src to build/library/src directory..."/>
     <copy todir="../build/library/src" >
@@ -54,6 +50,13 @@
     <echo msg="Copying /scripts/clear-prod-cache.bat to build/library/scripts directory..."/>
     <mkdir dir="../build/library/scripts" />
     <copy file="./scripts/clear-prod-cache.bat" tofile="../build/library/scripts/clear-prod-cache.bat"/>
+
+    <echo msg="Copying /templates to build/library/templates directory..."/>
+    <copy todir="../build/library/templates" >
+      <fileset dir="templates">
+        <include name="**" />
+      </fileset>
+    </copy>
     
     <!-- Create empty folders for the cache, logs and sessions -->
     <mkdir dir="../build/library/var" />

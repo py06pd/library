@@ -662,19 +662,23 @@ class BookControllerTest extends TestCase
         $mockRepo->expects($this->once())
             ->method('getBookById')
             ->with(123)
-            ->willReturn((new Book("test title"))->addUser((new UserBook((new User())->setId(99999)))->setOwned(true)));
+            ->willReturn((new Book("test title"))->addUser((new UserBook((new User())->setId(123)))->setOwned(true)));
+        $mockRepo->expects($this->once())
+            ->method('findOneBy')
+            ->with(['userId' => 123])
+            ->willReturn((new User())->setId(123));
 
-        $this->mockEm->expects($this->once())
+        $this->mockEm->expects($this->exactly(2))
             ->method('getRepository')
-            ->with(Book::class)
+            ->withConsecutive([Book::class], [User::class])
             ->willReturn($mockRepo);
 
         // Act
-        $result = $this->client->own(new Request([], ['bookId' => 123]));
+        $result = $this->client->own(new Request([], ['bookId' => 123, 'userId' => 123]));
 
         // Assert
         $this->assertEquals(
-            json_encode(['status' => "error", 'errorMessage' => "You already own this"]),
+            json_encode(['status' => "error", 'errorMessage' => "User already owns this"]),
             $result->getContent()
         );
     }
@@ -781,19 +785,23 @@ class BookControllerTest extends TestCase
         $mockRepo->expects($this->once())
             ->method('getBookById')
             ->with(123)
-            ->willReturn((new Book("test title"))->addUser((new UserBook((new User())->setId(99999)))->setRead(true)));
+            ->willReturn((new Book("test title"))->addUser((new UserBook((new User())->setId(123)))->setRead(true)));
+        $mockRepo->expects($this->once())
+            ->method('findOneBy')
+            ->with(['userId' => 123])
+            ->willReturn((new User())->setId(123));
 
-        $this->mockEm->expects($this->once())
+        $this->mockEm->expects($this->exactly(2))
             ->method('getRepository')
-            ->with(Book::class)
+            ->withConsecutive([Book::class], [User::class])
             ->willReturn($mockRepo);
 
         // Act
-        $result = $this->client->read(new Request([], ['bookId' => 123]));
+        $result = $this->client->read(new Request([], ['bookId' => 123, 'userId' => 123]));
 
         // Assert
         $this->assertEquals(
-            json_encode(['status' => "error", 'errorMessage' => "You've already read this"], 15),
+            json_encode(['status' => "error", 'errorMessage' => "User has already read this"], 15),
             $result->getContent()
         );
     }

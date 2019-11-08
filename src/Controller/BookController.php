@@ -228,6 +228,7 @@ class BookController extends AbstractController
     public function own(Request $request)
     {
         $bookId = $request->request->get('bookId');
+        $userId = $request->request->get('userId', $this->user->getId());
 
         /** @var BookRepository $bookRepo */
         $bookRepo = $this->em->getRepository(Book::class);
@@ -237,13 +238,18 @@ class BookController extends AbstractController
             return $this->error("Invalid request");
         }
 
-        $userBook = $book->getUserById($this->user->getId());
+        $user = $this->user;
+        if ($userId != $this->user->getId() || $this->user->getGroupUser($userId)) {
+            $user = $this->em->getRepository(User::class)->findOneBy(['userId' => $userId]);
+        }
+
+        $userBook = $book->getUserById($user->getId());
         if ($userBook && $userBook->isOwned()) {
-            return $this->error("You already own this");
+            return $this->error("User already owns this");
         } elseif ($userBook) {
             $userBook->setOwned(true);
         } else {
-            $book->addUser((new UserBook($this->user))->setOwned(true));
+            $book->addUser((new UserBook($user))->setOwned(true));
         }
 
         if (!$this->bookService->save($book)) {
@@ -262,6 +268,7 @@ class BookController extends AbstractController
     public function read(Request $request)
     {
         $bookId = $request->request->get('bookId');
+        $userId = $request->request->get('userId', $this->user->getId());
 
         /** @var BookRepository $bookRepo */
         $bookRepo = $this->em->getRepository(Book::class);
@@ -271,13 +278,18 @@ class BookController extends AbstractController
             return $this->error("Invalid request");
         }
 
-        $userBook = $book->getUserById($this->user->getId());
+        $user = $this->user;
+        if ($userId != $this->user->getId() && $this->user->getGroupUser($userId)) {
+            $user = $this->em->getRepository(User::class)->findOneBy(['userId' => $userId]);
+        }
+
+        $userBook = $book->getUserById($user->getId());
         if ($userBook && $userBook->isRead()) {
-            return $this->error("You've already read this");
+            return $this->error("User has already read this");
         } elseif ($userBook) {
             $userBook->setRead(true);
         } else {
-            $book->addUser((new UserBook($this->user))->setRead(true));
+            $book->addUser((new UserBook($user))->setRead(true));
         }
 
         if (!$this->bookService->save($book)) {
