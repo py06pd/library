@@ -6,6 +6,7 @@
 .idea/workspace.xml
 /.env.live
 /.env.local
+/.phpunit.result.cache
 /.web-server-pid
 /app-js/node_modules/
 /build/

@@ -11,13 +11,13 @@ use App\Entity\Type;
 use App\Entity\User;
 use App\Entity\UserBook;
 use App\Entity\UserGroup;
-use App\Repositories\BookRepository;
+use App\Repository\BookRepository;
 use App\Services\Auditor;
 use App\Services\BookService;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Exception;
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
@@ -50,7 +50,7 @@ class BookServiceTest extends TestCase
      */
     private $mockEm;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockAuditor = $this->createMock(Auditor::class);
         $this->mockDateTime = $this->createMock(DateTimeFactory::class);

@@ -75,7 +75,9 @@ class UserController extends AbstractController
             return $this->error("Insufficient user rights");
         }
 
-        $users = $this->em->getRepository(User::class)->findBy(['userId' => $request->request->get('userIds')]);
+        $users = $this->em->getRepository(User::class)->findBy([
+            'userId' => $request->request->all('userIds')
+        ]);
         foreach ($users as $item) {
             $this->em->remove($item);
         }

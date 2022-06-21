@@ -9,7 +9,7 @@ use App\Entity\Series;
 use App\Entity\Type;
 use App\Entity\User;
 use App\Entity\UserBook;
-use App\Repositories\BookRepository;
+use App\Repository\BookRepository;
 use App\Services\BookService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -71,7 +71,7 @@ class BookController extends AbstractController
             return $this->error("Insufficient user rights");
         }
 
-        $bookIds = $request->request->get('bookIds');
+        $bookIds = $request->request->all('bookIds');
 
         /** @var Book[] $books */
         $books = $this->em->getRepository(Book::class)->findBy(['bookId' => $bookIds]);

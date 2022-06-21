@@ -1,6 +1,6 @@
 <?php
-/** src/App/Repositories/UserRepository */
-namespace App\Repositories;
+/** src/App/Repository/UserRepository */
+namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;

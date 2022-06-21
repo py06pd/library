@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Entity\User;
-use App\Repositories\BookRepository;
+use App\Repository\BookRepository;
 use App\Services\BookService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;

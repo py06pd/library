@@ -48,7 +48,7 @@ class Audit
     private $description;
     
     /**
-     * @ORM\Column(type="json_array", name="details", length=1024, nullable=true)
+     * @ORM\Column(type="json", name="details", length=1024, nullable=true)
      */
     private $details;
 

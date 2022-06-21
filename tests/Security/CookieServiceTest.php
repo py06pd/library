@@ -19,7 +19,7 @@ class CookieServiceTest extends TestCase
      */
     private $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->client = new CookieService(['domain' => "test.com", 'secure' => true]);
     }
@@ -49,6 +49,6 @@ class CookieServiceTest extends TestCase
 
         // Assert
         $this->assertEquals('/login', $response->getTargetUrl());
-        $this->assertEquals([new Cookie('library', null, 1, '/', 'test.com', true)], $response->headers->getCookies());
+        $this->assertEquals([new Cookie('library', null, 1, '/', 'test.com', true, true, false, null)], $response->headers->getCookies());
     }
 }

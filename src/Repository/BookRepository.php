@@ -1,6 +1,6 @@
 <?php
-/** src/App/Repositories/BookRepository */
-namespace App\Repositories;
+/** src/App/Repository/BookRepository */
+namespace App\Repository;
 
 use App\Entity\Book;
 use Doctrine\Common\Collections\ArrayCollection;

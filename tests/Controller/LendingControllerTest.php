@@ -6,15 +6,15 @@ use App\Controller\LendingController;
 use App\Entity\Book;
 use App\Entity\User;
 use App\Entity\UserBook;
-use App\Repositories\BookRepository;
+use App\Repository\BookRepository;
 use App\Services\BookService;
 use DateTime;
 use Doctrine\ORM\EntityManager;
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
@@ -45,14 +45,14 @@ class LendingControllerTest extends TestCase
      */
     private $user;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockBookService = $this->createMock(BookService::class);
         $this->mockEm = $this->createMock(EntityManager::class);
 
         $this->user = (new User())->setId(99999);
         $tokenStorage = new TokenStorage();
-        $tokenStorage->setToken(new AnonymousToken("s3cr3t", $this->user));
+        $tokenStorage->setToken(new PreAuthenticatedToken($this->user, "test"));
 
         $this->client = new LendingController($this->mockEm, $this->mockBookService, $tokenStorage);
         $this->client->setContainer(new Container());

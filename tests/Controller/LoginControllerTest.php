@@ -4,7 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Controller\LoginController;
 use App\Security\CookieService;
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -34,7 +34,7 @@ class LoginControllerTest extends TestCase
      */
     private $mockTemplating;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockCookieService = $this->createMock(CookieService::class);
         $this->mockTemplating = $this->createMock(EngineInterface::class);
@@ -55,7 +55,8 @@ class LoginControllerTest extends TestCase
         // Arrange
         $this->mockTemplating->expects($this->once())
             ->method('render')
-            ->with('login.html.twig');
+            ->with('login.html.twig')
+            ->willReturn('output');;
 
         // Act
         $this->client->login();

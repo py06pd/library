@@ -11,14 +11,14 @@ use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Exception;
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
@@ -50,7 +50,7 @@ class UserAuthenticatorTest extends TestCase
      */
     private $mockEm;
     
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockCookieService = $this->createMock(CookieService::class);
         $this->mockDateTime = $this->createMock(DateTimeFactory::class);
@@ -156,7 +156,7 @@ class UserAuthenticatorTest extends TestCase
     {
         // Arrange
         $user = (new User())->setId(123);
-        $token = new AnonymousToken("s3cr3t", $user);
+        $token = new PreAuthenticatedToken($user, "test");
 
         $this->mockDateTime->expects($this->once())
             ->method('getNow')
@@ -207,7 +207,7 @@ class UserAuthenticatorTest extends TestCase
     {
         // Arrange
         $user = (new User())->setId(123);
-        $token = new AnonymousToken("s3cr3t", $user);
+        $token = new PreAuthenticatedToken($user, "test");
 
         $this->mockDateTime->expects($this->once())
             ->method('getNow')

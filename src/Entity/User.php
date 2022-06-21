@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User entity
- * @ORM\Entity(repositoryClass="App\Repositories\UserRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="users")
  */
 class User implements JsonSerializable, UserInterface
@@ -32,7 +32,7 @@ class User implements JsonSerializable, UserInterface
     /**
      * User roles
      * @var array
-     * @ORM\Column(type="json_array", length=256)
+     * @ORM\Column(type="json", length=256)
      */
     private $roles;
     

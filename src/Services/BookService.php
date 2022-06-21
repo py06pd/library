@@ -6,7 +6,7 @@ use App\DateTimeFactory;
 use App\Entity\Book;
 use App\Entity\UserBook;
 use App\Entity\User;
-use App\Repositories\BookRepository;
+use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;

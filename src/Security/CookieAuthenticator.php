@@ -5,7 +5,7 @@ namespace App\Security;
 use App\DateTimeFactory;
 use App\Entity\User;
 use App\Entity\UserSession;
-use App\Repositories\UserRepository;
+use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;

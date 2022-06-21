@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Security\UserProvider;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,7 +27,7 @@ class UserProviderTest extends TestCase
      */
     private $mockEm;
     
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockEm = $this->createMock(EntityManager::class);
 

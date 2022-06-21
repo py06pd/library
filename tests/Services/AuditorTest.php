@@ -9,9 +9,9 @@ use App\Services\Auditor;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Exception;
-use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
@@ -37,13 +37,13 @@ class AuditorTest extends TestCase
      */
     private $mockEm;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockDateTime = $this->createMock(DateTimeFactory::class);
         $this->mockEm = $this->createMock(EntityManager::class);
 
         $tokenStorage = new TokenStorage();
-        $tokenStorage->setToken(new AnonymousToken("secret", (new User('test01'))->setId(123)));
+        $tokenStorage->setToken(new PreAuthenticatedToken((new User('test01'))->setId(123), "test"));
 
         $this->client = new Auditor($this->mockEm, $this->mockDateTime, $tokenStorage);
     }
